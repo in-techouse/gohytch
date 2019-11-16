@@ -17,6 +17,7 @@ public class SplashActivity extends AppCompatActivity implements Splashy.OnCompl
         setContentView(R.layout.activity_splash);
         setSplashy();
     }
+
    void setSplashy() {
        new Splashy(this)         // For JAVA : new Splashy(this)
                 .setLogo(R.drawable.logo)
