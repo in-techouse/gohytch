@@ -1,12 +1,9 @@
 package lcwu.fyp.gohytch;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.rbddevs.splashy.Splashy;
-import com.rbddevs.splashy.SplashyActivity;
 
 
 public class SplashActivity extends AppCompatActivity implements Splashy.OnComplete{
