@@ -3,15 +3,28 @@ package lcwu.fyp.gohytch;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import com.rbddevs.splashy.Splashy;
 
 
 public class SplashActivity extends AppCompatActivity implements Splashy.OnComplete{
 
+    Splashy splashy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        splashy = new Splashy(this);
+        new Splashy.OnComplete() {
+            @Override
+            public void onComplete() {
+                Log.e("Splashy", "OnComplete 1");
+                Intent it=new Intent(SplashActivity.this,LoginActivity.class);
+                startActivity(it);
+            }
+        };
         setSplashy();
     }
 
@@ -32,7 +45,6 @@ public class SplashActivity extends AppCompatActivity implements Splashy.OnCompl
 
     @Override
     public void onComplete() {
-        Intent it=new Intent(SplashActivity.this,LoginActivity.class);
-        startActivity(it);
+        Log.e("Splashy", "OnComplete 2");
     }
 }
