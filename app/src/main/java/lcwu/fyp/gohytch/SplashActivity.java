@@ -2,12 +2,14 @@ package lcwu.fyp.gohytch;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.rbddevs.splashy.Splashy;
+import com.rbddevs.splashy.SplashyActivity;
 
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements Splashy.OnComplete{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,4 +32,9 @@ public class SplashActivity extends AppCompatActivity {
                 .show();
     }
 
+    @Override
+    public void onComplete() {
+        Intent it=new Intent(SplashActivity.this,LoginActivity.class);
+        startActivity(it);
+    }
 }
