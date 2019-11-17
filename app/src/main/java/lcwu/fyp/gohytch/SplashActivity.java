@@ -4,11 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.rbddevs.splashy.Splashy;
 
 
-public class SplashActivity extends AppCompatActivity implements Splashy.OnComplete{
+public class SplashActivity extends AppCompatActivity{
 
     Splashy splashy;
     @Override
@@ -16,7 +17,7 @@ public class SplashActivity extends AppCompatActivity implements Splashy.OnCompl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        splashy = new Splashy(this);
+
         new Splashy.OnComplete() {
             @Override
             public void onComplete() {
@@ -24,7 +25,7 @@ public class SplashActivity extends AppCompatActivity implements Splashy.OnCompl
                 Intent it=new Intent(SplashActivity.this,LoginActivity.class);
                 startActivity(it);
             }
-        };
+        }.onComplete();
         setSplashy();
     }
 
@@ -35,16 +36,10 @@ public class SplashActivity extends AppCompatActivity implements Splashy.OnCompl
                 .setTitleColor("#FFFFFF")
                 .setSubTitle("Splash screen made easy")
                 .setProgressColor(R.color.white)
-              //  .setBackgroundResource("#000000")
                 .setFullScreen(true)
-                .setTime(5000)
+                .setTime(2000)
                .showProgress(true)
                .setAnimation(Splashy.Animation.SLIDE_IN_TOP_BOTTOM, 1000)
-                .show();
-    }
-
-    @Override
-    public void onComplete() {
-        Log.e("Splashy", "OnComplete 2");
+               .show();
     }
 }
