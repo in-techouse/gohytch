@@ -12,6 +12,7 @@
         android:layout_height="wrap_content">
 
     <EditText
+        android:text="+923"
         android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,8 +27,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonRegister"
+        android:id="@+id/btnLogin"
         android:textSize="@dimen/textsizeheading"
         android:text="Login"/>
+<ProgressBar
 
+    android:visibility="gone"
+    android:id="@+id/LoginProgress"
+    android:layout_marginTop="20dp"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 </LinearLayout>
