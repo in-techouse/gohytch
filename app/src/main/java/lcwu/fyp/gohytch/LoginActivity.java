@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin = findViewById(R.id.btnLogin);
         edtphonenumber = findViewById(R.id.PhoneNumber);
         LoginProgress=findViewById(R.id.LoginProgress);
+
         btnLogin.setOnClickListener(this);
     }
 
