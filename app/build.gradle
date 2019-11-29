@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.imjeevandeshmukh:FancyBottomSheetDialog:1.0'
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
     implementation 'com.google.firebase:firebase-core:17.2.1'

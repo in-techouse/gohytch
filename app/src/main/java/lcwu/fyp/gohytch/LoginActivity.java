@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
 
@@ -57,7 +59,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 boolean isConn= isConnected();
                 if (!isConn){
 
+                    new FancyBottomSheetDialog.Builder(this)
+                            .setTitle("Alert bottom sheet dialog")
+                            .setMessage("This is where we show the information.This is a message.This is where we show message explain or showing the information.")
+                            .setBackgroundColor(Color.parseColor("#3F51B5")) //don't use R.color.somecolor
+                            .setIcon(R.drawable.ic_action_error,true)
+                            .isCancellable(false)
+                            .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                @Override
+                                public void OnClick() {
 
+                                }
+                            })
+                            .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                @Override
+                                public void OnClick() {
+
+                                }
+                            })
+                            .setNegativeBtnText("Cancel")
+                            .setPositiveBtnText("Ok")
+                            .setPositiveBtnBackground(Color.parseColor("#3F51B5"))//don't use R.color.somecolor
+                            .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
+                            .build();
                     return;
                 }
 
@@ -74,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                             super.onCodeSent(s, forceResendingToken);
-                            LoginProgress.setVisibility(View.GONE);
+                                      LoginProgress.setVisibility(View.GONE);
                             verificationId=s;
                             btnLogin.setVisibility(View.VISIBLE);
                             OTPDialog dialog=new OTPDialog(LoginActivity.this);
