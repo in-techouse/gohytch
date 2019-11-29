@@ -33,12 +33,15 @@ import com.mukesh.OtpView;
 
 import java.util.concurrent.TimeUnit;
 
+import lcwu.fyp.gohytch.director.Helpers;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnLogin;
     EditText edtphonenumber;
     String strphonenumber;
     ProgressBar LoginProgress;
     String verificationId;
+    Helpers helpers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +51,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         edtphonenumber = findViewById(R.id.PhoneNumber);
         LoginProgress=findViewById(R.id.LoginProgress);
 
+
         btnLogin.setOnClickListener(this);
+
+        helpers = new Helpers();
     }
 
     @Override
@@ -57,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (id) {
             case R.id.btnLogin: {
 
-                boolean isConn= isConnected();
+                boolean isConn= helpers.isConnected(LoginActivity.this);
                 if (!isConn){
 
                     new FancyBottomSheetDialog.Builder(this)
@@ -138,15 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return flag;
     }
     // Check Internet Connection
-    private boolean isConnected() {
-        boolean connected = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED || connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED)
-            connected = true;
-        else
-            connected = false;
-        return  connected;
-    }
+
 
 
     class OTPDialog extends Dialog{
