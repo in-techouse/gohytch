@@ -26,6 +26,8 @@
 
 
     <Button
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
         android:layout_marginTop="@dimen/btnMarginTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

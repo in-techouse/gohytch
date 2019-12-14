@@ -31,9 +31,9 @@ public class SplashActivity extends AppCompatActivity{
    void setSplashy() {
        new Splashy(this)         // For JAVA : new Splashy(this)
                 .setLogo(R.drawable.logo)
-                .setTitle("Splashy")
-                .setTitleColor("#FFFFFF")
-                .setSubTitle("Splash screen made easy")
+                .setTitle("GOHYTCH")
+                .setTitleColor("#0000FF")
+                .setSubTitle("")
                 .setProgressColor(R.color.white)
                 .setFullScreen(true)
                 .setTime(2000)

@@ -133,7 +133,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         @Override
                         public void onVerificationFailed(@NonNull FirebaseException e) {
+                            new FancyBottomSheetDialog.Builder(LoginActivity.this)
+                                    .setTitle("ERROR!")
+                                    .setMessage(e.getMessage())
+                                    .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
+                                    .setIcon(R.drawable.ic_action_error,true)
+                                    .isCancellable(false)
+                                    .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                        @Override
+                                        public void OnClick() {
 
+                                        }
+                                    })
+                                    .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                        @Override
+                                        public void OnClick() {
+
+                                        }
+                                    })
+                                    .setNegativeBtnText("Cancel")
+                                    .setPositiveBtnText("Ok")
+                                    .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
+                                    .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
+                                    .build();
                         }
                     };
                     auth.verifyPhoneNumber(strphonenumber,120, TimeUnit.SECONDS,this, callbacks);
@@ -206,6 +228,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         public void onFailure(@NonNull Exception e) {
                             OtpProgress.setVisibility(View.GONE);
                             error.setText(e.getMessage());
+                            new FancyBottomSheetDialog.Builder(LoginActivity.this)
+                                    .setTitle("ERROR!")
+                                    .setMessage(e.getMessage())
+                                    .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
+                                    .setIcon(R.drawable.ic_action_error,true)
+                                    .isCancellable(false)
+                                    .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                        @Override
+                                        public void OnClick() {
+
+                                        }
+                                    })
+                                    .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                        @Override
+                                        public void OnClick() {
+
+                                        }
+                                    })
+                                    .setNegativeBtnText("Cancel")
+                                    .setPositiveBtnText("Ok")
+                                    .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
+                                    .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
+                                    .build();
 
                         }
                     });
