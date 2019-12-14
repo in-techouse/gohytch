@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (!isConn){
 
                     new FancyBottomSheetDialog.Builder(this)
-                            .setTitle("Alert bottom sheet dialog")
-                            .setMessage("This is where we show the information.This is a message.This is where we show message explain or showing the information.")
-                            .setBackgroundColor(Color.parseColor("#3F51B5")) //don't use R.color.somecolor
+                            .setTitle("Error")
+                            .setMessage("No Internet Connection.Please check your Internet Connection.")
+                            .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
                             .setIcon(R.drawable.ic_action_error,true)
                             .isCancellable(false)
                             .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             })
                             .setNegativeBtnText("Cancel")
                             .setPositiveBtnText("Ok")
-                            .setPositiveBtnBackground(Color.parseColor("#3F51B5"))//don't use R.color.somecolor
+                            .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
                             .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
                             .build();
                     return;
