@@ -10,4 +10,6 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="paddding">12dp</dimen>
+    <dimen name="btnMarginTop">15dp</dimen>
+    <dimen name="mainPadding">17dp</dimen>
 </resources>
