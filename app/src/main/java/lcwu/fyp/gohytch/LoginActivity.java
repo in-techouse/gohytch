@@ -99,9 +99,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                             super.onCodeSent(s, forceResendingToken);
-                                      LoginProgress.setVisibility(View.GONE);
-                            verificationId=s;
+                            LoginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
+                            verificationId=s;
                             OTPDialog dialog=new OTPDialog(LoginActivity.this);
                             dialog.setCancelable(false);
                             dialog.setCanceledOnTouchOutside(false);
@@ -109,8 +109,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
 
                         @Override
-                        public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                        public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+                            FirebaseAuth auth= FirebaseAuth.getInstance();
+                            auth.signInWithCredential(credential)
+                                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                        @Override
+                                        public void onSuccess(AuthResult authResult) {
+                                            LoginProgress.setVisibility(View.GONE);
+                                            btnLogin.setVisibility(View.VISIBLE);
+                                            Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                                            startActivity(it);
+                                            finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    LoginProgress.setVisibility(View.GONE);
+                                    btnLogin.setVisibility(View.VISIBLE);
 
+                                }
+                            });
                         }
 
                         @Override
