@@ -61,8 +61,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (!isConn){
 
                     new FancyBottomSheetDialog.Builder(this)
-                            .setTitle("Error")
-                            .setMessage("No Internet Connection.Please check your Internet Connection.")
+                            .setTitle("ERROR!")
+                            .setMessage("No Internet Connection. Please check your Internet Connection.")
                             .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
                             .setIcon(R.drawable.ic_action_error,true)
                             .isCancellable(false)
