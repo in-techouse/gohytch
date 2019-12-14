@@ -3,13 +3,9 @@ package lcwu.fyp.gohytch;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -19,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -30,9 +25,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
-
 import java.util.concurrent.TimeUnit;
-
 import lcwu.fyp.gohytch.director.Helpers;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -153,79 +146,79 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         TextView timer,resendOtp,error;
         ProgressBar OtpProgress;
 
-    public OTPDialog(@NonNull Context context) {
-        super(context);
-    }
+        public OTPDialog(@NonNull Context context) {
+            super(context);
+        }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.otpdialog);
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.otpdialog);
 
-        otp_view = findViewById(R.id.otp_view);
-        timer = findViewById(R.id.timer);
-        resendOtp = findViewById(R.id.ResendOtp);
-        OtpProgress = findViewById(R.id.OtpProgress);
-        error=findViewById(R.id.error);
-        resendOtp.setEnabled(false);
+            otp_view = findViewById(R.id.otp_view);
+            timer = findViewById(R.id.timer);
+            resendOtp = findViewById(R.id.ResendOtp);
+            OtpProgress = findViewById(R.id.OtpProgress);
+            error=findViewById(R.id.error);
+            resendOtp.setEnabled(false);
 
-        otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
-            @Override
-            public void onOtpCompleted(String otp) {
+            otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
+                @Override
+                public void onOtpCompleted(String otp) {
 
-                OtpProgress.setVisibility(View.VISIBLE);
+                    OtpProgress.setVisibility(View.VISIBLE);
 
-                Log.e("otp", otp);
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, otp);
-                FirebaseAuth auth= FirebaseAuth.getInstance();
-                auth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
+                    Log.e("otp", otp);
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, otp);
+                    FirebaseAuth auth= FirebaseAuth.getInstance();
+                    auth.signInWithCredential(credential)
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
 
-                        OtpProgress.setVisibility(View.GONE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        OtpProgress.setVisibility(View.GONE);
-                        error.setText(e.getMessage());
+                            OtpProgress.setVisibility(View.GONE);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            OtpProgress.setVisibility(View.GONE);
+                            error.setText(e.getMessage());
 
-                    }
-                });
-            }
-        });
-
-        startTimer();
-    }
-
-    private void startTimer(){
-        new CountDownTimer(120000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                millisUntilFinished=millisUntilFinished/1000;
-                long second=millisUntilFinished % 60;
-                long minutes=(millisUntilFinished / 60)% 60;
-                String time="";
-                if (second>9){
-                    time="0" + minutes + ":" + second;
+                        }
+                    });
                 }
-                else {
-                    time = "0" + minutes + ":" + "0" + second;
+            });
+
+            startTimer();
+        }
+
+        private void startTimer(){
+            new CountDownTimer(120000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    millisUntilFinished=millisUntilFinished/1000;
+                    long second=millisUntilFinished % 60;
+                    long minutes=(millisUntilFinished / 60)% 60;
+                    String time="";
+                    if (second>9){
+                        time="0" + minutes + ":" + second;
+                    }
+                    else {
+                        time = "0" + minutes + ":" + "0" + second;
+                    }
+                    timer.setText(time);
                 }
-                timer.setText(time);
-            }
 
-            @Override
-            public void onFinish() {
-                timer.setText("--:--");
-                resendOtp.setEnabled(true);
-            }
-        }.start();
+                @Override
+                public void onFinish() {
+                    timer.setText("--:--");
+                    resendOtp.setEnabled(true);
+                }
+            }.start();
+        }
+
     }
-
-}
 
 
 

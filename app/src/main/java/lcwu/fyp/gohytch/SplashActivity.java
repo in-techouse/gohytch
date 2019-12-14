@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
-
 import com.rbddevs.splashy.Splashy;
 
 
@@ -24,6 +22,7 @@ public class SplashActivity extends AppCompatActivity{
                 Log.e("Splashy", "OnComplete 1");
                 Intent it=new Intent(SplashActivity.this,LoginActivity.class);
                 startActivity(it);
+                finish();
             }
         }.onComplete();
         setSplashy();
