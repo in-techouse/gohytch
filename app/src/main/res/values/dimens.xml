@@ -13,4 +13,6 @@
     <dimen name="btnMarginTop">15dp</dimen>
     <dimen name="mainPadding">17dp</dimen>
     <dimen name="marginLayout">20dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

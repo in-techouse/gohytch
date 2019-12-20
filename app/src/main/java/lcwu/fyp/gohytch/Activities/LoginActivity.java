@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch;
+package lcwu.fyp.gohytch.Activities;
 
 
 import androidx.annotation.NonNull;
@@ -27,6 +27,8 @@ import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
 import java.util.concurrent.TimeUnit;
+
+import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {

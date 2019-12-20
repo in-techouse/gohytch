@@ -1,10 +1,12 @@
-package lcwu.fyp.gohytch;
+package lcwu.fyp.gohytch.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import com.rbddevs.splashy.Splashy;
+
+import lcwu.fyp.gohytch.R;
 
 
 public class SplashActivity extends AppCompatActivity{

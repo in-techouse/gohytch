@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch;
+package lcwu.fyp.gohytch.Activities;
 
 import android.os.Bundle;
 
