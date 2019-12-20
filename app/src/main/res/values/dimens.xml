@@ -12,4 +12,5 @@
     <dimen name="paddding">12dp</dimen>
     <dimen name="btnMarginTop">15dp</dimen>
     <dimen name="mainPadding">17dp</dimen>
+    <dimen name="marginLayout">20dp</dimen>
 </resources>

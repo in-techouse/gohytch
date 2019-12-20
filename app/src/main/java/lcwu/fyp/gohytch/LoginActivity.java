@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean isValid(){
         boolean flag=true;
         if (strphonenumber.length() != 13) {
-            edtphonenumber.setError("Enter a valid name");
+            edtphonenumber.setError("Enter a valid number");
             flag=false;
         } else {
             edtphonenumber.setError(null);
