@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
+import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -188,6 +189,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             reference.child("Users").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue()!=null){
+                                        //data is valid
+                                        User u = dataSnapshot.getValue(User.class);
+                                        Session session = new Session(LoginActivity.this);
+                                        session.setSession(u);
+                                        //start dashboard activity
+
+                                    }
+                                    else {
+                                   Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);
+                                   startActivity(it);
+                                   finish();
+
+                                    }
 
                                 }
 
