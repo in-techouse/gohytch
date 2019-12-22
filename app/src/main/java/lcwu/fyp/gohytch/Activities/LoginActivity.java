@@ -23,6 +23,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
@@ -30,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
+import lcwu.fyp.gohytch.model.User;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnLogin;
@@ -61,30 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 boolean isConn= helpers.isConnected(LoginActivity.this);
                 if (!isConn){
-
-                    new FancyBottomSheetDialog.Builder(this)
-                            .setTitle("ERROR!")
-                            .setMessage("No Internet Connection. Please check your Internet Connection.")
-                            .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                            .setIcon(R.drawable.ic_action_error,true)
-                            .isCancellable(false)
-                            .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                @Override
-                                public void OnClick() {
-
-                                }
-                            })
-                            .setNegativeBtnText("Cancel")
-                            .setPositiveBtnText("Ok")
-                            .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
-                            .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
-                            .build();
+                helpers.showError(LoginActivity.this,"ERROR!","No Internet Connection. Please check your Internet Connection.");
                     return;
                 }
 
@@ -128,29 +111,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 public void onFailure(@NonNull Exception e) {
                                     LoginProgress.setVisibility(View.GONE);
                                     btnLogin.setVisibility(View.VISIBLE);
-                                    new FancyBottomSheetDialog.Builder(LoginActivity.this)
-                                            .setTitle("ERROR!")
-                                            .setMessage(e.getMessage())
-                                            .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                                            .setIcon(R.drawable.ic_action_error,true)
-                                            .isCancellable(false)
-                                            .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                                @Override
-                                                public void OnClick() {
+                                    helpers.showError(LoginActivity.this,"ERROR!",e.getMessage());
 
-                                                }
-                                            })
-                                            .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                                @Override
-                                                public void OnClick() {
-
-                                                }
-                                            })
-                                            .setNegativeBtnText("Cancel")
-                                            .setPositiveBtnText("Ok")
-                                            .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
-                                            .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
-                                            .build();
                                 }
                             });
                         }
@@ -159,29 +121,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         public void onVerificationFailed(@NonNull FirebaseException e) {
                             LoginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
-                            new FancyBottomSheetDialog.Builder(LoginActivity.this)
-                                    .setTitle("ERROR!")
-                                    .setMessage(e.getMessage())
-                                    .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                                    .setIcon(R.drawable.ic_action_error,true)
-                                    .isCancellable(false)
-                                    .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                        @Override
-                                        public void OnClick() {
+                            helpers.showError(LoginActivity.this,"ERROR!",e.getMessage());
 
-                                        }
-                                    })
-                                    .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                        @Override
-                                        public void OnClick() {
-
-                                        }
-                                    })
-                                    .setNegativeBtnText("Cancel")
-                                    .setPositiveBtnText("Ok")
-                                    .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
-                                    .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
-                                    .build();
                         }
                     };
                     auth.verifyPhoneNumber(strphonenumber,120, TimeUnit.SECONDS,this, callbacks);
@@ -243,11 +184,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
+                            DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
+                            reference.child("Users").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            OtpProgress.setVisibility(View.GONE);
-                            Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
-                            startActivity(it);
-                            finish();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });  //data read
+
+                            // OtpProgress.setVisibility(View.GONE);
+                            //Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                            //startActivity(it);
+                            //finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
