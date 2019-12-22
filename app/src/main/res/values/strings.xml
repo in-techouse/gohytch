@@ -107,4 +107,6 @@
     </string>
     <string name="title_activity_rental_profile">RentalProfileActivity</string>
     <string name="title_activity_car_detail">CarDetailActivity</string>
+    <string name="Enter_person_name">Enter Person name</string>
+    <string name="Enter_email">Enter email</string>
 </resources>

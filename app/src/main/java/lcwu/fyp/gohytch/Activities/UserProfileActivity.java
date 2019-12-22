@@ -8,16 +8,36 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.director.Helpers;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener{
+    Button btnSave;
+    EditText edtphonenumber,edtName,edtEmail;
+    String strphonenumber,strName,strEmail;
+    ProgressBar SaveProgress;
+    String verificationId;
+    Helpers helpers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        btnSave=findViewById(R.id.btnSave);
+        edtName=findViewById(R.id.Name);
+        edtEmail=findViewById(R.id.Email);
+        SaveProgress=findViewById(R.id.SaveProgress);
+
+        btnSave.setOnClickListener(this);
+        helpers=new Helpers();
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -30,4 +50,45 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
     }
-}
+
+    @Override
+    public void onClick(View view) {
+        int id=view.getId();
+        switch (id){
+            case R.id.btnSave: {
+                boolean isConn = helpers.isConnected(UserProfileActivity.this);
+                if (!isConn) {
+                    helpers.showError(UserProfileActivity.this, "ERROR!", "No Internet Connection. Please check your Internet Connection.");
+                    return;
+                }
+                String strName=edtName.getText().toString();
+                String strEmail = edtEmail.getText().toString();
+                String strPhonenumber = edtphonenumber.getText().toString();
+
+                if (strName.length() < 3) {
+                    edtName.setError("Enter a valid name");
+                } else {
+                    edtName.setError(null);
+                }
+
+                if (strPhonenumber.length() != 11) {
+                    edtphonenumber.setError("Enter a valid number");
+
+                } else {
+                    edtphonenumber.setError(null);
+                }
+                if (strEmail.length() < 6 || !Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
+                    edtEmail.setError("Enter a valid email");
+                } else {
+                    edtEmail.setError(null);
+
+                }
+
+
+
+                }
+            }
+        }
+
+    }
+
