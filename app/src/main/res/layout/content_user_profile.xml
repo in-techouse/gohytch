@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,71 +9,77 @@
     tools:context=".Activities.UserProfileActivity"
    android:padding="17sp">
 
-
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:text="+923"
-            android:textAlignment="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/PhoneNumber"
-            android:inputType="phone"
-            android:hint="@string/enter_phone_number"
-            android:layout_margin="@dimen/margin"
-            android:padding= "@dimen/headingpadding"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/Enter_person_name"
-            android:textAlignment="center"
-            android:layout_margin="@dimen/margin"
-            android:padding= "@dimen/headingpadding"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/Enter_email"
-            android:textAlignment="center"
-            android:layout_margin="@dimen/margin"
-            android:padding= "@dimen/headingpadding"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white"
-        android:layout_marginTop="@dimen/btnMarginTop"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnSave"
-        android:textSize="@dimen/textsizeheading"
-        android:text="Save"/>
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ProgressBar
+            <EditText
+                android:text="+923"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/PhoneNumber"
+                android:inputType="phone"
+                android:hint="@string/enter_phone_number"
+                android:layout_margin="@dimen/margin"
+                android:padding= "@dimen/headingpadding"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        android:visibility="gone"
-        android:id="@+id/SaveProgress"
-        android:layout_marginTop="@dimen/marginLayout"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/Enter_person_name"
+                android:textAlignment="center"
+                android:layout_margin="@dimen/margin"
+                android:padding= "@dimen/headingpadding"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/Email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/Enter_email"
+                android:textAlignment="center"
+                android:layout_margin="@dimen/margin"
+                android:padding= "@dimen/headingpadding"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/btnMarginTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSave"
+            android:textSize="@dimen/textsizeheading"
+            android:text="Save"/>
+
+        <ProgressBar
+
+            android:visibility="gone"
+            android:id="@+id/SaveProgress"
+            android:layout_marginTop="@dimen/marginLayout"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+
+
+
+</androidx.core.widget.NestedScrollView>

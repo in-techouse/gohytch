@@ -101,11 +101,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
-                                            LoginProgress.setVisibility(View.GONE);
-                                            btnLogin.setVisibility(View.VISIBLE);
-                                            Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
-                                            startActivity(it);
-                                            finish();
+                                           // LoginProgress.setVisibility(View.GONE);
+                                            //btnLogin.setVisibility(View.VISIBLE);
+                                            //Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                                            //startActivity(it);
+                                            //finish();
+                                            call_to_database();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -145,8 +146,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         return flag;
     }
-    // Check Internet Connection
 
+    private void call_to_database(){
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
+        reference.child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    //data is valid
+                    User u = dataSnapshot.getValue(User.class);
+                    Session session = new Session(LoginActivity.this);
+                    session.setSession(u);
+                    //start dashboard activity
+                }
+                else {
+                    Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);
+                    startActivity(it);
+                    finish();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                helpers.showError(LoginActivity.this, "EEROR", "Something went wrong.\n Please try again later");
+            }
+        });  //data read
+    }
 
 
     class OTPDialog extends Dialog{
@@ -175,9 +199,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
                 @Override
                 public void onOtpCompleted(String otp) {
-
                     OtpProgress.setVisibility(View.VISIBLE);
-
                     Log.e("otp", otp);
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, otp);
                     FirebaseAuth auth= FirebaseAuth.getInstance();
@@ -185,67 +207,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
-                            reference.child("Users").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getValue()!=null){
-                                        //data is valid
-                                        User u = dataSnapshot.getValue(User.class);
-                                        Session session = new Session(LoginActivity.this);
-                                        session.setSession(u);
-                                        //start dashboard activity
-
-                                    }
-                                    else {
-                                   Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);
-                                   startActivity(it);
-                                   finish();
-
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });  //data read
-
-                            // OtpProgress.setVisibility(View.GONE);
-                            //Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
-                            //startActivity(it);
-                            //finish();
+                        call_to_database();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             OtpProgress.setVisibility(View.GONE);
                             error.setText(e.getMessage());
-                            new FancyBottomSheetDialog.Builder(LoginActivity.this)
-                                    .setTitle("ERROR!")
-                                    .setMessage(e.getMessage())
-                                    .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                                    .setIcon(R.drawable.ic_action_error,true)
-                                    .isCancellable(false)
-                                    .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                        @Override
-                                        public void OnClick() {
-
-                                        }
-                                    })
-                                    .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                        @Override
-                                        public void OnClick() {
-
-                                        }
-                                    })
-                                    .setNegativeBtnText("Cancel")
-                                    .setPositiveBtnText("Ok")
-                                    .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
-                                    .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
-                                    .build();
-
+                            helpers.showError(LoginActivity.this, "ERROR", e.getMessage());
                         }
                     });
                 }
