@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 else {
                     Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);
+                    it.putExtra("Phone", strphonenumber);
                     startActivity(it);
                     finish();
                 }

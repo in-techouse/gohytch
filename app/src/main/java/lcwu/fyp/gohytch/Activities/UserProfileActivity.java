@@ -1,15 +1,25 @@
 package lcwu.fyp.gohytch.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mukesh.OnOtpCompletionListener;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +43,17 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        Intent it=getIntent();
+        if(it==null){
+            finish();
+            return;
+        }
+        strPhonenumber=it.getStringExtra("Phone");
+        if (strPhonenumber==null)
+        {
+            finish();
+            return;
+        }
         btnSave=findViewById(R.id.btnSave);
         edtphonenumber=findViewById(R.id.PhoneNumber);
         edtName=findViewById(R.id.Name);
@@ -54,6 +75,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         .setAction("Action", null).show();
             }
         });
+        edtphonenumber.setText(strPhonenumber);
     }
 
     @Override
@@ -69,16 +91,44 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 }
                 boolean flag=isValid();
                 if(!flag){
-                    User u=new User();
-                    Session session=new Session(UserProfileActivity.this);
+
+                    SaveProgress.setVisibility(View.VISIBLE);
+                    btnSave.setVisibility(View.GONE);
+                    final User u=new User();
+                    final Session session=new Session(UserProfileActivity.this);
 
                     DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
+                    u.setId(strPhonenumber);
+                    u.setEmail(strEmail);
+                    u.setName(strName);
+                    u.setPhoneNumber(strPhonenumber);
+
+                    reference.child("Users").child(u.getId()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            SaveProgress.setVisibility(View.GONE);
+                            btnSave.setVisibility(View.VISIBLE);
+                            session.setSession(u);
+                            Intent it=new Intent(UserProfileActivity.this,DashboardActivity.class);
+                            startActivity(it);
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            SaveProgress.setVisibility(View.GONE);
+                            btnSave.setVisibility(View.VISIBLE);
+                            helpers.showError(UserProfileActivity.this, "ERROR", "Something went wrong.\nPlease try again later.");
+                        }
+                    });
 
                 }
-
             }
         }
+
     }
+
+
 
     private boolean isValid() {
         boolean flag = true;

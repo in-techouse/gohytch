@@ -7,6 +7,7 @@ import android.util.Log;
 import com.rbddevs.splashy.Splashy;
 
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.director.Session;
 
 
 public class SplashActivity extends AppCompatActivity{
@@ -22,9 +23,20 @@ public class SplashActivity extends AppCompatActivity{
             @Override
             public void onComplete() {
                 Log.e("Splashy", "OnComplete 1");
-                Intent it=new Intent(SplashActivity.this,LoginActivity.class);
-                startActivity(it);
-                finish();
+                Session session=new Session(SplashActivity.this);
+
+                if(session.getSession()==null){
+                    Intent it=new Intent(SplashActivity.this,LoginActivity.class);
+                    startActivity(it);
+                    finish();
+                }
+                else{
+                    Intent it=new Intent(SplashActivity.this,DashboardActivity.class);
+                    startActivity(it);
+                    finish();
+                }
+
+
             }
         }.onComplete();
         setSplashy();
