@@ -1,9 +1,6 @@
 package lcwu.fyp.gohytch.Activities;
 
-import android.app.Notification;
 import android.os.Bundle;
-
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -11,34 +8,17 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.ThemedSpinnerAdapter;
 import androidx.core.view.GravityCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.widget.ImageView;
 import android.widget.TextView;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
@@ -58,9 +38,6 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     private TextView profile_Email;
     private TextView profile_Name;
     private TextView profile_Phone;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

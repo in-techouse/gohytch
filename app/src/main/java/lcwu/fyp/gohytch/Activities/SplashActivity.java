@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import com.rbddevs.splashy.Splashy;
-
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Session;
 
@@ -24,7 +23,6 @@ public class SplashActivity extends AppCompatActivity{
             public void onComplete() {
                 Log.e("Splashy", "OnComplete 1");
                 Session session=new Session(SplashActivity.this);
-
                 if(session.getSession()==null){
                     Intent it=new Intent(SplashActivity.this,LoginActivity.class);
                     startActivity(it);

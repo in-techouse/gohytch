@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -28,11 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import com.mukesh.OnOtpCompletionListener;
 import com.mukesh.OtpView;
 import java.util.concurrent.TimeUnit;
-
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
@@ -101,11 +98,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
-                                           // LoginProgress.setVisibility(View.GONE);
-                                            //btnLogin.setVisibility(View.VISIBLE);
-                                            //Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
-                                            //startActivity(it);
-                                            //finish();
                                             call_to_database();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -213,6 +205,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            timer.setText("--:--");
+                            resendOtp.setEnabled(true);
                             OtpProgress.setVisibility(View.GONE);
                             error.setText(e.getMessage());
                             helpers.showError(LoginActivity.this, "ERROR", e.getMessage());
