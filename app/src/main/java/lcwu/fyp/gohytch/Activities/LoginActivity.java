@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                helpers.showError(LoginActivity.this, "EEROR", "Something went wrong.\n Please try again later");
+                helpers.showError(LoginActivity.this, "ERROR", "Something went wrong.\n Please try again later");
             }
         });  //data read
     }
