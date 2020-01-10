@@ -15,6 +15,7 @@
         <item
             android:id="@+id/nav_Booking"
             android:icon="@drawable/booking"
+
             android:title="Booking" />
 
         <item
