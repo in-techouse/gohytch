@@ -54,6 +54,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Booking;
@@ -125,7 +126,10 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
             Log.e("Maps", "Catch Block");
             helpers.showError(DashboardActivity.this, "Error", "Something went wrong.Try again");
         }
+        UserDialog userDialog=new UserDialog(DashboardActivity.this);
+        userDialog.show();
     }
+
 
     private boolean askForPermission() {
         if (ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

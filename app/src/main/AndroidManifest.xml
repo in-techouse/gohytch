@@ -35,7 +35,7 @@
             android:parentActivityName=".Activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.RentalProfileActivity"
+            android:name=".Activities.RenterProfileActivity"
             android:label="@string/title_activity_rental_profile"
             android:parentActivityName=".Activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />

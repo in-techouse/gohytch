@@ -12,7 +12,7 @@ import android.view.View;
 
 import lcwu.fyp.gohytch.R;
 
-public class RentalProfileActivity extends AppCompatActivity {
+public class RenterProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
