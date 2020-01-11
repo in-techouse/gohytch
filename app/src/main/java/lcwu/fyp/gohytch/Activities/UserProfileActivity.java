@@ -1,6 +1,7 @@
 package lcwu.fyp.gohytch.Activities;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,6 +25,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import lcwu.fyp.gohytch.R;
@@ -38,6 +40,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     ProgressBar SaveProgress;
     String verificationId;
     Helpers helpers;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +70,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        image = findViewById(R.id.image);
+        image.setImageDrawable(getResources().getDrawable(R.drawable.logo));
         edtphonenumber.setText(strPhonenumber);
     }
 
