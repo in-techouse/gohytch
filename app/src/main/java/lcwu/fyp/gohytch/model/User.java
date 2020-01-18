@@ -1,21 +1,22 @@
 package lcwu.fyp.gohytch.model;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 
 public class User implements Serializable {
 
     String name,phoneNumber,id,email;
-    private int roll;
+    String type;
     public User() {
 
     }
 
-    public User(String name, String phoneNumber, String id, String email, int roll) {
+    public User(String name, String phoneNumber, String id, String email, String type) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.id = id;
         this.email = email;
-        this.roll = roll;
+        this.type = type;
     }
 
     public String getName() {
@@ -50,12 +51,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public int getRoll() {
-        return roll;
+    public String getType() {
+        return type;
     }
 
-    public void setRoll(int roll) {
-        this.roll = roll;
+    public void setType(String type) {
+        this.type = type;
     }
-
 }

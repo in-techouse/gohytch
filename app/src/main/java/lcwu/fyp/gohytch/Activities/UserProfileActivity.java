@@ -100,6 +100,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     u.setEmail(strEmail);
                     u.setName(strName);
                     u.setPhoneNumber(strPhonenumber);
+                    u.setType("");
 
                     reference.child("Users").child(u.getId()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

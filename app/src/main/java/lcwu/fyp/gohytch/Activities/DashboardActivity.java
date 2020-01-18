@@ -126,8 +126,13 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
             Log.e("Maps", "Catch Block");
             helpers.showError(DashboardActivity.this, "Error", "Something went wrong.Try again");
         }
-        UserDialog userDialog=new UserDialog(DashboardActivity.this);
-        userDialog.show();
+        if (user.getType() == null || user.getType().length() < 1) {
+            UserDialog userDialog = new UserDialog(DashboardActivity.this);
+            userDialog.setCanceledOnTouchOutside(false);
+            userDialog.setCancelable(false);
+            userDialog.show();
+        }
+
     }
 
 

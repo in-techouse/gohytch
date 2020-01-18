@@ -24,12 +24,12 @@ public class Session {
         Gson gson = new Gson();
         String value = gson.toJson(user);
         editor.putString("user", value);
-        editor.apply();
+        editor.commit();
     }
 
     public User getSession(){
         String str = preferences.getString("user", "*");
-        if(str != null && str.equals("*"))
+        if(str.equals("*"))
             return null;
         Gson gson = new Gson();
         User u = gson.fromJson(str, User.class);
