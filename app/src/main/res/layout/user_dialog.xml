@@ -37,7 +37,7 @@
     <Button
         android:id="@+id/btnRenter"
         android:textSize="22dp"
-        android:text="Rental"
+        android:text="Renter"
         android:textColor="@color/white"
         android:background="@color/colorPrimary"
         android:layout_margin="12dp"
