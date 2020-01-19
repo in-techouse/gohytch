@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch.Activities;
+package lcwu.fyp.gohytch.activities;
 
 
 import androidx.annotation.NonNull;
@@ -42,6 +42,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     ProgressBar LoginProgress;
     String verificationId;
     Helpers helpers;
+    OTPDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(this);
 
         helpers = new Helpers();
+        dialog = new OTPDialog(LoginActivity.this);
     }
 
     @Override
@@ -85,10 +88,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             LoginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
                             verificationId=s;
-                            OTPDialog dialog=new OTPDialog(LoginActivity.this);
                             dialog.setCancelable(false);
                             dialog.setCanceledOnTouchOutside(false);
-                            dialog.show();
+                            if(!dialog.isShowing())
+                                dialog.show();
                         }
 
                         @Override
@@ -141,15 +144,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void call_to_database(){
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
-        reference.child("Users").addValueEventListener(new ValueEventListener() {
+        reference.child("Users").child(strphonenumber).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
                     //data is valid
                     User u = dataSnapshot.getValue(User.class);
-                    Session session = new Session(LoginActivity.this);
-                    session.setSession(u);
-                    //start dashboard activity
+                    if(u != null){
+                        Session session = new Session(LoginActivity.this);
+                        session.setSession(u);
+                        //start dashboard activity
+                        Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                        startActivity(it);
+                        finish();
+                    }
+                    else{
+                        Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);
+                        it.putExtra("Phone", strphonenumber);
+                        startActivity(it);
+                        finish();
+                    }
                 }
                 else {
                     Intent it=new Intent(LoginActivity.this,UserProfileActivity.class);

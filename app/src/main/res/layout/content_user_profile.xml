@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activities.UserProfileActivity"
+    tools:context=".activities.UserProfileActivity"
     tools:showIn="@layout/activity_user_profile"
    android:padding="17sp">
 
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:maxLines="1"
                 android:enabled="false"
                 android:text="+923"
                 android:textAlignment="center"
@@ -36,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
+                android:maxLines="1"
                 android:id="@+id/Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
+                android:maxLines="1"
                 android:id="@+id/Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

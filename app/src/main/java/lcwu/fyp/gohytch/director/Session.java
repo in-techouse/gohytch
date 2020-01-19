@@ -3,6 +3,7 @@ package lcwu.fyp.gohytch.director;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -20,7 +21,10 @@ public class Session {
     }
 
     public void setSession(User user){
-
+        Log.e("UserSession", "Id: " + user.getId());
+        Log.e("UserSession", "Email: " + user.getEmail());
+        Log.e("UserSession", "Name: " + user.getName());
+        Log.e("UserSession", "Phone Number: " + user.getPhoneNumber());
         Gson gson = new Gson();
         String value = gson.toJson(user);
         editor.putString("user", value);

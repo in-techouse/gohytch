@@ -20,46 +20,47 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".Activities.VendorDashboard"
-            android:label="@string/title_activity_vendor_dashboard"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/Gohytch" />
 
         <activity
-            android:name=".Activities.CarDetailActivity"
+            android:name=".activities.CarDetailActivity"
             android:label="@string/title_activity_car_detail"
-            android:parentActivityName=".Activities.DashboardActivity"
+            android:parentActivityName=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.RenterProfileActivity"
+            android:name=".activities.RenterProfileActivity"
             android:label="@string/title_activity_rental_profile"
-            android:parentActivityName=".Activities.DashboardActivity"
+            android:parentActivityName=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.UserProfileActivity"
+            android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.NotificationActivity"
-            android:parentActivityName=".Activities.DashboardActivity" />
+            android:name=".activities.NotificationActivity"
+            android:parentActivityName=".activities.DashboardActivity" />
         <activity
-            android:name=".Activities.BookingActivity"
-            android:parentActivityName=".Activities.DashboardActivity" />
+            android:name=".activities.BookingActivity"
+            android:parentActivityName=".activities.DashboardActivity" />
         <activity
-            android:name=".Activities.DashboardActivity"
+            android:name=".activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.EditUserProfile"
+            android:name=".activities.EditUserProfile"
             android:label="@string/title_activity_edit_user_profile"
-            android:parentActivityName=".Activities.DashboardActivity"
+            android:parentActivityName=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.SplashActivity">
+        <activity
+            android:name=".activities.VendorDashboard"
+            android:label="@string/title_activity_vendor_dashboard"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

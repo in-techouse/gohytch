@@ -1,25 +1,14 @@
-package lcwu.fyp.gohytch.Activities;
+package lcwu.fyp.gohytch.activities;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mukesh.OnOtpCompletionListener;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -27,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
@@ -38,7 +26,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     EditText edtphonenumber,edtName,edtEmail;
     String strPhonenumber,strName,strEmail;
     ProgressBar SaveProgress;
-    String verificationId;
     Helpers helpers;
     ImageView image;
 
@@ -101,6 +88,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     u.setName(strName);
                     u.setPhoneNumber(strPhonenumber);
                     u.setType("");
+                    Log.e("UserProfile", "Id: " + u.getId());
+                    Log.e("UserProfile", "Email: " + u.getEmail());
+                    Log.e("UserProfile", "Name: " + u.getName());
+                    Log.e("UserProfile", "Phone Number: " + u.getPhoneNumber());
 
                     reference.child("Users").child(u.getId()).setValue(u).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -142,13 +133,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             edtName.setError(null);
         }
 
-        if (strPhonenumber.length() != 11) {
-            edtphonenumber.setError("Enter a valid number");
-            flag=false;
-
-        } else {
-            edtphonenumber.setError(null);
-        }
         if (strEmail.length() < 6 || !Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
             edtEmail.setError("Enter a valid email");
             flag=false;

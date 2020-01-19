@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 
 import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 
-import lcwu.fyp.gohytch.Activities.LoginActivity;
 import lcwu.fyp.gohytch.R;
 
 public class Helpers {

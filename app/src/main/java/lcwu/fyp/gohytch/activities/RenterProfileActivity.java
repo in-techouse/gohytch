@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch.Activities;
+package lcwu.fyp.gohytch.activities;
 
 import android.os.Bundle;
 
@@ -12,16 +12,16 @@ import android.view.View;
 
 import lcwu.fyp.gohytch.R;
 
-public class EditUserProfile extends AppCompatActivity {
+public class RenterProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_user_profile);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_rental_profile);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.nav_gallery);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

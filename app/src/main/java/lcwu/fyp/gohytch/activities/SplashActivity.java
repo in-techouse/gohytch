@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch.Activities;
+package lcwu.fyp.gohytch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;

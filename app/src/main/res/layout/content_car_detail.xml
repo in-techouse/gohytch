@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activities.CarDetailActivity"
+    tools:context=".activities.CarDetailActivity"
     tools:showIn="@layout/activity_car_detail">
 
 

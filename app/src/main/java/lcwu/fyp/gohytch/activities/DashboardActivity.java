@@ -1,4 +1,4 @@
-package lcwu.fyp.gohytch.Activities;
+package lcwu.fyp.gohytch.activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -10,10 +10,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,7 +24,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.provider.Settings;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +54,6 @@ import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
-import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.User;
 
 public class DashboardActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {

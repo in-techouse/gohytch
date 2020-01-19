@@ -33,19 +33,19 @@ public class UserDialog extends Dialog implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.user_dialog);
-    btnUser=findViewById(R.id.btnUser);
-    btnDriver=findViewById(R.id.btnDriver);
-    btnRenter=findViewById(R.id.btnRenter);
+        btnUser=findViewById(R.id.btnUser);
+        btnDriver=findViewById(R.id.btnDriver);
+        btnRenter=findViewById(R.id.btnRenter);
 
-     btnUser.setOnClickListener(this);
-     btnDriver.setOnClickListener(this);
-     btnRenter.setOnClickListener(this);
-     session= new Session(context);
-     user = session.getSession();
-    Log.e("User", "Id: " + user.getId());
-    Log.e("User", "Email: " + user.getEmail());
-    Log.e("User", "Name: " + user.getName());
-    Log.e("User", "Phone Number: " + user.getPhoneNumber());
+        btnUser.setOnClickListener(this);
+        btnDriver.setOnClickListener(this);
+        btnRenter.setOnClickListener(this);
+        session= new Session(context);
+        user = session.getSession();
+        Log.e("UserDialog", "Id: " + user.getId());
+        Log.e("UserDialog", "Email: " + user.getEmail());
+        Log.e("UserDialog", "Name: " + user.getName());
+        Log.e("UserDialog", "Phone Number: " + user.getPhoneNumber());
     }
 
     @Override
@@ -77,6 +77,5 @@ public class UserDialog extends Dialog implements View.OnClickListener{
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("Users");
         reference.child(user.getId()).setValue(user);
         session.setSession(user);
-
     }
 }
