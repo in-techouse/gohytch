@@ -24,4 +24,5 @@
     <string name="title_activity_vendor_dashboard">Gohytch</string>
     <string name="confirm">CONFIRM</string>
     <string name="location">Location</string>
+    <string name="loading_notification">loading_notification</string>
 </resources>
