@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.view.MenuItem;
 import android.view.View;
 
 import lcwu.fyp.gohytch.R;
@@ -29,5 +30,21 @@ public class EditUserProfile extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 }
