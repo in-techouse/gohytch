@@ -68,14 +68,15 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         int id=view.getId();
         switch (id){
             case R.id.btnSave: {
+                Log.e("User", "Button Clicked");
+
                 boolean isConn = helpers.isConnected(UserProfileActivity.this);
                 if (!isConn) {
-
                     helpers.showError(UserProfileActivity.this, "ERROR!", "No Internet Connection. Please check your Internet Connection.");
                     return;
                 }
                 boolean flag=isValid();
-                if(!flag){
+                if(flag){
 
                     SaveProgress.setVisibility(View.VISIBLE);
                     btnSave.setVisibility(View.GONE);
@@ -124,8 +125,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         boolean flag = true;
         strName=edtName.getText().toString();
         strEmail = edtEmail.getText().toString();
-        strPhonenumber = edtphonenumber.getText().toString();
-
+        Log.e("User", "Email: " + strEmail);
         if (strName.length() < 3) {
             edtName.setError("Enter a valid name");
             flag=false;
@@ -134,9 +134,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         if (strEmail.length() < 6 || !Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
+            Log.e("User", "If Email: " + strEmail);
             edtEmail.setError("Enter a valid email");
             flag=false;
         } else {
+            Log.e("User", "Else Email: " + strEmail);
             edtEmail.setError(null);
 
         }

@@ -50,11 +50,13 @@
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:launchMode="singleInstance"
             android:name=".activities.EditUserProfile"
             android:label="@string/title_activity_edit_user_profile"
             android:parentActivityName=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:launchMode="singleInstance"
             android:name=".activities.VendorDashboard"
             android:label="@string/title_activity_vendor_dashboard"
             android:theme="@style/AppTheme.NoActionBar"/>
