@@ -25,4 +25,11 @@
     <string name="confirm">CONFIRM</string>
     <string name="location">Location</string>
     <string name="loading_notification">loading_notification</string>
+    <string name="enter_license_number">Enter license_Number</string>
+    <string name="Enter_license_number">Enter license_Number</string>
+    <string name="Enter_licensenumbrer">Enter LicenseNumbrer</string>
+    <string name="Enter_Car_model">Enter Car_Model</string>
+    <string name="Enter_Registrationnumber">Enter RegistrationNumber</string>
+    <string name="Enter_sittingCapacity">Enter sittingCapacity</string>
+    <string name="Enter_CompanyName">Enter CompanyName</string>
 </resources>

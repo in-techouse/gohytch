@@ -4,12 +4,17 @@ import java.io.Serializable;
 
 public class Renter implements Serializable {
     String id,Image1,Image2,licenseNumber;
+    Car car;
 
-    public Renter(String id, String image1, String image2, String licenseNumber) {
+    public Renter() {
+    }
+
+    public Renter(String id, String image1, String image2, String licenseNumber, Car car) {
         this.id = id;
         Image1 = image1;
         Image2 = image2;
         this.licenseNumber = licenseNumber;
+        this.car = car;
     }
 
     public String getId() {
@@ -42,5 +47,13 @@ public class Renter implements Serializable {
 
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 }
