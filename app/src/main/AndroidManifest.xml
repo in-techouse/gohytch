@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.CreateRenter"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -50,17 +51,16 @@
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:launchMode="singleInstance"
             android:name=".activities.EditUserProfile"
             android:label="@string/title_activity_edit_user_profile"
+            android:launchMode="singleInstance"
             android:parentActivityName=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:launchMode="singleInstance"
             android:name=".activities.VendorDashboard"
             android:label="@string/title_activity_vendor_dashboard"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>

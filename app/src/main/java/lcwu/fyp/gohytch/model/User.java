@@ -7,16 +7,23 @@ public class User implements Serializable {
 
     String name,phoneNumber,id,email;
     String type;
+    Driver driver;
+    Renter renter;
     public User() {
+
+
+
 
     }
 
-    public User(String name, String phoneNumber, String id, String email, String type) {
+    public User(String name, String phoneNumber, String id, String email, String type, Driver driver, Renter renter) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.id = id;
         this.email = email;
         this.type = type;
+        this.driver = driver;
+        this.renter = renter;
     }
 
     public String getName() {
@@ -57,5 +64,21 @@ public class User implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    public Renter getRenter() {
+        return renter;
+    }
+
+    public void setRenter(Renter renter) {
+        this.renter = renter;
     }
 }
