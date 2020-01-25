@@ -16,7 +16,7 @@
             <EditText
                 android:textAlignment="center"
                 android:text="Enter License Number"
-                android:id="@+id/License_Number"
+                android:id="@+id/LicenseNumber"
                 android:inputType="number"
                 android:hint="Enter License number"
                 android:layout_margin="12dp"
