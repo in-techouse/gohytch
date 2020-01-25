@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.CreateRenter"></activity>
+        <activity android:name=".activities.CreateDriver"></activity>
+        <activity android:name=".activities.CreateRenter" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
