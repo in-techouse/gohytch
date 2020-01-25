@@ -1,9 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.CreateDriver">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:textAlignment="center"
+                android:text="Enter License Number"
+                android:id="@+id/License_Number"
+                android:inputType="number"
+                android:hint="Enter License number"
+                android:layout_margin="12dp"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:textAlignment="center"
+                android:text="Enter Past Experience"
+                android:id="@+id/PastExperience"
+                android:inputType="text"
+                android:hint="Enter Past Experience"
+                android:layout_margin="12dp"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:textAlignment="center"
+                android:text="Enter your Expertise"
+                android:id="@+id/Expertise"
+                android:inputType="text"
+                android:hint="Enter your Expertise"
+                android:layout_margin="12dp"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/btnMarginTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSave"
+            android:textSize="@dimen/textsizeheading"
+            android:text="Save"/>
+        <ProgressBar
+
+            android:visibility="gone"
+            android:id="@+id/SaveProgress"
+            android:layout_marginTop="@dimen/marginLayout"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
