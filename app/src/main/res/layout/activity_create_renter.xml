@@ -15,7 +15,6 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/LicenseNumber"
-                android:text="LicenseNumber"
                 android:inputType="number"
                 android:hint="@string/Enter_licensenumbrer"
                 android:textAlignment="center"
@@ -30,7 +29,6 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/Car_Model"
-                android:text="Car_Model"
                 android:inputType="number"
                 android:hint="@string/Enter_Car_model"
                 android:textAlignment="center"
@@ -46,7 +44,6 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/RegistrationNumber"
-                android:text="RegistrationNumber"
                 android:inputType="number"
                 android:hint="@string/Enter_Registrationnumber"
                 android:textAlignment="center"
@@ -63,7 +60,6 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/sittingCapacity"
-                android:text="sittingCapacity"
                 android:inputType="number"
                 android:hint="@string/Enter_sittingCapacity"
                 android:textAlignment="center"
@@ -80,7 +76,6 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/Company"
-                android:text="Company Name"
                 android:inputType="text"
                 android:hint="@string/Enter_CompanyName"
                 android:textAlignment="center"
