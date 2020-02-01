@@ -20,12 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.CreateDriver"></activity>
+        <activity android:name=".activities.CreateDriver"/>
         <activity android:name=".activities.CreateRenter" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/Gohytch" />
+            android:value="@string/Gohytch"/>
 
         <activity
             android:name=".activities.CarDetailActivity"

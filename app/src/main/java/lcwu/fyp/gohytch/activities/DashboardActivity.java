@@ -71,6 +71,7 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     private TextView profile_Email;
     private TextView profile_Name;
     private TextView profile_Phone;
+    private TextView locationAddress;
     private FirebaseAuth auth=FirebaseAuth.getInstance();
 
     @Override
@@ -98,6 +99,9 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
         profile_Name = header.findViewById(R.id.profile_Name);
         profile_Email = header.findViewById(R.id.profile_Email);
         Profile_Image = header.findViewById(R.id.profile_image);
+        locationAddress = findViewById(R.id.locationAddress);
+
+
 
         profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
@@ -221,7 +225,7 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                                     for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
-
+                                    locationAddress.setText(strAddress);
                                 }
                             } catch (Exception e) {
                                 helpers.showError(DashboardActivity.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -253,7 +257,8 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it=new Intent(DashboardActivity.this,NotificationActivity.class);
+//                Intent it=new Intent(DashboardActivity.this,NotificationActivity.class);
+                Intent it = new Intent(DashboardActivity.this , VendorDashboard.class);
                 startActivity(it);
 
                 break;
@@ -298,7 +303,6 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     protected void onDestroy () {
         super.onDestroy();
         map.onDestroy();
-
     }
 }
 

@@ -51,6 +51,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -74,6 +76,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private TextView profile_Email;
     private TextView profile_Name;
     private TextView profile_Phone;
+    private TextView locationAddress;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
 
@@ -86,6 +89,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         helpers = new Helpers();
         session = new Session(VendorDashboard.this);
         user = session.getSession();
+        locationAddress = findViewById(R.id.locationAddress);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -215,7 +219,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                     for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
-
+                                    locationAddress.setText(strAddress);
                                 }
                             } catch (Exception e) {
                                 helpers.showError(VendorDashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
