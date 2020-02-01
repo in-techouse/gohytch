@@ -247,7 +247,8 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(DashboardActivity.this, BookingActivity.class);
+                Intent it=new Intent(DashboardActivity.this, CreateDriver.class);
+               // Intent it=new Intent(DashboardActivity.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }

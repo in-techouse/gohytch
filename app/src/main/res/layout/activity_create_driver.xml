@@ -10,12 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/Experience"
+            android:layout_margin="12dp"
+            android:padding="12dp"
+            android:entries="@array/Experience"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
                 android:textAlignment="center"
-                android:text="Enter License Number"
                 android:id="@+id/LicenseNumber"
                 android:inputType="number"
                 android:hint="Enter License number"
@@ -23,19 +32,14 @@
                 android:padding="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <EditText
                 android:textAlignment="center"
-                android:text="Enter Past Experience"
-                android:id="@+id/PastExperience"
-                android:inputType="text"
-                android:hint="Enter Past Experience"
-                android:layout_margin="12dp"
-                android:padding="12dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <EditText
-                android:textAlignment="center"
-                android:text="Enter your Expertise"
                 android:id="@+id/Expertise"
                 android:inputType="text"
                 android:hint="Enter your Expertise"
@@ -43,7 +47,6 @@
                 android:padding="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

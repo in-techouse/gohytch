@@ -32,4 +32,18 @@
     <string name="Enter_Registrationnumber">Enter RegistrationNumber</string>
     <string name="Enter_sittingCapacity">Enter sittingCapacity</string>
     <string name="Enter_CompanyName">Enter CompanyName</string>
+    <string-array name="Experience">
+        <item>Less Than 6 months</item>
+        <item>1 Year</item>
+        <item>2 Years</item>
+        <item>3 Years</item>
+        <item>4 Years</item>
+        <item>5 Years</item>
+        <item>More Than 5 Years</item>
+    </string-array>
+    <string-array name="Expertise">
+        <item>Hilly areas</item>
+        <item>Villages</item>
+        <item>Out Of City</item>
+    </string-array>
 </resources>
