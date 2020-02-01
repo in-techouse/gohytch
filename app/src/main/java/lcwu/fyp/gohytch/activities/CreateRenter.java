@@ -109,7 +109,6 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
             edtCompany.setError(null);
         }
 
-
         return flag;
     }
 
