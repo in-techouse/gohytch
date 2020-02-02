@@ -257,8 +257,8 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                 break;
             }
             case (R.id.nav_Notification): {
-//                Intent it=new Intent(DashboardActivity.this,NotificationActivity.class);
-                Intent it = new Intent(DashboardActivity.this , CreateRenter.class);
+            //      Intent it=new Intent(DashboardActivity.this,NotificationActivity.class);
+             Intent it = new Intent(DashboardActivity.this , VendorDashboard.class);
                 startActivity(it);
 
                 break;

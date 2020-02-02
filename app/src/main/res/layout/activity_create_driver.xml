@@ -34,8 +34,25 @@
                 app:sliderIndicatorUnselectedColor="#FFF"
                 app:sliderScrollTimeInSec="1"
                 app:sliderStartAutoCycle="true" />
+      <TextView
+          android:text="Choose Your Car Images"
+          android:id="@+id/ChooseCarImage"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+      </TextView>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/UserImage"
+                android:src="@drawable/profile"
+                android:layout_width="200dp"
+                android:layout_height="200dp">
 
-        </androidx.cardview.widget.CardView>
+            </de.hdodenhof.circleimageview.CircleImageView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ChooseImage"
+                android:text="Choose Your Image">
+            </TextView>       </androidx.cardview.widget.CardView>
 
         <Spinner
             android:id="@+id/Experience"
