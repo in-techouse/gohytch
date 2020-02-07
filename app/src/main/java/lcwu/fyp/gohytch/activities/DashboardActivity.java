@@ -252,15 +252,12 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
         switch (id) {
             case (R.id.nav_Booking): {
                 Intent it=new Intent(DashboardActivity.this, CreateDriver.class);
-               // Intent it=new Intent(DashboardActivity.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-            //      Intent it=new Intent(DashboardActivity.this,NotificationActivity.class);
-             Intent it = new Intent(DashboardActivity.this , VendorDashboard.class);
+                Intent it = new Intent(DashboardActivity.this , CreateRenter.class);
                 startActivity(it);
-
                 break;
             }
             case (R.id.nav_Logout): {
@@ -269,7 +266,6 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                 Intent it=new Intent(DashboardActivity.this,LoginActivity.class);
                 startActivity(it);
                 finish();
-
                 break;
             }
 

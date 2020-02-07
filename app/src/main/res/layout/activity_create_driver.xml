@@ -16,52 +16,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.smarteist.autoimageslider.SliderView
-                android:id="@+id/imageSlider"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                app:sliderAnimationDuration="600"
-                app:sliderAutoCycleDirection="back_and_forth"
-                app:sliderAutoCycleEnabled="true"
-                app:sliderCircularHandlerEnabled="true"
-                app:sliderIndicatorAnimationDuration="600"
-                app:sliderIndicatorGravity="center_horizontal|bottom"
-                app:sliderIndicatorMargin="15dp"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="3dp"
-                app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#5A5A5A"
-                app:sliderIndicatorUnselectedColor="#FFF"
-                app:sliderScrollTimeInSec="1"
-                app:sliderStartAutoCycle="true" />
-      <TextView
-          android:text="Choose Your Car Images"
-          android:id="@+id/ChooseCarImage"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-      </TextView>
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/UserImage"
-                android:src="@drawable/profile"
-                android:layout_width="200dp"
-                android:layout_height="200dp">
-
-            </de.hdodenhof.circleimageview.CircleImageView>
-            <TextView
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/UserImage"
+                    android:layout_gravity="center"
+                    android:src="@drawable/profile"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp">
+                </de.hdodenhof.circleimageview.CircleImageView>
+                <TextView
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ChooseImage"
+                    android:text="Choose Your Image"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+            <Spinner
+                android:id="@+id/Experience"
+                android:layout_margin="12dp"
+                android:padding="12dp"
+                android:entries="@array/Experience"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/ChooseImage"
-                android:text="Choose Your Image">
-            </TextView>       </androidx.cardview.widget.CardView>
-
-        <Spinner
-            android:id="@+id/Experience"
-            android:layout_margin="12dp"
-            android:padding="12dp"
-            android:entries="@array/Experience"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content" />
 
 
         <com.google.android.material.textfield.TextInputLayout

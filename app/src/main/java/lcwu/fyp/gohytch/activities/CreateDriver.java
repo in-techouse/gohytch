@@ -37,7 +37,7 @@ import lcwu.fyp.gohytch.model.User;
 public class CreateDriver extends AppCompatActivity implements View.OnClickListener, BSImagePicker.ImageLoaderDelegate {
     Button btnSave;
     EditText edtLicenseNumber, edtExpertise;
-    TextView ChooseCarImage, ChooseImage;
+    TextView ChooseImage;
     String strLicenseNumber;
     ProgressBar SaveProgress;
     Helpers helpers;
@@ -56,28 +56,12 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
         btnSave.setOnClickListener(this);
         helpers = new Helpers();
 
-        ChooseCarImage = findViewById(R.id.ChooseCarImage);
-        ChooseCarImage = findViewById(R.id.ChooseImage);
+        ChooseImage = findViewById(R.id.ChooseImage);
         UserImage = findViewById(R.id.UserImage);
 
-        ChooseCarImage.setOnClickListener(this);
         ChooseImage.setOnClickListener(this);
 
 
-
-        SliderView sliderView = findViewById(R.id.imageSlider);
-
-        SliderAdapter adapter = new SliderAdapter(CreateDriver.this);
-
-        sliderView.setSliderAdapter(adapter);
-
-        sliderView.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
-        sliderView.setIndicatorSelectedColor(Color.WHITE);
-        sliderView.setIndicatorUnselectedColor(Color.GRAY);
-        sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
-        sliderView.startAutoCycle();
 
     }
 
@@ -105,13 +89,6 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
             case R.id.ChooseImage: {
                 break;
             }
-            case R.id.ChooseCarImage: {
-                if (askForPermission()){
-                 OpenGallery();
-                }
-                break;
-            }
-
         }
 
     }
@@ -163,66 +140,5 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
     @Override
     public void loadImage(Uri imageUri, ImageView ivImage) {
 
-    }
-
-    public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
-
-        private Context context;
-
-        public SliderAdapter(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public SliderAdapterVH onCreateViewHolder(ViewGroup parent) {
-            View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_slider_layout_item, null);
-            return new SliderAdapterVH(inflate);
-        }
-
-        @Override
-        public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
-
-            switch (position) {
-                case 0:
-                    Glide.with(viewHolder.itemView)
-                            .load("https://images.pexels.com/photos/218983/pexels-photo-218983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260")
-                            .into(viewHolder.imageViewBackground);
-                    break;
-                case 1:
-                    Glide.with(viewHolder.itemView)
-                            .load("https://images.pexels.com/photos/747964/pexels-photo-747964.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260")
-                            .into(viewHolder.imageViewBackground);
-                    break;
-                case 2:
-                    Glide.with(viewHolder.itemView)
-                            .load("https://images.pexels.com/photos/929778/pexels-photo-929778.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260")
-                            .into(viewHolder.imageViewBackground);
-                    break;
-                default:
-                    Glide.with(viewHolder.itemView)
-                            .load("https://images.pexels.com/photos/218983/pexels-photo-218983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260")
-                            .into(viewHolder.imageViewBackground);
-                    break;
-
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            //slider view count could be dynamic size
-            return 4;
-        }
-
-        class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
-            View itemView;
-            ImageView imageViewBackground;
-
-            public SliderAdapterVH(View itemView) {
-                super(itemView);
-                imageViewBackground = itemView.findViewById(R.id.iv_auto_image_slider);
-                this.itemView = itemView;
-            }
-        }
     }
 }
