@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.asksira.bsimagepicker.BSImagePicker;
+import com.asksira.bsimagepicker.Utils;
 import com.bumptech.glide.Glide;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -34,7 +36,7 @@ import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
-public class CreateDriver extends AppCompatActivity implements View.OnClickListener, BSImagePicker.ImageLoaderDelegate {
+public class CreateDriver extends AppCompatActivity implements View.OnClickListener,BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate {
     Button btnSave;
     EditText edtLicenseNumber, edtExpertise;
     TextView ChooseImage;
@@ -87,6 +89,9 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
 
             }
             case R.id.ChooseImage: {
+                if (askForPermission()){
+                    OpenGallery();
+                }
                 break;
             }
         }
@@ -102,17 +107,18 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
     private void OpenGallery(){
-        BSImagePicker multiSelectionPicker = new BSImagePicker.Builder(" lcwu.fyp.gohytch.fileprovider")
-                .isMultiSelect() //Set this if you want to use multi selection mode.
-                .setMinimumMultiSelectCount(3) //Default: 1.
-                .setMaximumMultiSelectCount(6) //Default: Integer.MAX_VALUE (i.e. User can select as many images as he/she wants)
-                .setMultiSelectBarBgColor(android.R.color.white) //Default: #FFFFFF. You can also set it to a translucent color.
-                .setMultiSelectTextColor(R.color.primary_text) //Default: #212121(Dark grey). This is the message in the multi-select bottom bar.
-                .setMultiSelectDoneTextColor(R.color.colorAccent) //Default: #388e3c(Green). This is the color of the "Done" TextView.
-                .setOverSelectTextColor(R.color.error_text) //Default: #b71c1c. This is the color of the message shown when user tries to select more than maximum select count.
-                .disableOverSelectionMessage() //You can also decide not to show this over select message.
+        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider")
+                .setMaximumDisplayingImages(24) //Default: Integer.MAX_VALUE. Don't worry about performance :)
+                .setSpanCount(3) //Default: 3. This is the number of columns
+                .setGridSpacing(Utils.dp2px(2)) //Default: 2dp. Remember to pass in a value in pixel.
+                .setPeekHeight(Utils.dp2px(360)) //Default: 360dp. This is the initial height of the dialog.
+                .hideCameraTile() //Default: show. Set this if you don't want user to take photo.
+                .hideGalleryTile() //Default: show. Set this if you don't want to further let user select from a gallery app. In such case, I suggest you to set maximum displaying images to Integer.MAX_VALUE.
+                .setTag("A request ID") //Default: null. Set this if you need to identify which picker is calling back your fragment / activity.
                 .build();
+        singleSelectionPicker.show(getSupportFragmentManager(), "picker");
     }
 
     private boolean askForPermission() {
@@ -139,6 +145,11 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void loadImage(Uri imageUri, ImageView ivImage) {
+        Glide.with(CreateDriver.this).load(imageUri).into(UserImage);
+    }
 
+    @Override
+    public void onSingleImageSelected(Uri uri, String tag) {
+        Log.e("CreateDriver","URI:"+uri);
     }
 }
