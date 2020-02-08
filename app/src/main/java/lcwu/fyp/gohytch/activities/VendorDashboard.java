@@ -246,12 +246,12 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(VendorDashboard.this, BookingActivity.class);
+                Intent it=new Intent(VendorDashboard.this, CreateDriver.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it=new Intent(VendorDashboard.this,NotificationActivity.class);
+                Intent it=new Intent(VendorDashboard.this,CreateRenter.class);
                 startActivity(it);
 
                 break;

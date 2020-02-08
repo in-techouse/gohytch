@@ -3,17 +3,18 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Renter implements Serializable {
-    String id,Image1,Image2,licenseNumber;
+    String id,Image1,Image2,licenseNumber, profileImage;
     Car car;
 
     public Renter() {
     }
 
-    public Renter(String id, String image1, String image2, String licenseNumber, Car car) {
+    public Renter(String id, String image1, String image2, String licenseNumber, String profileImage, Car car) {
         this.id = id;
         Image1 = image1;
         Image2 = image2;
         this.licenseNumber = licenseNumber;
+        this.profileImage = profileImage;
         this.car = car;
     }
 
@@ -47,6 +48,14 @@ public class Renter implements Serializable {
 
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public Car getCar() {

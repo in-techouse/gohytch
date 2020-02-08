@@ -24,18 +24,28 @@ import android.widget.TextView;
 import com.asksira.bsimagepicker.BSImagePicker;
 import com.asksira.bsimagepicker.Utils;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Car;
+import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
 public class CreateRenter extends AppCompatActivity  implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate, BSImagePicker.OnMultiImageSelectedListener {
@@ -45,9 +55,12 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
     ProgressBar SaveProgress;
     TextView chooseImage, ChooseCarImage;
     Helpers helpers;
+    private User user;
+    private Session session;
     private CircleImageView UserImage;
     private SliderAdapter adapter;
     private List<Uri> CarImages;
+    private Renter renter;
 
 
     @Override
@@ -86,6 +99,9 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         sliderView.setIndicatorUnselectedColor(Color.GRAY);
         sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
         sliderView.startAutoCycle();
+        session=new Session(CreateRenter.this);
+        user=session.getSession();
+        renter = new Renter();
     }
 
 
@@ -106,8 +122,8 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
                 if (flag){
                     SaveProgress.setVisibility(View.VISIBLE);
                     btnSave.setVisibility(View.GONE);
-                    final User u=new User();
-                    final Session session=new Session(CreateRenter.this);
+                    UploadImage(CarImages.get(0));
+
                 }
                 break;
 
@@ -126,6 +142,66 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
             }
         }
     }
+    private void UploadImage(Uri imagePath ){
+        final StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
+        Calendar calendar=Calendar.getInstance();
+        storageReference.child(calendar.getTimeInMillis()+"").putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.e("Profile","in OnSuccess"+uri.toString());
+                        renter.setImage1(uri.toString());
+                        saveToDatabase();
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Profile","DownloadUrl:"+e.getMessage());
+                        btnSave.setVisibility(View.GONE);
+                        SaveProgress.setVisibility(View.VISIBLE);
+                        helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+                    }
+                });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Profile", "Upload Image Url:" + e.getMessage());
+                btnSave.setVisibility(View.GONE);
+                SaveProgress.setVisibility(View.VISIBLE);
+                helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
+
+            }
+        });
+    }
+private void saveToDatabase(){
+        btnSave.setVisibility(View.GONE);
+        SaveProgress.setVisibility(View.VISIBLE);
+        renter.setLicenseNumber(strLicenseNumber);
+    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
+    databaseReference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+        @Override
+        public void onSuccess(Void aVoid) {
+            btnSave.setVisibility(View.GONE);
+            SaveProgress.setVisibility(View.VISIBLE);
+            helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+        }
+    }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            Log.e("Profile","DownloadUrl:"+e.getMessage());
+            btnSave.setVisibility(View.GONE);
+            SaveProgress.setVisibility(View.VISIBLE);
+            helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+        }
+
+    });
+}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
