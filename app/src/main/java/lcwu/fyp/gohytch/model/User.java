@@ -5,15 +5,11 @@ import java.lang.reflect.Type;
 
 public class User implements Serializable {
 
-    String name,phoneNumber,id,email;
-    String type;
-    Driver driver;
-    Renter renter;
+    private String name,phoneNumber,id,email;
+    private String type;
+    private Driver driver;
+    private Renter renter;
     public User() {
-
-
-
-
     }
 
     public User(String name, String phoneNumber, String id, String email, String type, Driver driver, Renter renter) {
