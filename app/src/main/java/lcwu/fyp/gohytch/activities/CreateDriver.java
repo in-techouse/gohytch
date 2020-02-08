@@ -25,15 +25,25 @@ import android.widget.TextView;
 import com.asksira.bsimagepicker.BSImagePicker;
 import com.asksira.bsimagepicker.Utils;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Driver;
 import lcwu.fyp.gohytch.model.User;
 
 public class CreateDriver extends AppCompatActivity implements View.OnClickListener,BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate {
@@ -42,8 +52,12 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
     TextView ChooseImage;
     String strLicenseNumber;
     ProgressBar SaveProgress;
+    private Session session;
+    private User user;
     Helpers helpers;
+    private Driver driver;
     private CircleImageView UserImage;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +71,12 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
         SaveProgress = findViewById(R.id.SaveProgress);
         btnSave.setOnClickListener(this);
         helpers = new Helpers();
-
+        driver=new Driver();
         ChooseImage = findViewById(R.id.ChooseImage);
         UserImage = findViewById(R.id.UserImage);
-
         ChooseImage.setOnClickListener(this);
+        session=new Session(CreateDriver.this);
+        user=session.getSession();
 
 
 
@@ -82,8 +97,10 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
                 boolean flag = isValid();
                 if (flag) {
                     btnSave.setVisibility(View.GONE);
+                    SaveProgress.setVisibility(View.VISIBLE);
                     final User u = new User();
                     final Session session = new Session(CreateDriver.this);
+                    uploadImage(imageUri);
                 }
                 break;
 
@@ -97,7 +114,67 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+    private void uploadImage(Uri imagePath){
+        final StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("Drivers").child(user.getPhoneNumber());
+        Calendar calendar=Calendar.getInstance();
+        storageReference.child(calendar.getTimeInMillis()+"").putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Log.e("Profile","in OnSuccess"+uri.toString());
+                    driver.setImage(uri.toString());
+                    SaveToDatabase();
+                    btnSave.setVisibility(View.VISIBLE);
+                    SaveProgress.setVisibility(View.GONE);
+                    helpers.showError(CreateDriver.this,"Error!","Something went wrong.Please check your connection");
 
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("Profile","Download url:"+ e.getMessage());
+                    btnSave.setVisibility(View.VISIBLE);
+                    SaveProgress.setVisibility(View.GONE);
+                    helpers.showError(CreateDriver.this,"Error!","Something went wrong.Please check your connection");
+
+                }
+            });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Profile","Upload image url:"+e.getMessage());
+                btnSave.setVisibility(View.VISIBLE);
+                SaveProgress.setVisibility(View.GONE);
+                helpers.showError(CreateDriver.this,"Error!","Something went wrong.Please check your connection");
+            }
+        });
+    }
+private void SaveToDatabase(){
+    btnSave.setVisibility(View.VISIBLE);
+    SaveProgress.setVisibility(View.GONE);
+    driver.setLicenseNumber(strLicenseNumber);
+//    driver.setPastExperience(strPastExperience);
+    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Drivers").child(user.getPhoneNumber());
+    databaseReference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+        @Override
+        public void onSuccess(Void aVoid){
+
+        }
+    }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            btnSave.setVisibility(View.VISIBLE);
+            SaveProgress.setVisibility(View.GONE);
+            helpers.showError(CreateDriver.this,"Error!","Something went wrong.Please check your connection");
+
+        }
+    });
+
+}
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -145,6 +222,7 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void loadImage(Uri imageUri, ImageView ivImage) {
+        this.imageUri = imageUri;
         Glide.with(CreateDriver.this).load(imageUri).into(UserImage);
     }
 

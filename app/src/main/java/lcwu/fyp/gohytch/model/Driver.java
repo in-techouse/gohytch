@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Driver implements Serializable {
-    String id,licenseNumber,pastExperience;
+    String id,licenseNumber,pastExperience,Image;
     private List<String> expertise;
     double rating;
 
@@ -35,6 +35,14 @@ public class Driver implements Serializable {
         this.pastExperience = pastExperience;
     }
 
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
     public List<String> getExpertise() {
         return expertise;
     }
@@ -51,4 +59,12 @@ public class Driver implements Serializable {
         this.rating = rating;
     }
 
+    public Driver(String id, String licenseNumber, String pastExperience, String image, List<String> expertise, double rating) {
+        this.id = id;
+        this.licenseNumber = licenseNumber;
+        this.pastExperience = pastExperience;
+        Image = image;
+        this.expertise = expertise;
+        this.rating = rating;
+    }
 }
