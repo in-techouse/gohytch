@@ -10,6 +10,8 @@
     tools:showIn="@layout/activity_create_renter">
 
     <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

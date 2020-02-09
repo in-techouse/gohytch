@@ -2,6 +2,7 @@ package lcwu.fyp.gohytch.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.activities.CreateDriver;
+import lcwu.fyp.gohytch.activities.CreateRenter;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Driver;
 import lcwu.fyp.gohytch.model.User;
@@ -60,14 +63,16 @@ public class UserDialog extends Dialog implements View.OnClickListener{
             }
             case R.id.btnDriver:{
                 user.setType("Driver");
-                updateToDatabase();
-                dismiss();
+                Intent it = new Intent(context, CreateDriver.class);
+                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(it);
                 break;
             }
             case R.id.btnRenter:{
                 user.setType("Renter");
-                updateToDatabase();
-                dismiss();
+                Intent it = new Intent(context, CreateRenter.class);
+                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(it);
                 break;
             }
         }

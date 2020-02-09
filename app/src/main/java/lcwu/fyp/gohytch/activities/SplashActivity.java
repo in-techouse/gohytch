@@ -21,14 +21,15 @@ public class SplashActivity extends AppCompatActivity{
         new Splashy.OnComplete() {
             @Override
             public void onComplete() {
-                Log.e("Splashy", "OnComplete 1");
                 Session session=new Session(SplashActivity.this);
+                Log.e("Splashy", "OnComplete 1");
                 if(session.getSession()==null){
                     Intent it=new Intent(SplashActivity.this,LoginActivity.class);
                     startActivity(it);
                     finish();
                 }
                 else{
+                    Log.e("Splashy", "User Type: " + session.getSession().getType());
                     if(session.getSession().getType().equals("User") || session.getSession().getType().equals("None")){
                         Intent it=new Intent(SplashActivity.this,DashboardActivity.class);
                         startActivity(it);
@@ -42,9 +43,6 @@ public class SplashActivity extends AppCompatActivity{
                 }
 
             }
-
-
-
         }.onComplete();
         setSplashy();
     }

@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="normal"
+                android:textStyle="bold"
                 android:maxLines="3"
                 android:text="@string/myLocation"/>
             <TextView

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -191,6 +192,11 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
             public void onSuccess(Void aVoid) {
                 btnSave.setVisibility(View.VISIBLE);
                 saveProgress.setVisibility(View.GONE);
+                session.setSession(user);
+                Intent intent = new Intent(CreateRenter.this, VendorDashboard.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

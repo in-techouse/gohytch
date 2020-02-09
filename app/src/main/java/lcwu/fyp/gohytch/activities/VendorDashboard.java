@@ -49,6 +49,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
 public class VendorDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -103,7 +104,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         profile_Email = header.findViewById(R.id.profile_Email);
         Profile_Image = header.findViewById(R.id.profile_image);
 
-        profile_Name.setText(user.getName()+"Vendor");
+        profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
 
@@ -256,14 +257,18 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(VendorDashboard.this, CreateDriver.class);
+                Intent it=new Intent(VendorDashboard.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it=new Intent(VendorDashboard.this,CreateRenter.class);
+                Intent it=new Intent(VendorDashboard.this, NotificationActivity.class);
                 startActivity(it);
-
+                break;
+            }
+            case (R.id.nav_profile): {
+                Intent it = new Intent(VendorDashboard.this , EditUserProfile.class);
+                startActivity(it);
                 break;
             }
             case (R.id.nav_Logout): {

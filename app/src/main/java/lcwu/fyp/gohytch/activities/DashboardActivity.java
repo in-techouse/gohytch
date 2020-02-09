@@ -104,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
 
 
-        profile_Name.setText(user.getName()+"User");
+        profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
         if(user.getImage() != null && user.getImage().length() > 5){
@@ -130,13 +130,12 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
             Log.e("Maps", "Catch Block");
             helpers.showError(DashboardActivity.this, "Error", "Something went wrong.Try again");
         }
-        if (user.getType() == null || user.getType().equals("")) {
+        if (user.getType() == null || user.getType().equals("None")) {
             UserDialog userDialog = new UserDialog(DashboardActivity.this);
             userDialog.setCanceledOnTouchOutside(false);
             userDialog.setCancelable(false);
             userDialog.show();
         }
-
     }
 
     private boolean hasPermissions(Context c, String... permission){
@@ -261,12 +260,17 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(DashboardActivity.this, CreateDriver.class);
+                Intent it=new Intent(DashboardActivity.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it = new Intent(DashboardActivity.this , CreateRenter.class);
+                Intent it = new Intent(DashboardActivity.this , NotificationActivity.class);
+                startActivity(it);
+                break;
+            }
+            case (R.id.nav_profile): {
+                Intent it = new Intent(DashboardActivity.this , EditUserProfile.class);
                 startActivity(it);
                 break;
             }
