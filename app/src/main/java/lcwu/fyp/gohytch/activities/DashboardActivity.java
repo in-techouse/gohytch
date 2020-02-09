@@ -39,16 +39,25 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
 public class DashboardActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,6 +83,10 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     private TextView profile_Phone;
     private TextView locationAddress;
     private FirebaseAuth auth=FirebaseAuth.getInstance();
+    private DatabaseReference vendorReference= FirebaseDatabase.getInstance().getReference().child("User");
+    private List<User> data =new ArrayList<>();
+    private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notification");
+    private List<Notification> notificationsData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +248,8 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
+                                    loadVendors();
+                                    listenToNotificationChanges();
                                 }
                             } catch (Exception e) {
                                 helpers.showError(DashboardActivity.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -313,6 +328,45 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     protected void onDestroy () {
         super.onDestroy();
         map.onDestroy();
+    }
+    private void loadVendors(){
+        vendorReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot d:dataSnapshot.getChildren()){
+                    User u=d.getValue(User.class);
+                    if (u!=null){
+                        data.add(u);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    private void listenToNotificationChanges(){
+        notificationReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot d:dataSnapshot.getChildren()){
+                    Notification n=d.getValue(Notification.class);
+                    if (n!=null) {
+                        notificationsData.add(n);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
 
