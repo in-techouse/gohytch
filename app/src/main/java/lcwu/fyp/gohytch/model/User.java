@@ -1,22 +1,22 @@
 package lcwu.fyp.gohytch.model;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 
 public class User implements Serializable {
 
-    private String name,phoneNumber,id,email;
+    private String name, phoneNumber, id, email, image;
     private String type;
     private Driver driver;
     private Renter renter;
-    public User() {
-    }
 
-    public User(String name, String phoneNumber, String id, String email, String type, Driver driver, Renter renter) {
+    public User() { }
+
+    public User(String name, String phoneNumber, String id, String email, String image, String type, Driver driver, Renter renter) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.id = id;
         this.email = email;
+        this.image = image;
         this.type = type;
         this.driver = driver;
         this.renter = renter;
@@ -52,6 +52,14 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getType() {

@@ -11,7 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,7 +22,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -32,7 +31,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
-
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,14 +39,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.TextView;
-
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.dialog.UserDialog;
@@ -57,6 +52,12 @@ import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
 public class DashboardActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+    private final String[] PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+    };
     private MapView map;
     private Helpers helpers;
     private User user;
@@ -103,9 +104,12 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
 
 
-        profile_Name.setText(user.getName());
+        profile_Name.setText(user.getName()+"User");
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
+        if(user.getImage() != null && user.getImage().length() > 5){
+            Glide.with(DashboardActivity.this).load(user.getImage()).into(Profile_Image);
+        }
         map = findViewById(R.id.map);
         map.onCreate(savedInstanceState);
         try {
@@ -119,14 +123,14 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                     LatLng defaultPosition = new LatLng(31.5204, 74.3487);
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(defaultPosition).zoom(12).build();
                     googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    enableLocatin();
+                    enableLocation();
                 }
             });
         } catch (Exception e) {
             Log.e("Maps", "Catch Block");
             helpers.showError(DashboardActivity.this, "Error", "Something went wrong.Try again");
         }
-        if (user.getType() == null || user.getType().length() < 1) {
+        if (user.getType() == null || user.getType().equals("")) {
             UserDialog userDialog = new UserDialog(DashboardActivity.this);
             userDialog.setCanceledOnTouchOutside(false);
             userDialog.setCancelable(false);
@@ -135,23 +139,21 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
     }
 
-
-    private boolean askForPermission() {
-        if (ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(DashboardActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(DashboardActivity.this, new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10);
-
-
-            return false;
+    private boolean hasPermissions(Context c, String... permission){
+        for(String p : permission){
+            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+                return false;
+            }
         }
         return true;
     }
 
-    public void enableLocatin() {
-        if (askForPermission()) {
+    public void enableLocation() {
+        boolean flag = hasPermissions(DashboardActivity.this, PERMISSIONS);
+        if(!flag){
+            ActivityCompat.requestPermissions(DashboardActivity.this, PERMISSIONS, 1);
+        }
+        else{
             googleMap.setMyLocationEnabled(true);
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -167,6 +169,14 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                 }
             });
             getDeviceLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1){
+            enableLocation();
         }
     }
 

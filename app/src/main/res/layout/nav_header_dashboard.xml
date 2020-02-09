@@ -19,25 +19,28 @@
         android:layout_height="96dp"
         android:src="@drawable/profile"
         app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"/>
+        app:civ_border_color="@color/white"/>
 
     <TextView
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/white"
         android:id="@+id/profile_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/nav_header_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
+        android:textSize="17sp"
+        android:textColor="@color/white"
         android:id="@+id/profile_Email"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:layout_height="wrap_content"/>
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/profile_Phone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

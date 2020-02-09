@@ -7,7 +7,6 @@ import android.util.Log;
 import com.rbddevs.splashy.Splashy;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Session;
-import lcwu.fyp.gohytch.model.User;
 
 
 public class SplashActivity extends AppCompatActivity{
@@ -30,8 +29,7 @@ public class SplashActivity extends AppCompatActivity{
                     finish();
                 }
                 else{
-                    if(session.getSession().getType().equals("User")){
-
+                    if(session.getSession().getType().equals("User") || session.getSession().getType().equals("None")){
                         Intent it=new Intent(SplashActivity.this,DashboardActivity.class);
                         startActivity(it);
                         finish();
@@ -40,11 +38,10 @@ public class SplashActivity extends AppCompatActivity{
                         Intent it=new Intent(SplashActivity.this,VendorDashboard.class);
                         startActivity(it);
                         finish();
-
                     }
-                    }
-
                 }
+
+            }
 
 
 

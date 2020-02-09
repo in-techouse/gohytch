@@ -1,6 +1,5 @@
 package lcwu.fyp.gohytch.activities;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
@@ -43,6 +42,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String verificationId;
     Helpers helpers;
     OTPDialog dialog;
+    PhoneAuthProvider auth = PhoneAuthProvider.getInstance();
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
+    ValueEventListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +81,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     LoginProgress.setVisibility(View.VISIBLE);
                     btnLogin.setVisibility(View.GONE);
 
-                    PhoneAuthProvider auth=PhoneAuthProvider.getInstance();
-                    PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
                     callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                         @Override
                         public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -90,8 +90,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             verificationId=s;
                             dialog.setCancelable(false);
                             dialog.setCanceledOnTouchOutside(false);
-                            if(!dialog.isShowing())
+                            if(dialog.isShowing()){
+                                dialog.OtpProgress.setVisibility(View.GONE);
+                                dialog.resendOtp.setVisibility(View.VISIBLE);
+                                dialog.timer.setVisibility(View.VISIBLE);
+                                dialog.resendOtp.setEnabled(false);
+                                dialog.startTimer();
+                            }
+                            else{
                                 dialog.show();
+                            }
                         }
 
                         @Override
@@ -104,18 +112,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             call_to_database();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    LoginProgress.setVisibility(View.GONE);
-                                    btnLogin.setVisibility(View.VISIBLE);
-                                    helpers.showError(LoginActivity.this,"ERROR!",e.getMessage());
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("Login", "On Failure 109");
+                                            LoginProgress.setVisibility(View.GONE);
+                                            btnLogin.setVisibility(View.VISIBLE);
+                                            helpers.showError(LoginActivity.this,"ERROR!",e.getMessage());
 
-                                }
-                            });
+                                        }
+                                    });
                         }
 
                         @Override
                         public void onVerificationFailed(@NonNull FirebaseException e) {
+                            if(dialog.isShowing()){
+                                dialog.timer.setText("--:--");
+                                dialog.resendOtp.setEnabled(true);
+                                dialog.OtpProgress.setVisibility(View.GONE);
+                                dialog.error.setText(e.getMessage());
+                                helpers.showError(LoginActivity.this, "ERROR", e.getMessage());
+                            }
                             LoginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
                             helpers.showError(LoginActivity.this,"ERROR!",e.getMessage());
@@ -123,7 +139,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     };
                     auth.verifyPhoneNumber(strphonenumber,120, TimeUnit.SECONDS,this, callbacks);
-
                 }
                 break;
             }
@@ -143,18 +158,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void call_to_database(){
-        DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
-        reference.child("Users").child(strphonenumber).addValueEventListener(new ValueEventListener() {
+        if(dialog.isShowing()){
+            dialog.countDownTimer.cancel();
+            dialog.error.setVisibility(View.GONE);
+            dialog.resendOtp.setVisibility(View.GONE);
+            dialog.timer.setVisibility(View.GONE);
+        }
+        final DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("Users").child(strphonenumber);
+        listener = reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                reference.removeEventListener(listener);
                 if (dataSnapshot.getValue()!=null){
+                    dialog.dismiss();
                     //data is valid
                     User u = dataSnapshot.getValue(User.class);
                     if(u != null){
                         Session session = new Session(LoginActivity.this);
                         session.setSession(u);
                         //start dashboard activity
-                        Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                        Intent it = new Intent(LoginActivity.this,DashboardActivity.class);
+                        it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(it);
                         finish();
                     }
@@ -174,6 +198,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                reference.removeEventListener(listener);
+                if(dialog.isShowing()){
+                    dialog.countDownTimer.cancel();
+                    dialog.error.setVisibility(View.VISIBLE);
+                    dialog.resendOtp.setVisibility(View.VISIBLE);
+                    dialog.timer.setVisibility(View.VISIBLE);
+                }
                 helpers.showError(LoginActivity.this, "ERROR", "Something went wrong.\n Please try again later");
             }
         });  //data read
@@ -185,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         OtpView otp_view;
         TextView timer,resendOtp,error;
         ProgressBar OtpProgress;
-
+        CountDownTimer countDownTimer;
         public OTPDialog(@NonNull Context context) {
             super(context);
         }
@@ -214,11 +245,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                        call_to_database();
+                            call_to_database();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Log.e("Login", "On Failure 229");
+                            countDownTimer.cancel();
                             timer.setText("--:--");
                             resendOtp.setEnabled(true);
                             OtpProgress.setVisibility(View.GONE);
@@ -229,11 +262,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
+            resendOtp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("Login", "Resend Clicked");
+                    dialog.error.setText("");
+                    OtpProgress.setVisibility(View.VISIBLE);
+                    resendOtp.setVisibility(View.GONE);
+                    timer.setVisibility(View.GONE);
+                    auth.verifyPhoneNumber(strphonenumber, 120, TimeUnit.SECONDS, LoginActivity.this, callbacks);
+
+                }
+            });
+
             startTimer();
         }
 
         private void startTimer(){
-            new CountDownTimer(120000, 1000) {
+            countDownTimer = new CountDownTimer(120000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     millisUntilFinished=millisUntilFinished/1000;
@@ -258,11 +304,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
     }
-
-
-
-
-
 }
 
 

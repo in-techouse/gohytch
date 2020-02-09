@@ -1,97 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.CreateDriver">
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSave"
+        android:textSize="@dimen/textsizeheading"
+        android:text="Save"/>
+
     <LinearLayout
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            app:cardCornerRadius="6dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/UserImage"
-                    android:layout_gravity="center"
-                    android:src="@drawable/profile"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp">
-                </de.hdodenhof.circleimageview.CircleImageView>
-                <TextView
-                    android:textAlignment="textEnd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ChooseImage"
-                    android:text="Choose Your Image"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-            <Spinner
-                android:id="@+id/Experience"
-                android:layout_margin="12dp"
-                android:padding="12dp"
-                android:entries="@array/Experience"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:padding="12dp">
             <EditText
                 android:textAlignment="center"
-                android:id="@+id/LicenseNumber"
+                android:id="@+id/licenseNumber"
                 android:inputType="number"
-                android:hint="Enter License number"
-                android:layout_margin="12dp"
-                android:padding="12dp"
+                android:hint="@string/enter_license_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <com.google.android.material.textfield.TextInputLayout
+        <Spinner
+            android:id="@+id/experience"
+            android:layout_margin="12dp"
+            android:padding="12dp"
+            android:entries="@array/experience"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" />
 
-           <EditText
-               android:textAlignment="center"
-               android:id="@+id/Expertise"
-               android:inputType="text"
-               android:hint="Enter Your Expertise"
-               android:layout_margin="12dp"
-               android:padding="12dp"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
-            android:layout_marginTop="@dimen/btnMarginTop"
+        <com.androidbuts.multispinnerfilter.MultiSpinner
+            android:id="@+id/expertise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnSave"
-            android:textSize="@dimen/textsizeheading"
-            android:text="Save"/>
-        <ProgressBar
+            android:layout_margin="12dp"
+            android:padding="12dp"
+            app:hintText="Select Your Expertise" />
 
+        <ProgressBar
             android:visibility="gone"
-            android:id="@+id/SaveProgress"
+            android:id="@+id/saveProgress"
             android:layout_marginTop="@dimen/marginLayout"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
-</ScrollView>
+
+</RelativeLayout>

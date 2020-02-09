@@ -14,25 +14,34 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
-    <string name="title_activity_user_profile">UserProfileActivity</string>
+    <string name="title_activity_user_profile">Profile</string>
     <string name="Gohytch">AIzaSyC8nVKN5UniYDCnYwXXdLZs7u7QP0UKuKI</string>
     <string name="title_activity_rental_profile">Gohytch</string>
     <string name="title_activity_car_detail">Gohytch</string>
-    <string name="Enter_person_name">Enter Person name</string>
-    <string name="Enter_email">Enter email</string>
+    <string name="Enter_person_name">Enter Name</string>
+    <string name="Enter_email">Enter Email</string>
     <string name="title_activity_edit_user_profile">Edit Profile</string>
     <string name="title_activity_vendor_dashboard">Gohytch</string>
     <string name="confirm">CONFIRM</string>
     <string name="location">Location</string>
     <string name="loading_notification">loading_notification</string>
-    <string name="enter_license_number">Enter license_Number</string>
-    <string name="Enter_license_number">Enter license_Number</string>
-    <string name="Enter_licensenumbrer">Enter LicenseNumbrer</string>
-    <string name="Enter_Car_model">Enter Car_Model</string>
-    <string name="Enter_Registrationnumber">Enter RegistrationNumber</string>
-    <string name="Enter_sittingCapacity">Enter sittingCapacity</string>
+    <string name="enter_license_number">Enter License Number</string>
+    <string name="Enter_Car_model">Enter Car Model</string>
+    <string name="Enter_Registrationnumber">Enter Registration Number</string>
+    <string name="Enter_sittingCapacity">Enter Sitting Capacity</string>
     <string name="Enter_CompanyName">Enter CompanyName</string>
-    <string-array name="Experience">
+    <string name="myLocation">My Location</string>
+    <string-array name="expertise">
+        <item>Taxicab driver</item>
+        <item>Chauffeur</item>
+        <item>Pay driver</item>
+        <item>Delivery</item>
+        <item>Truck Driver</item>
+        <item>Bus Driver</item>
+        <item>Motorman</item>
+    </string-array>
+    <string-array name="experience">
+        <item>Select your experience</item>
         <item>Less Than 6 months</item>
         <item>1 Year</item>
         <item>2 Years</item>
@@ -41,9 +50,13 @@
         <item>5 Years</item>
         <item>More Than 5 Years</item>
     </string-array>
-    <string-array name="Expertise">
-        <item>Hilly areas</item>
-        <item>Villages</item>
-        <item>Out Of City</item>
+    <string-array name="carCompany">
+        <item>Select Car Company</item>
+        <item>Honda</item>
+        <item>Suzuki</item>
+        <item>Hyundai</item>
+        <item>Toyota</item>
+        <item>KIA</item>
+        <item>FAW</item>
     </string-array>
 </resources>

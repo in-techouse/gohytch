@@ -3,7 +3,6 @@ package lcwu.fyp.gohytch.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -14,18 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
+import android.widget.Spinner;
 import com.asksira.bsimagepicker.BSImagePicker;
-import com.asksira.bsimagepicker.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,60 +32,58 @@ import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.smarteist.autoimageslider.SliderViewAdapter;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
-import lcwu.fyp.gohytch.model.Car;
 import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
 public class CreateRenter extends AppCompatActivity  implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate, BSImagePicker.OnMultiImageSelectedListener {
+    private final String[] PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+    };
     Button btnSave;
-    EditText edtLicenseNumber, edtCar_Model, edtRegistrationNumber, edtsittingCapacity, edtCompany;
-    String strLicenseNumber,strCar_Model,strRegistrationNumber,strsittingCapacity,strCompany;
-    ProgressBar SaveProgress;
-    TextView chooseImage, ChooseCarImage;
+//    EditText edtLicenseNumber, edtCar_Model, edtRegistrationNumber, edtsittingCapacity, edtCompany;
+//    String strLicenseNumber,strCar_Model,strRegistrationNumber,strsittingCapacity,strCompany;
+    ProgressBar saveProgress;
+//    TextView chooseImage, ChooseCarImage;
     Helpers helpers;
     private User user;
     private Session session;
-    private CircleImageView UserImage;
     private SliderAdapter adapter;
-    private List<Uri> CarImages;
+    private List<Uri> carImages;
     private Renter renter;
-
+    private EditText licenseNumber, carModel, carRegistrationNumber, sittingCapacity;
+    private Spinner carCompany;
+    private String strLicenseNumber, strCarCompany, strCarModel, strCarRegistrationNumber, strSittingCapacity = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_renter);
-        CarImages=new ArrayList<>();
 
+        FloatingActionButton nav_gallery = findViewById(R.id.nav_gallery);
+        nav_gallery.setOnClickListener(this);
+        carImages = new ArrayList<>();
+
+        SliderView sliderView = findViewById(R.id.imageSlider);
+        licenseNumber = findViewById(R.id.licenseNumber);
+        carCompany = findViewById(R.id.carCompany);
+        carModel = findViewById(R.id.carModel);
+        carRegistrationNumber = findViewById(R.id.carRegistrationNumber);
+        sittingCapacity = findViewById(R.id.sittingCapacity);
         btnSave = findViewById(R.id.btnSave);
-        edtLicenseNumber = findViewById(R.id.LicenseNumber);
-        edtCar_Model = findViewById(R.id.Car_Model);
-        edtRegistrationNumber = findViewById(R.id.RegistrationNumber);
-        edtsittingCapacity = findViewById(R.id.sittingCapacity);
-        edtCompany = findViewById(R.id.Company);
-        chooseImage = findViewById(R.id.ChooseImage);
-        ChooseCarImage = findViewById(R.id.ChooseCarImage);
-        UserImage = findViewById(R.id.UserImage);
-        chooseImage.setOnClickListener(this);
-        ChooseCarImage.setOnClickListener(this);
-
-
-        SaveProgress = findViewById(R.id.SaveProgress);
+        saveProgress = findViewById(R.id.saveProgress);
 
         btnSave.setOnClickListener(this);
-        helpers = new Helpers();
-        SliderView sliderView = findViewById(R.id.imageSlider);
 
-         adapter = new SliderAdapter(CreateRenter.this);
+        adapter = new SliderAdapter(CreateRenter.this);
 
         sliderView.setSliderAdapter(adapter);
 
@@ -99,11 +94,11 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         sliderView.setIndicatorUnselectedColor(Color.GRAY);
         sliderView.setScrollTimeInSec(4); //set scroll delay in seconds :
         sliderView.startAutoCycle();
-        session=new Session(CreateRenter.this);
-        user=session.getSession();
+        session = new Session(CreateRenter.this);
+        user = session.getSession();
         renter = new Renter();
+        helpers = new Helpers();
     }
-
 
 
     @Override
@@ -116,53 +111,60 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
                 if (!isConn) {
                     helpers.showError(CreateRenter.this, "ERROR", "No Internet Connection.Please check your Internet Connection");
                     return;
-
                 }
                 boolean flag = isValid();
                 if (flag){
-                    SaveProgress.setVisibility(View.VISIBLE);
+                    saveProgress.setVisibility(View.VISIBLE);
                     btnSave.setVisibility(View.GONE);
-                    UploadImage(CarImages.get(0));
-
+                    renter.setLicenseNumber(strLicenseNumber);
+                    renter.setCarCompany(strCarCompany);
+                    renter.setCarModel(strCarModel);
+                    renter.setCarRegistrationNumber(strCarRegistrationNumber);
+                    renter.setSittingCapacity(strSittingCapacity);
+                    uploadImage(0);
                 }
                 break;
 
             }
-            case R.id.ChooseImage:{
-                if (askForPermission()){
-                    OpenGallery();
+            case R.id.nav_gallery: {
+                boolean flag = hasPermissions(CreateRenter.this, PERMISSIONS);
+                if(!flag){
+                    ActivityCompat.requestPermissions(CreateRenter.this, PERMISSIONS, 1);
                 }
-                break;
-            }
-            case R.id.ChooseCarImage:{
-                if (askForPermission()){
-                    OpenGalleryForCar();
+                else{
+                    openGallery();
                 }
                 break;
             }
         }
     }
-    private void UploadImage(Uri imagePath ){
+
+    private void uploadImage(final int count){
         final StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
         Calendar calendar=Calendar.getInstance();
-        storageReference.child(calendar.getTimeInMillis()+"").putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        storageReference.child(calendar.getTimeInMillis()+"").putFile(carImages.get(count)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.e("Profile","in OnSuccess"+uri.toString());
-                        renter.setImage1(uri.toString());
-                        saveToDatabase();
-
-
+                        Log.e("Renter","in OnSuccess: " + uri.toString());
+                        renter.getImages().add(uri.toString());
+                        if(renter.getImages().size() == carImages.size()){
+                            Log.e("Renter", "Car Image Size: " + carImages.size());
+                            Log.e("Renter", "Renter Car Image Size: " + renter.getImages().size());
+                            saveToDatabase();
+                        }
+                        else{
+                            uploadImage(count+1);
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Profile","DownloadUrl:"+e.getMessage());
-                        btnSave.setVisibility(View.GONE);
-                        SaveProgress.setVisibility(View.VISIBLE);
+                        Log.e("Renter","DownloadUrl: " + e.getMessage());
+                        btnSave.setVisibility(View.VISIBLE);
+                        saveProgress.setVisibility(View.GONE);
                         helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
                     }
                 });
@@ -171,61 +173,48 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("Profile", "Upload Image Url:" + e.getMessage());
-                btnSave.setVisibility(View.GONE);
-                SaveProgress.setVisibility(View.VISIBLE);
+                Log.e("Renter", "Upload Image Url:" + e.getMessage());
+                btnSave.setVisibility(View.VISIBLE);
+                saveProgress.setVisibility(View.GONE);
                 helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
 
             }
         });
     }
-private void saveToDatabase(){
-        btnSave.setVisibility(View.GONE);
-        SaveProgress.setVisibility(View.VISIBLE);
-        renter.setLicenseNumber(strLicenseNumber);
-    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
-    databaseReference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-        @Override
-        public void onSuccess(Void aVoid) {
-            btnSave.setVisibility(View.GONE);
-            SaveProgress.setVisibility(View.VISIBLE);
-            helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
-        }
-    }).addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            Log.e("Profile","DownloadUrl:"+e.getMessage());
-            btnSave.setVisibility(View.GONE);
-            SaveProgress.setVisibility(View.VISIBLE);
-            helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
-        }
+    private void saveToDatabase(){
+        Log.e("Renter","Call received in save to database");
+        user.setType("Renter");
+        user.setRenter(renter);
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Users").child(user.getPhoneNumber());
+        databaseReference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                btnSave.setVisibility(View.VISIBLE);
+                saveProgress.setVisibility(View.GONE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Renter","Save in database failed");
+                btnSave.setVisibility(View.VISIBLE);
+                saveProgress.setVisibility(View.GONE);
+                helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+            }
 
-    });
-}
+        });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==10){
-            if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            OpenGallery();
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
             }
         }
     }
-    private void OpenGallery(){
-        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider")
-                .setMaximumDisplayingImages(24) //Default: Integer.MAX_VALUE. Don't worry about performance :)
-                .setSpanCount(3) //Default: 3. This is the number of columns
-                .setGridSpacing(Utils.dp2px(2)) //Default: 2dp. Remember to pass in a value in pixel.
-                .setPeekHeight(Utils.dp2px(360)) //Default: 360dp. This is the initial height of the dialog.
-                .hideCameraTile() //Default: show. Set this if you don't want user to take photo.
-                .hideGalleryTile() //Default: show. Set this if you don't want to further let user select from a gallery app. In such case, I suggest you to set maximum displaying images to Integer.MAX_VALUE.
-                .setTag("A request ID") //Default: null. Set this if you need to identify which picker is calling back your fragment / activity.
-                .build();
-        singleSelectionPicker.show(getSupportFragmentManager(), "picker");
-    }
 
-    private void OpenGalleryForCar(){
+    private void openGallery() {
         BSImagePicker multiSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider")
                 .isMultiSelect() //Set this if you want to use multi selection mode.
                 .setMinimumMultiSelectCount(1) //Default: 1.
@@ -240,59 +229,63 @@ private void saveToDatabase(){
     }
 
 
-    private boolean askForPermission() {
-            if (ActivityCompat.checkSelfPermission(CreateRenter.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(CreateRenter.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CreateRenter.this, new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 10);
-                  return false;
+    private boolean hasPermissions(Context c, String... permission){
+        for(String p : permission){
+            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+                return false;
             }
-            return true;
         }
+        return true;
+    }
 
-        private boolean isValid() {
-        boolean flag=true;
-        strLicenseNumber=edtLicenseNumber.getText().toString();
-        strCar_Model=edtCar_Model.getText().toString();
-        strRegistrationNumber=edtRegistrationNumber.getText().toString();
-        strsittingCapacity=edtsittingCapacity.getText().toString();
-        strCompany=edtCompany.getText().toString();
+
+    private boolean isValid() {
+        boolean flag = true;
+        int count = carImages.size();
+        strLicenseNumber = licenseNumber.getText().toString();
+        strCarCompany = carCompany.getSelectedItem().toString();
+        strCarModel = carModel.getText().toString();
+        strCarRegistrationNumber = carRegistrationNumber.getText().toString();
+        strSittingCapacity = sittingCapacity.getText().toString();
         Log.e("Renter","LicnseNumber:" + strLicenseNumber);
+        String error = "";
+        if(count == 0){
+            error = error + "*Select at least one car image first.";
+            flag = false;
+        }
         if (strLicenseNumber.length()<4){
-            edtLicenseNumber.setError("Enter a valid License Number");
+            licenseNumber.setError("Enter a valid License Number");
+            flag = false;
+        }else{
+            licenseNumber.setError(null);
+        }
+        if(carCompany.getSelectedItemPosition() == 0){
+            flag = false;
+            error = error + "*Select car company first.";
+        }
+        
+        if (strCarModel.length()<4){
+            carModel.setError("Enter a valid Car Model");
             flag=false;
         }else{
-            edtLicenseNumber.setError(null);
+            carModel.setError(null);
         }
-
-
-        if (strCar_Model.length()<4){
-            edtCar_Model.setError("Enter a valid Car Model");
+        
+        if (strCarRegistrationNumber.length() < 5){
+            carRegistrationNumber.setError("Enter a valid car Registration Number");
             flag=false;
         }else{
-            edtCar_Model.setError(null);
+            carRegistrationNumber.setError(null);
         }
-
-
-        if (strRegistrationNumber.length()<5){
-            edtRegistrationNumber.setError("Enter a valid RegistrationNumber");
+        if (strSittingCapacity.length() < 1){
+            sittingCapacity.setError("Enter a valid sittingCapacity");
             flag=false;
         }else{
-            edtRegistrationNumber.setError(null);
+            sittingCapacity.setError(null);
         }
-        if (strsittingCapacity.length()<4){
-            edtsittingCapacity.setError("Enter a valid sittingCapacity");
-            flag=false;
-        }else{
-            edtsittingCapacity.setError(null);
+        if(error.length() > 0){
+            helpers.showError(CreateRenter.this, "ERROR", error);
         }
-        if (strCompany.length()<5){
-            edtCompany.setError("Enter a valid Company Name");
-            flag=false;
-        }else{
-            edtCompany.setError(null);
-        }
-
         return flag;
     }
 
@@ -303,19 +296,17 @@ private void saveToDatabase(){
 
     @Override
     public void loadImage(Uri imageUri, ImageView ivImage) {
-        Glide.with(CreateRenter.this).load(imageUri).into(UserImage);
+//        Glide.with(CreateRenter.this).load(imageUri).into(UserImage);
     }
 
     @Override
     public void onMultiImageSelected(List<Uri> uriList, String tag) {
-        CarImages=uriList;
+        carImages = uriList;
         adapter.notifyDataSetChanged();
 
     }
 
     public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
-
-
         private Context context;
 
         public SliderAdapter(Context context) {
@@ -332,14 +323,14 @@ private void saveToDatabase(){
         public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
 
             Glide.with(viewHolder.itemView)
-                    .load(CarImages.get(position))
+                    .load(carImages.get(position))
                     .into(viewHolder.imageViewBackground);
         }
 
         @Override
         public int getCount() {
             //slider view count could be dynamic siz
-            return CarImages.size();
+            return carImages.size();
         }
 
         class SliderAdapterVH extends SliderViewAdapter.ViewHolder {

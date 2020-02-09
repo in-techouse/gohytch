@@ -1,45 +1,32 @@
 package lcwu.fyp.gohytch.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Renter implements Serializable {
-    String id,Image1,Image2,licenseNumber, profileImage;
-    Car car;
+    private List<String> images;
+    private String licenseNumber, carCompany, carModel, carRegistrationNumber, sittingCapacity;
 
     public Renter() {
+        images = new ArrayList<>();
     }
 
-    public Renter(String id, String image1, String image2, String licenseNumber, String profileImage, Car car) {
-        this.id = id;
-        Image1 = image1;
-        Image2 = image2;
+    public Renter(List<String> images, String licenseNumber, String carCompany, String carModel, String carRegistrationNumber, String sittingCapacity) {
+        this.images = images;
         this.licenseNumber = licenseNumber;
-        this.profileImage = profileImage;
-        this.car = car;
+        this.carCompany = carCompany;
+        this.carModel = carModel;
+        this.carRegistrationNumber = carRegistrationNumber;
+        this.sittingCapacity = sittingCapacity;
     }
 
-    public String getId() {
-        return id;
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getImage1() {
-        return Image1;
-    }
-
-    public void setImage1(String image1) {
-        Image1 = image1;
-    }
-
-    public String getImage2() {
-        return Image2;
-    }
-
-    public void setImage2(String image2) {
-        Image2 = image2;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public String getLicenseNumber() {
@@ -50,19 +37,35 @@ public class Renter implements Serializable {
         this.licenseNumber = licenseNumber;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getCarCompany() {
+        return carCompany;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setCarCompany(String carCompany) {
+        this.carCompany = carCompany;
     }
 
-    public Car getCar() {
-        return car;
+    public String getCarModel() {
+        return carModel;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getCarRegistrationNumber() {
+        return carRegistrationNumber;
+    }
+
+    public void setCarRegistrationNumber(String carRegistrationNumber) {
+        this.carRegistrationNumber = carRegistrationNumber;
+    }
+
+    public String getSittingCapacity() {
+        return sittingCapacity;
+    }
+
+    public void setSittingCapacity(String sittingCapacity) {
+        this.sittingCapacity = sittingCapacity;
     }
 }
