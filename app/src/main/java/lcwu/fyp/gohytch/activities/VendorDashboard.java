@@ -40,15 +40,24 @@ import androidx.core.view.GravityCompat;
 import androidx.navigation.ui.AppBarConfiguration;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
@@ -59,6 +68,10 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
+    private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notification");
+    private List<Notification>notificationData=new ArrayList<>();
+    private List<Booking>data=new ArrayList<>();
+    private DatabaseReference bookingReference= FirebaseDatabase.getInstance().getReference().child("Booking");
     private MapView map;
     private Helpers helpers;
     private User user;
@@ -231,6 +244,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
+                                    listenToBookingChanges();
+                                    listenToNotificationChanges();
                                 }
                             } catch (Exception e) {
                                 helpers.showError(VendorDashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -311,6 +326,45 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     protected void onDestroy () {
         super.onDestroy();
         map.onDestroy();
+
+    }
+    private void listenToBookingChanges(){
+        bookingReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               for (DataSnapshot d:dataSnapshot.getChildren()){
+                   Booking b=d.getValue(Booking.class);
+                   if (b!=null){
+                       data.add(b);
+
+                   }
+
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    private void listenToNotificationChanges(){
+        notificationReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot d:dataSnapshot.getChildren()){
+                    Notification n=d.getValue(Notification.class);
+                    if (n!=null){
+                        notificationData.add(n);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 }
