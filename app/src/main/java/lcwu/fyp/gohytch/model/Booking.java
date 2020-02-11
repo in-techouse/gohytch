@@ -3,8 +3,20 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Booking implements Serializable {
-    String id,bookingTime,userId,driverId,carId,startTime;
-    int status,fare;
+    String id,bookingTime,userId,driverId,carId,startTime, type;
+    int fare;
+    double lat , lng;
+    String status;
+
+    public double getLat(){return  lat;}
+    public double getLng(){return  lng;}
+
+    public void setLat(double lat){this.lat = lat;}
+    public void setLng(double lng){this.lng = lng;}
+
+    public String getType(){return type;}
+
+    public void setType(String type){this.type = type;}
 
     public String getId() {
         return id;
@@ -54,11 +66,11 @@ public class Booking implements Serializable {
         this.startTime = startTime;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -70,26 +82,20 @@ public class Booking implements Serializable {
         this.fare = fare;
     }
 
-    public Location getPickupLocation() {
-        return pickupLocation;
-    }
 
-    public void setPickupLocation(Location pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
 
-    public Location getDestination() {
-        return destination;
-    }
+//    public Location getDestination() {
+//        return destination;
+//    }
 
-    public void setDestination(Location destination) {
-        this.destination = destination;
-    }
+//    public void setDestination(Location destination) {
+//        this.destination = destination;
+//    }
 
     public Booking() {
     }
 
-    private Location pickupLocation,destination;
+//    private Location pickupLocation,destination;
 
 }
 

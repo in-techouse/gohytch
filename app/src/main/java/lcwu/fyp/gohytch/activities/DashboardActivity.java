@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +38,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,19 +50,27 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.nio.file.attribute.DosFileAttributes;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
+import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
-public class DashboardActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -83,10 +93,16 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
     private TextView profile_Phone;
     private TextView locationAddress;
     private FirebaseAuth auth=FirebaseAuth.getInstance();
-    private DatabaseReference vendorReference= FirebaseDatabase.getInstance().getReference().child("User");
+    private DatabaseReference vendorReference = FirebaseDatabase.getInstance().getReference().child("Users");
     private List<User> data =new ArrayList<>();
-    private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notification");
+    private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notifications");
     private List<Notification> notificationsData = new ArrayList<>();
+    private ValueEventListener providerValueListener;
+    private List<User> users;
+    private Spinner selecttype;
+    private Button confirm;
+    private LinearLayout searching;
+    DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +130,11 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
         profile_Email = header.findViewById(R.id.profile_Email);
         Profile_Image = header.findViewById(R.id.profile_image);
         locationAddress = findViewById(R.id.locationAddress);
+        users = new ArrayList<>();
+        selecttype = findViewById(R.id.selecttype);
+        confirm = findViewById(R.id.confirm);
+        confirm.setOnClickListener(this);
+        searching = findViewById(R.id.searching);
 
 
 
@@ -181,6 +202,9 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                 }
             });
             getDeviceLocation();
+            loadVendors();
+            getOnProviders();
+            listenToNotificationChanges();
         }
     }
 
@@ -189,6 +213,58 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == 1){
             enableLocation();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.confirm: {
+
+                if (!helpers.isConnected(DashboardActivity.this)) {
+                    helpers.showError(DashboardActivity.this , "Connection Error" , "Check your Internet Connection");
+                    return;
+                }
+                if (selecttype.getSelectedItemPosition() == 0) {
+                    helpers.showError(DashboardActivity.this, "Service Type" , "Choose a Type First");
+                    return;
+                }
+                searching.setVisibility(View.VISIBLE);
+                confirm.setVisibility(View.GONE);
+                selecttype.setVisibility(View.GONE);
+                String key = bookingReference.push().getKey();
+                Booking booking = new Booking();
+                booking.setId(key);
+                booking.setUserId(user.getPhoneNumber());
+                Date d = new Date();
+                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+                booking.setBookingTime(date);
+                Location location = new Location("");
+                booking.setLat(marker.getPosition().latitude);
+                booking.setLng(marker.getPosition().longitude);
+                booking.setStatus("New");
+                booking.setDriverId("");
+                booking.setType(selecttype.getSelectedItem().toString());
+                bookingReference.child(booking.getId()).setValue(booking).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        searching.setVisibility(View.GONE);
+                        confirm.setVisibility(View.VISIBLE);
+                        selecttype.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        searching.setVisibility(View.GONE);
+                        confirm.setVisibility(View.VISIBLE);
+                        selecttype.setVisibility(View.VISIBLE);
+                        helpers.showError(DashboardActivity.this, "Booking Error" , "Something Went Wrong");
+                    }
+                });
+
+                break;
+            }
         }
     }
 
@@ -248,8 +324,8 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
-                                    loadVendors();
-                                    listenToNotificationChanges();
+                                    updateUserLocation(me.latitude ,  me.longitude);
+                                    //call fun here
                                 }
                             } catch (Exception e) {
                                 helpers.showError(DashboardActivity.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -349,6 +425,42 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
         });
 
     }
+
+    private void getOnProviders() {
+        providerValueListener = vendorReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    User u = data.getValue(User.class);
+                    if (u != null && (u.getType().equals("Renter") || u.getType().equals("Driver"))) {
+                        LatLng user_location = new LatLng(u.getLat(), u.getLng());
+                        MarkerOptions markerOptions = new MarkerOptions().position(user_location).title(u.getType());
+                        switch (u.getType()) {
+                            case "Renter":
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car));
+                                break;
+                            case "Driver":
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.driver));
+                                break;
+                        }
+                        Marker marker = googleMap.addMarker(markerOptions);
+                        marker.showInfoWindow();
+                        marker.setTag(u);
+//                        Log.e("UserLocation", "Name: " + u.get() + " Lat: " + u.getLatidue() + " Lng: " + u.getLongitude());
+                        users.add(u);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                helpers.showError(DashboardActivity.this, "Something Went Wrong!" , databaseError.toString());
+            }
+        });
+
+    }
+
+
     private void listenToNotificationChanges(){
         notificationReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -366,6 +478,19 @@ public class DashboardActivity extends AppCompatActivity  implements NavigationV
 
             }
         });
+
+    }
+
+    private void updateUserLocation(double lat, double lng) {
+        Log.e("location" , "Update location called");
+        user.setLat(lat);
+        user.setLng(lng);
+        session.setSession(user);
+        vendorReference.child(user.getPhoneNumber()).setValue(user);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }

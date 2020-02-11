@@ -9,13 +9,5 @@
     tools:context=".activities.EditUserProfile"
     tools:showIn="@layout/activity_edit_user_profile">
 
-    <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-
-    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

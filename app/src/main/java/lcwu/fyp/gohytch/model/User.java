@@ -8,10 +8,12 @@ public class User implements Serializable {
     private String type;
     private Driver driver;
     private Renter renter;
+    private double lat, lng;
 
     public User() { }
 
-    public User(String name, String phoneNumber, String id, String email, String image, String type, Driver driver, Renter renter) {
+
+    public User(String name, String phoneNumber, String id, String email, String image, String type, Driver driver, Renter renter, double lat, double lng) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.id = id;
@@ -20,6 +22,24 @@ public class User implements Serializable {
         this.type = type;
         this.driver = driver;
         this.renter = renter;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public String getName() {

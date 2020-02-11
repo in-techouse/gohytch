@@ -56,12 +56,39 @@
         app:cardCornerRadius="13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+
         <LinearLayout
             android:orientation="vertical"
             android:background="@color/white"
             android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/searching"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="7dp">
+                <TextView
+                    android:layout_margin="5dp"
+                    android:textAlignment="center"
+                    android:text="connecting_you_to_nearby_drivers"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <ProgressBar
+                    android:layout_gravity="center"
+                    android:layout_margin="7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <Spinner
+                android:entries="@array/types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/selecttype"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

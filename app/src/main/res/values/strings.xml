@@ -40,6 +40,13 @@
         <item>Bus Driver</item>
         <item>Motorman</item>
     </string-array>
+
+    <string-array name="types">
+        <item>Select Type</item>
+        <item>Driver</item>
+        <item>Renter</item>
+    </string-array>
+
     <string-array name="experience">
         <item>Select your experience</item>
         <item>Less Than 6 months</item>

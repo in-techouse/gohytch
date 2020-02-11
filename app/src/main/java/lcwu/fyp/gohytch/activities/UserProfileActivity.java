@@ -184,6 +184,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         Log.e("Login", "Name: " + user.getName());
         Log.e("Login", "Phone Number: " + user.getPhoneNumber());
         Log.e("Login", "Image: " + user.getImage());
+        user.setLat(0);
+        user.setLng(0);
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
         reference.child("Users").child(user.getId()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

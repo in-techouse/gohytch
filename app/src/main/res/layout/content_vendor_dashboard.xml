@@ -56,20 +56,7 @@
         app:cardCornerRadius="13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="vertical"
-            android:background="@color/white"
-            android:padding="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/confirm"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/white"
-                android:id="@+id/confirm"/>
-        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
 

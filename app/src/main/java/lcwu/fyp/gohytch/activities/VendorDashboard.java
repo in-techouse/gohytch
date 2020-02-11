@@ -1,10 +1,13 @@
 package lcwu.fyp.gohytch.activities;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.ui.AppBarConfiguration;
 import com.google.android.material.navigation.NavigationView;
@@ -45,6 +49,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,7 +76,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notification");
     private List<Notification>notificationData=new ArrayList<>();
     private List<Booking>data=new ArrayList<>();
-    private DatabaseReference bookingReference= FirebaseDatabase.getInstance().getReference().child("Booking");
+    private DatabaseReference bookingReference= FirebaseDatabase.getInstance().getReference().child("Bookings");
     private MapView map;
     private Helpers helpers;
     private User user;
@@ -88,7 +93,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private TextView profile_Phone;
     private TextView locationAddress;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-
+    private TextView type;
+    Booking b;
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -116,10 +122,12 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         profile_Name = header.findViewById(R.id.profile_Name);
         profile_Email = header.findViewById(R.id.profile_Email);
         Profile_Image = header.findViewById(R.id.profile_image);
+        type = header.findViewById(R.id.profile_type);
 
         profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
+        type.setText(user.getType());
 
         if(user.getImage() != null && user.getImage().length() > 5){
             Glide.with(VendorDashboard.this).load(user.getImage()).into(Profile_Image);
@@ -177,6 +185,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 }
             });
             getDeviceLocation();
+            listenToBooking();
+
         }
     }
 
@@ -244,7 +254,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
-                                    listenToBookingChanges();
                                     listenToNotificationChanges();
                                 }
                             } catch (Exception e) {
@@ -328,28 +337,58 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         map.onDestroy();
 
     }
-    private void listenToBookingChanges(){
+
+    private void listenToBooking()
+    {
+        Log.e("booking" , "in func");
         bookingReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for (DataSnapshot d:dataSnapshot.getChildren()){
-                   Booking b=d.getValue(Booking.class);
-                   if (b!=null){
-                       data.add(b);
+                for(DataSnapshot data:dataSnapshot.getChildren()){
+                    Log.e("booking" , "snapshot captured");
+                    Booking b = data.getValue(Booking.class);
+                    if(b!=null && b.getDriverId()!=null && b.getType().equals(user.getType()) && b.getDriverId().length()<1  && b.getStatus().equals("New"))
+                    {
+                        Log.e("Booking" , "Found");
+//                        showBookingDialog(b);
+                        new FancyBottomSheetDialog.Builder(VendorDashboard.this)
+                                .setTitle("New Bookings")
+                                .setMessage("Random Text")
+                                .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
+                                .setIcon(R.drawable.ic_action_error,true)
+                                .isCancellable(false)
+                                .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                    @Override
+                                    public void OnClick() {
 
-                   }
+                                    }
+                                })
+                                .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                                    @Override
+                                    public void OnClick() {
 
-               }
+                                    }
+                                })
+                                .setNegativeBtnText("Cancel")
+                                .setPositiveBtnText("Ok")
+                                .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
+                                .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
+                                .build();
+                        break;
+                    }
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("booking" , "in onCancelled "+databaseError.toString());
 
             }
         });
     }
+
     private void listenToNotificationChanges(){
-        notificationReference.addValueEventListener(new ValueEventListener() {
+        notificationReference.orderByChild("userId").equalTo(user.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot d:dataSnapshot.getChildren()){
@@ -367,5 +406,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         });
 
     }
+
 }
 
