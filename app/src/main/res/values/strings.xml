@@ -31,6 +31,7 @@
     <string name="Enter_sittingCapacity">Enter Sitting Capacity</string>
     <string name="Enter_CompanyName">Enter CompanyName</string>
     <string name="myLocation">My Location</string>
+    <string name="connecting_you_to_near_by_drivers">Connecting you to near by drivers.</string>
     <string-array name="expertise">
         <item>Taxicab driver</item>
         <item>Chauffeur</item>
