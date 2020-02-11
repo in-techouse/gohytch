@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorDanger">#F43636</color>
     <color name="white">#FCFCFC</color>
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorReject">#DA2B2B</color>
+    <color name="colorAccept">#377A08</color>
 </resources>

@@ -346,14 +346,14 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data:dataSnapshot.getChildren()){
                     Log.e("booking" , "snapshot captured");
-                    Booking b = data.getValue(Booking.class);
-                    if(b!=null && b.getDriverId()!=null && b.getType().equals(user.getType()) && b.getDriverId().length()<1  && b.getStatus().equals("New"))
+                    final Booking booking = data.getValue(Booking.class);
+                    if(booking!=null && booking.getDriverId()!=null && booking.getType().equals(user.getType()) && booking.getDriverId().length()<1  && booking.getStatus().equals("New"))
                     {
                         Log.e("Booking" , "Found");
 //                        showBookingDialog(b);
-                        new FancyBottomSheetDialog.Builder(VendorDashboard.this)
-                                .setTitle("New Bookings")
-                                .setMessage("Random Text")
+                       new FancyBottomSheetDialog.Builder(VendorDashboard.this)
+                                .setTitle("New Booking Found")
+                                .setMessage("We have a new booking for you. It's time to get some revenue.")
                                 .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
                                 .setIcon(R.drawable.ic_action_error,true)
                                 .isCancellable(false)
@@ -361,16 +361,22 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                     @Override
                                     public void OnClick() {
 
+
                                     }
                                 })
                                 .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
                                     @Override
                                     public void OnClick() {
+                                        Intent it = new Intent(VendorDashboard.this, BookingDetails.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("Booking",booking);
+                                        it.putExtras(bundle);
+                                        startActivity(it);
 
                                     }
                                 })
-                                .setNegativeBtnText("Cancel")
-                                .setPositiveBtnText("Ok")
+                                .setNegativeBtnText("Reject")
+                                .setPositiveBtnText("DETAILS")
                                 .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
                                 .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
                                 .build();
