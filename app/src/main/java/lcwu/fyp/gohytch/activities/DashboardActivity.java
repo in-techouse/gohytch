@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Icon;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,7 +37,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,19 +44,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.nio.file.attribute.DosFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +82,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Session session;
     private FusedLocationProviderClient locationProviderClient;
     private Marker marker;
-    private Icon icon;
     private CircleImageView Profile_Image;
     private TextView profile_Email;
     private TextView profile_Name;
@@ -97,11 +89,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private TextView locationAddress;
     private FirebaseAuth auth=FirebaseAuth.getInstance();
     private DatabaseReference vendorReference = FirebaseDatabase.getInstance().getReference().child("Users");
-    private List<User> data =new ArrayList<>();
+    private List<User> users = new ArrayList<>();
     private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notifications");
     private List<Notification> notificationsData = new ArrayList<>();
-    private ValueEventListener providerValueListener;
-    private List<User> users;
     private Spinner selecttype;
     private Button confirm , cancelBooking;
     private LinearLayout searching;
@@ -147,7 +137,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         profile_Email = header.findViewById(R.id.profile_Email);
         Profile_Image = header.findViewById(R.id.profile_image);
         locationAddress = findViewById(R.id.locationAddress);
-        users = new ArrayList<>();
         selecttype = findViewById(R.id.selecttype);
         confirm = findViewById(R.id.confirm);
         confirm.setOnClickListener(this);
@@ -220,7 +209,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             });
             getDeviceLocation();
             loadVendors();
-            getOnProviders();
             listenToNotificationChanges();
         }
     }
@@ -422,33 +410,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         super.onDestroy();
         map.onDestroy();
     }
+
     private void loadVendors(){
         vendorReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot d:dataSnapshot.getChildren()){
-                    User u=d.getValue(User.class);
-                    if (u!=null){
-                        data.add(u);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void getOnProviders() {
-        providerValueListener = vendorReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    User u = data.getValue(User.class);
+                    User u = d.getValue(User.class);
                     if (u != null && (u.getType().equals("Renter") || u.getType().equals("Driver"))) {
                         LatLng user_location = new LatLng(u.getLat(), u.getLng());
                         MarkerOptions markerOptions = new MarkerOptions().position(user_location).title(u.getType());
@@ -463,20 +431,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         Marker marker = googleMap.addMarker(markerOptions);
                         marker.showInfoWindow();
                         marker.setTag(u);
-//                        Log.e("UserLocation", "Name: " + u.get() + " Lat: " + u.getLatidue() + " Lng: " + u.getLongitude());
                         users.add(u);
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                helpers.showError(DashboardActivity.this, "Something Went Wrong!" , databaseError.toString());
+
             }
         });
 
     }
-
 
     private void listenToNotificationChanges(){
         notificationReference.addValueEventListener(new ValueEventListener() {
@@ -484,7 +449,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot d:dataSnapshot.getChildren()){
                     Notification n=d.getValue(Notification.class);
-                    if (n!=null) {
+                    if (n != null) {
                         notificationsData.add(n);
                     }
                 }
@@ -504,11 +469,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         user.setLng(lng);
         session.setSession(user);
         vendorReference.child(user.getPhoneNumber()).setValue(user);
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 }
 
