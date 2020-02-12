@@ -38,7 +38,7 @@ public class Helpers {
                     }
                 })
                 .setNegativeBtnText("Cancel")
-                .setPositiveBtnText("Ok")
+                .setPositiveBtnText("Okay")
                 .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
                 .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
                 .build();

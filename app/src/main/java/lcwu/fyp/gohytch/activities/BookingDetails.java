@@ -69,8 +69,8 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     private CircleImageView userImage;
     private Button reject , accept;
     private LinearLayout progress, main;
-    private DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
-    private ValueEventListener listener;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private ValueEventListener bookingListener, userListener;
     private boolean isListening = true;
 
     @Override
@@ -151,10 +151,10 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     }
 
     private void loadUserData(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(booking.getUserId());
-        reference.addValueEventListener(new ValueEventListener() {
+        userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                databaseReference.removeEventListener(userListener);
                 if (dataSnapshot.getValue()!=null){
                     customer = dataSnapshot.getValue(User.class);
                     if (customer!=null){
@@ -162,7 +162,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                         progress.setVisibility(View.GONE);
                         UserName.setText(customer.getName());
                         if(customer.getImage() != null && user.getImage().length() > 0){
-                            Glide.with(BookingDetails.this).load(customer.getImage()).into(userImage);
+                            Glide.with(getApplicationContext()).load(customer.getImage()).into(userImage);
                         }
                     }
                     else{
@@ -180,10 +180,14 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                databaseReference.removeEventListener(userListener);
+                UserName.setText("");
                 main.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.GONE);
             }
-        });
+        };
+
+        databaseReference.child("Users").child(booking.getUserId()).addValueEventListener(userListener);
     }
     private boolean askForPermission(){
         if (ActivityCompat.checkSelfPermission(BookingDetails.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -339,10 +343,10 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                 main.setVisibility(View.GONE);
                 progress.setVisibility(View.VISIBLE);
 
-                listener = bookingReference.child(booking.getId()).addValueEventListener(new ValueEventListener() {
+                bookingListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        bookingReference.removeEventListener(listener);
+                        databaseReference.removeEventListener(bookingListener);
                         Booking tempBooking = dataSnapshot.getValue(Booking.class);
                         if(!isListening){
                             return;
@@ -368,12 +372,14 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        bookingReference.removeEventListener(listener);
+                        databaseReference.removeEventListener(bookingListener);
                         main.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.GONE);
                         helpers.showError(BookingDetails.this, "ERROR", "Something went wrong. Please try again later");
                     }
-                });
+                };
+
+                databaseReference.child("Bookings").child(booking.getId()).addValueEventListener(bookingListener);
                 break;
             }
             case R.id.reject : {
@@ -386,7 +392,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     private void acceptBooking(final Booking tempBooking){
         tempBooking.setStatus("In Progress");
         tempBooking.setDriverId(user.getPhoneNumber());
-        bookingReference.child(tempBooking.getId()).setValue(tempBooking)
+        databaseReference.child("Bookings").child(tempBooking.getId()).setValue(tempBooking)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -406,7 +412,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     }
 
     private void sendNotification(Booking b){
-        Notification notification=new Notification();
+        Notification notification = new Notification();
         DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
         String id= notificationReference.push().getKey();
         notification.setId(id);
@@ -417,7 +423,8 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
         Date d = new Date();
         String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
         notification.setDate(date);
-        notification.setNotification("Your booking has been accepted by " + user.getName());
+        notification.setDriverText("You accepted the booking of " + customer.getName());
+        notification.setUserText("Your booking has been accepted by " + user.getName());
         notificationReference.child(notification.getId()).setValue(notification).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -459,6 +466,13 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     protected void onDestroy () {
         super.onDestroy();
         map.onDestroy();
-
+        if(databaseReference != null){
+            if(bookingListener != null){
+                databaseReference.removeEventListener(bookingListener);
+            }
+            if(userListener != null){
+                databaseReference.removeEventListener(userListener);
+            }
+        }
     }
 }
