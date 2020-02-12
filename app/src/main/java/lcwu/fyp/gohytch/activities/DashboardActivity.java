@@ -9,6 +9,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -97,10 +100,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private LinearLayout searching;
     private ProgressBar sheetProgress;
     private RelativeLayout mainSheet;
-
-
-    LinearLayout layoutBottomSheet;
-    BottomSheetBehavior sheetBehavior;
+    private Booking activeBooking;
+    private CountDownTimer timer;
+    private LinearLayout layoutBottomSheet;
+    private BottomSheetBehavior sheetBehavior;
 
 
     DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
@@ -245,11 +248,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Date d = new Date();
                 String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
                 booking.setBookingTime(date);
-                Location location = new Location("");
                 booking.setLat(marker.getPosition().latitude);
                 booking.setLng(marker.getPosition().longitude);
                 booking.setStatus("New");
                 booking.setDriverId("");
+                booking.setAddress(locationAddress.getText().toString());
                 booking.setType(selecttype.getSelectedItem().toString());
                 bookingReference.child(booking.getId()).setValue(booking).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -461,6 +464,21 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
+        timer = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.e("Dashboard", "OnTick");
+                if(activeBooking != null){
+                    timer.cancel();
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                Log.e("Dashboard", "onFinish");
+            }
+        };
+        timer.start();
     }
 
     private void updateUserLocation(double lat, double lng) {
@@ -470,5 +488,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         session.setSession(user);
         vendorReference.child(user.getPhoneNumber()).setValue(user);
     }
+
 }
 
