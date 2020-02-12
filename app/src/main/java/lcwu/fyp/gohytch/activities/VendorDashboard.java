@@ -39,10 +39,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.ui.AppBarConfiguration;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,17 +50,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
-
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -81,8 +76,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
     private DatabaseReference notificationReference=FirebaseDatabase.getInstance().getReference().child("Notification");
-    private List<Notification>notificationData=new ArrayList<>();
-    private List<Booking>data=new ArrayList<>();
     private DatabaseReference bookingReference= FirebaseDatabase.getInstance().getReference().child("Bookings");
     private MapView map;
     private Helpers helpers;
@@ -368,7 +361,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                     if(booking!=null && booking.getDriverId()!=null && booking.getType().equals(user.getType()) && booking.getDriverId().length()<1  && booking.getStatus().equals("New"))
                     {
                         Log.e("Booking" , "Found");
-//                        showBookingDialog(b);
                        new FancyBottomSheetDialog.Builder(VendorDashboard.this)
                                 .setTitle("New Booking Found")
                                 .setMessage("We have a new booking for you. It's time to get some revenue.")
@@ -390,7 +382,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                         bundle.putSerializable("Booking",booking);
                                         it.putExtras(bundle);
                                         startActivity(it);
-
                                     }
                                 })
                                 .setNegativeBtnText("Reject")
@@ -416,20 +407,16 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot d:dataSnapshot.getChildren()){
-                    Notification n=d.getValue(Notification.class);
+                    Notification n = d.getValue(Notification.class);
                     if (n!=null){
-                        notificationData.add(n);
+//                        notificationData.add(n);
                     }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
-
 }
 

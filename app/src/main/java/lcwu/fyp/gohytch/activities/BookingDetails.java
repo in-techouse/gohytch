@@ -364,8 +364,7 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                 break;
             }
             case R.id.reject : {
-                Intent in = new Intent(BookingDetails.this , VendorDashboard.class);
-                startActivity(in);
+                finish();
                 break;
             }
         }

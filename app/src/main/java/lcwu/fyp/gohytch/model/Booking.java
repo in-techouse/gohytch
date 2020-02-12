@@ -3,20 +3,26 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Booking implements Serializable {
-    String id,bookingTime,userId,driverId,carId,startTime, type;
-    int fare;
-    double lat , lng;
-    String status;
+    private String id, bookingTime, userId, driverId, carId, startTime, type, status, address;
+    private int fare;
+    private double lat, lng;
 
-    public double getLat(){return  lat;}
-    public double getLng(){return  lng;}
+    public Booking() { }
 
-    public void setLat(double lat){this.lat = lat;}
-    public void setLng(double lng){this.lng = lng;}
-
-    public String getType(){return type;}
-
-    public void setType(String type){this.type = type;}
+    public Booking(String id, String bookingTime, String userId, String driverId, String carId, String startTime, String type, String status, String address, int fare, double lat, double lng) {
+        this.id = id;
+        this.bookingTime = bookingTime;
+        this.userId = userId;
+        this.driverId = driverId;
+        this.carId = carId;
+        this.startTime = startTime;
+        this.type = type;
+        this.status = status;
+        this.address = address;
+        this.fare = fare;
+        this.lat = lat;
+        this.lng = lng;
+    }
 
     public String getId() {
         return id;
@@ -66,12 +72,28 @@ public class Booking implements Serializable {
         this.startTime = startTime;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getFare() {
@@ -82,20 +104,20 @@ public class Booking implements Serializable {
         this.fare = fare;
     }
 
-
-
-//    public Location getDestination() {
-//        return destination;
-//    }
-
-//    public void setDestination(Location destination) {
-//        this.destination = destination;
-//    }
-
-    public Booking() {
+    public double getLat() {
+        return lat;
     }
 
-//    private Location pickupLocation,destination;
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
 
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
 }
 
