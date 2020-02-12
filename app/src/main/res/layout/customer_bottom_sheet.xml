@@ -34,16 +34,16 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_height="94dp"
                 android:layout_width="94dp"
-                android:id="@+id/customerImage"
+                android:id="@+id/driverImage"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true">
             </de.hdodenhof.circleimageview.CircleImageView>
 
             <TextView
                 android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/customerImage"
+                android:layout_toEndOf="@+id/driverImage"
                 android:layout_width="match_parent"
-                android:id="@+id/customer_name"
+                android:id="@+id/driver_name"
                 android:layout_height="wrap_content"
                 android:text="Order Details"
                 android:textColor="#444"
@@ -51,11 +51,11 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_below="@id/customer_name"
+                android:layout_below="@id/driver_name"
                 android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
-                android:layout_toEndOf="@+id/customerImage"
-                android:id="@+id/customer_category"
+                android:layout_toEndOf="@+id/driverImage"
+                android:id="@+id/booking_category"
                 android:layout_height="wrap_content"
                 android:text="Order Details"
                 android:textColor="#444"
@@ -65,10 +65,10 @@
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/customerImage"
+                android:layout_below="@id/driverImage"
                 android:layout_width="match_parent"
-                android:layout_toEndOf="@+id/customerImage"
-                android:id="@+id/customer_bookingDate"
+                android:layout_toEndOf="@+id/driverImage"
+                android:id="@+id/driver_bookingDate"
                 android:layout_height="wrap_content"
                 android:text="Booking Date"
                 android:textColor="#444"
@@ -79,10 +79,10 @@
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/customer_bookingDate"
+                android:layout_below="@id/driver_bookingDate"
                 android:layout_width="match_parent"
-                android:layout_toEndOf="@+id/customer_bookingDate"
-                android:id="@+id/customer_bookingAddress"
+                android:layout_toEndOf="@+id/driver_bookingDate"
+                android:id="@+id/driver_bookingAddress"
                 android:layout_height="wrap_content"
                 android:text="Booking Address"
                 android:textColor="#444"
@@ -91,11 +91,11 @@
 
         <Button
             android:layout_marginBottom="5dp"
-            android:layout_below="@id/customer_bookingAddress"
+            android:layout_below="@id/driver_bookingAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:id="@+id/cancelCustomerBooking"
+            android:id="@+id/cancelDriverBooking"
             android:backgroundTint="@android:color/holo_red_light"
             android:foreground="?attr/selectableItemBackground"
             android:text="Cancel"
