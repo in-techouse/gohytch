@@ -29,6 +29,22 @@
         app:cardCornerRadius="13dp">
 
         <LinearLayout
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress"
+            android:orientation="vertical"
+            android:padding="11dp"
+            android:layout_margin="11dp">
+            <ProgressBar
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/main"
             android:orientation="vertical"
             android:background="@color/white"
             android:layout_width="match_parent"
@@ -119,44 +135,50 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/Travel"
                     android:layout_alignParentEnd="true" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/progress"
-                    android:orientation="vertical">
-                    <ProgressBar
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-                    <Button
-                        android:layout_margin="3dp"
-                        android:background="@color/colorReject"
-                        android:textColor="@color/colorTextWhite"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/reject"
-                        android:text="Reject"/>
-                    <Button
-                        android:layout_margin="3dp"
-                        android:background="@color/colorAccept"
-                        android:textColor="@color/colorTextWhite"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/accept"
-                        android:text="Accept"/>
-                </LinearLayout>
-
             </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estimated Revenue"
+                    android:textStyle="bold"
+                    android:layout_alignParentStart="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fare"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <Button
+                    android:layout_margin="3dp"
+                    android:background="@color/colorReject"
+                    android:textColor="@color/colorTextWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/reject"
+                    android:text="Reject"/>
+                <Button
+                    android:layout_margin="3dp"
+                    android:background="@color/colorAccept"
+                    android:textColor="@color/colorTextWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/accept"
+                    android:text="Accept"/>
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

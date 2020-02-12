@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.ui.AppBarConfiguration;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -322,6 +323,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         return false;
 
     }
+
     @Override
     protected void onPause () {
         super.onPause();
@@ -358,38 +360,16 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 for(DataSnapshot data:dataSnapshot.getChildren()){
                     Log.e("booking" , "snapshot captured");
                     final Booking booking = data.getValue(Booking.class);
-                    if(booking!=null && booking.getDriverId()!=null && booking.getType().equals(user.getType()) && booking.getDriverId().length()<1  && booking.getStatus().equals("New"))
-                    {
-                        Log.e("Booking" , "Found");
-                       new FancyBottomSheetDialog.Builder(VendorDashboard.this)
-                                .setTitle("New Booking Found")
-                                .setMessage("We have a new booking for you. It's time to get some revenue.")
-                                .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                                .setIcon(R.drawable.ic_action_error,true)
-                                .isCancellable(false)
-                                .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-
-
-                                    }
-                                })
-                                .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
-                                    @Override
-                                    public void OnClick() {
-                                        Intent it = new Intent(VendorDashboard.this, BookingDetails.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable("Booking",booking);
-                                        it.putExtras(bundle);
-                                        startActivity(it);
-                                    }
-                                })
-                                .setNegativeBtnText("Reject")
-                                .setPositiveBtnText("DETAILS")
-                                .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
-                                .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
-                                .build();
-                        break;
+                    if(booking != null && booking.getDriverId() != null ){
+                        if (booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
+                            Log.e("VendorDashboard", "Active Booking Found");
+                            break;
+                        }
+                        else if(booking.getType().equals(user.getType()) && booking.getDriverId().length() < 1  && booking.getStatus().equals("New")) {
+                            Log.e("Booking" , "Found");
+                            showBookingDialog(booking);
+                            break;
+                        }
                     }
                 }
             }
@@ -397,9 +377,61 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("booking" , "in onCancelled "+databaseError.toString());
-
             }
         });
+    }
+
+    private void showBookingDialog(final Booking booking){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(VendorDashboard.this, "1");
+        builder.setTicker("New Booking");
+        builder.setAutoCancel(true);
+        builder.setChannelId("1");
+        builder.setContentInfo("New Booking Found.");
+        builder.setContentTitle("New Booking Found.");
+        builder.setContentText("We have a new booking for you. It's time to get some revenue.");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+        builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+        builder.build();
+        Intent notificationIntent = new Intent(VendorDashboard.this, BookingDetails.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Booking", booking);
+        notificationIntent.putExtras(bundle);
+        PendingIntent conPendingIntent = PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(conPendingIntent);
+        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) {
+            manager.notify(10,builder.build());
+        }
+
+        new FancyBottomSheetDialog.Builder(VendorDashboard.this)
+                .setTitle("New Booking Found")
+                .setMessage("We have a new booking for you. It's time to get some revenue.")
+                .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
+                .setIcon(R.drawable.ic_action_error,true)
+                .isCancellable(false)
+                .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                    @Override
+                    public void OnClick() {
+
+
+                    }
+                })
+                .OnPositiveClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        Intent it = new Intent(VendorDashboard.this, BookingDetails.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Booking", booking);
+                        it.putExtras(bundle);
+                        startActivity(it);
+                    }
+                })
+                .setNegativeBtnText("Reject")
+                .setPositiveBtnText("DETAILS")
+                .setPositiveBtnBackground(Color.parseColor("#F43636"))//don't use R.color.somecolor
+                .setNegativeBtnBackground(Color.WHITE)//don't use R.color.somecolor
+                .build();
     }
 
     private void listenToNotificationChanges(){
