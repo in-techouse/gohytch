@@ -18,7 +18,7 @@
             android:title="Notification" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/notification"
+            android:icon="@drawable/userprofile"
             android:title="Profile" />
         <item
             android:id="@+id/nav_Logout"

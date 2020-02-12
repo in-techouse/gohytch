@@ -3,9 +3,16 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Notification implements Serializable {
-    String id,bookingId,userId,notification;
+    private String id, bookingId, userId, notification, status;
 
-    public Notification() {
+    public Notification() { }
+
+    public Notification(String id, String bookingId, String userId, String notification, String status) {
+        this.id = id;
+        this.bookingId = bookingId;
+        this.userId = userId;
+        this.notification = notification;
+        this.status = status;
     }
 
     public String getId() {
@@ -38,5 +45,13 @@ public class Notification implements Serializable {
 
     public void setNotification(String notification) {
         this.notification = notification;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

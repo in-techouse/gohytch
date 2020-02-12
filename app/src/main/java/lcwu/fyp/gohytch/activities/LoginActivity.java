@@ -177,9 +177,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Session session = new Session(LoginActivity.this);
                         session.setSession(u);
                         //start dashboard activity
-                        Intent it = new Intent(LoginActivity.this,DashboardActivity.class);
-                        it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(it);
+                        if(u.getType().equals("User") || u.getType().equals("None")){
+                            Intent it=new Intent(LoginActivity.this,DashboardActivity.class);
+                            startActivity(it);
+                        }
+                        else{
+                            Intent it=new Intent(LoginActivity.this,VendorDashboard.class);
+                            startActivity(it);
+                        }
                         finish();
                     }
                     else{
