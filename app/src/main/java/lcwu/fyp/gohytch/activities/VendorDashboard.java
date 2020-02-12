@@ -42,6 +42,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.ui.AppBarConfiguration;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -54,6 +56,11 @@ import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -94,7 +101,12 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private TextView locationAddress;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private TextView type;
-    Booking b;
+    private ProgressBar sheetProgress;
+    private RelativeLayout mainSheet;
+    private Button cancelBooking;
+    LinearLayout layoutBottomSheet;
+    BottomSheetBehavior sheetBehavior;
+
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -108,6 +120,12 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         locationAddress = findViewById(R.id.locationAddress);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        layoutBottomSheet = findViewById(R.id.vendor_bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        sheetProgress = findViewById(R.id.vendor_sheetProgress);
+        mainSheet = findViewById(R.id.vendor_mainSheet);
 
 
         drawer = findViewById(R.id.drawer_layout);

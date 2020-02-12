@@ -22,5 +22,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_vendor_dashboard" />
+    <include layout="@layout/vendor_bottom_sheet"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

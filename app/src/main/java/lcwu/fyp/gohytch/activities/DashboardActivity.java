@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -53,6 +54,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -100,8 +103,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private ValueEventListener providerValueListener;
     private List<User> users;
     private Spinner selecttype;
-    private Button confirm;
+    private Button confirm , cancelBooking;
     private LinearLayout searching;
+    private ProgressBar sheetProgress;
+    private RelativeLayout mainSheet;
+
+
+    LinearLayout layoutBottomSheet;
+    BottomSheetBehavior sheetBehavior;
+
+
     DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
 
     @Override
@@ -123,8 +134,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toogle);
         toogle.syncState();
-
         locationProviderClient = LocationServices.getFusedLocationProviderClient(DashboardActivity.this);
+
+        layoutBottomSheet = findViewById(R.id.customer_bottom_sheet);
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        sheetProgress = findViewById(R.id.customer_sheetProgress);
+        mainSheet = findViewById(R.id.customer_mainSheet);
+
         profile_Phone = header.findViewById(R.id.profile_Phone);
         profile_Name = header.findViewById(R.id.profile_Name);
         profile_Email = header.findViewById(R.id.profile_Email);
