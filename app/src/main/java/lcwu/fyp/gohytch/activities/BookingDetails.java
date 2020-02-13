@@ -64,10 +64,8 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     private GoogleMap googleMap;
     private FusedLocationProviderClient locationProviderClient;
     private Helpers helpers;
-    private Session session;
     private User user, customer;
     private CircleImageView userImage;
-    private Button reject , accept;
     private LinearLayout progress, main;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private ValueEventListener bookingListener, userListener;
@@ -112,11 +110,11 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
         travel = findViewById(R.id.Travel);
         YourAddress = findViewById(R.id.your_address);
 
-        session = new Session(BookingDetails.this);
+        Session session = new Session(BookingDetails.this);
         user = session.getSession();
         helpers = new Helpers();
-        accept = findViewById(R.id.accept);
-        reject = findViewById(R.id.reject);
+        Button accept = findViewById(R.id.accept);
+        Button reject = findViewById(R.id.reject);
         fare = findViewById(R.id.fare);
         accept.setOnClickListener(this);
         reject.setOnClickListener(this);
@@ -459,7 +457,6 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     public void onLowMemory () {
         super.onLowMemory();
         map.onLowMemory();
-
     }
 
     @Override

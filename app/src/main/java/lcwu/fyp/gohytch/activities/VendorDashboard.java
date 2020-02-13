@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -25,13 +24,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
@@ -60,7 +57,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -81,26 +77,18 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     };
     private DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
     private DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users");
-    private ValueEventListener bookingValueEventListener, userValueEventListener;
+    private ValueEventListener bookingsValueEventListener, bookingValueEventListener, userValueEventListener;
     private MapView map;
     private Helpers helpers;
     private User user;
     private GoogleMap googleMap;
     private DrawerLayout drawer;
-    private NavigationView navigationView;
     private Session session;
     private FusedLocationProviderClient locationProviderClient;
-    private CircleImageView Profile_Image;
-    private TextView profile_Email;
-    private TextView profile_Name;
-    private TextView profile_Phone;
     private TextView locationAddress;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private TextView type;
     private ProgressBar sheetProgress;
     private RelativeLayout mainSheet;
-    private Button cancelBooking, completeBooking;
-    private LinearLayout layoutBottomSheet;
     private BottomSheetBehavior sheetBehavior;
     private Booking activeBooking;
     private User activeCustomer;
@@ -119,7 +107,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        layoutBottomSheet = findViewById(R.id.vendor_bottom_sheet);
+        LinearLayout layoutBottomSheet = findViewById(R.id.vendor_bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         sheetProgress = findViewById(R.id.vendor_sheetProgress);
@@ -131,8 +119,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         bookingDate = findViewById(R.id.vendor_bookingDate);
         bookingAddress = findViewById(R.id.vendor_bookingAddress);
         customerEmail = findViewById(R.id.customerEmail);
-        completeBooking = findViewById(R.id.completeBooking);
-        cancelBooking = findViewById(R.id.cancelBooking);
+        Button completeBooking = findViewById(R.id.completeBooking);
+        Button cancelBooking = findViewById(R.id.cancelBooking);
         bookingFare = findViewById(R.id.bookingFare);
 
         completeBooking.setOnClickListener(this);
@@ -140,18 +128,18 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
 
         drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toogle);
         toogle.syncState();
         locationProviderClient = LocationServices.getFusedLocationProviderClient(VendorDashboard.this);
-        profile_Phone = header.findViewById(R.id.profile_Phone);
-        profile_Name = header.findViewById(R.id.profile_Name);
-        profile_Email = header.findViewById(R.id.profile_Email);
-        Profile_Image = header.findViewById(R.id.profile_image);
-        type = header.findViewById(R.id.profile_type);
+        TextView profile_Phone = header.findViewById(R.id.profile_Phone);
+        TextView profile_Name = header.findViewById(R.id.profile_Name);
+        TextView profile_Email = header.findViewById(R.id.profile_Email);
+        CircleImageView profile_Image = header.findViewById(R.id.profile_image);
+        TextView type = header.findViewById(R.id.profile_type);
 
         profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
@@ -159,7 +147,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         type.setText(user.getType());
 
         if(user.getImage() != null && user.getImage().length() > 5){
-            Glide.with(getApplicationContext()).load(user.getImage()).into(Profile_Image);
+            Glide.with(getApplicationContext()).load(user.getImage()).into(profile_Image);
         }
         map = findViewById(R.id.map);
         map.onCreate(savedInstanceState);
@@ -332,81 +320,61 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
                 break;
             }
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return false;
-
-    }
-
-    @Override
-    protected void onPause () {
-        super.onPause();
-        map.onPause();
-    }
-
-    @Override
-    protected void onResume () {
-        super.onResume();
-        map.onResume();
-
-    }
-
-    @Override
-    public void onLowMemory () {
-        super.onLowMemory();
-        map.onLowMemory();
-
     }
 
     @Override
     protected void onDestroy () {
         super.onDestroy();
         map.onDestroy();
-
+        if(bookingsValueEventListener != null){
+            bookingReference.removeEventListener(bookingsValueEventListener);
+        }
+        if(userValueEventListener != null){
+            userReference.removeEventListener(userValueEventListener);
+        }
     }
 
-    private void listenToBooking()
-    {
+    private void listenToBooking() {
         Log.e("VendorDashboard" , "in func");
-        bookingValueEventListener = new ValueEventListener() {
+        bookingsValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-//                if(!dataSnapshot.exists()){
-//                    Log.e("VendorDashboard" , "DataSnapshot Captured: " + dataSnapshot.toString());
-//                    Log.e("VendorDashboard" , "DataSnapshot Captured: " + dataSnapshot.exists());
-////                    sheetBehavior.setHideable(true);
-////                    sheetBehavior.setSkipCollapsed(true);
-//                    sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-//                }
                 for(DataSnapshot data:dataSnapshot.getChildren()){
+                    Log.e("VendorDashboard", "DataSnapshot: " + data.toString());
                     final Booking booking = data.getValue(Booking.class);
                     if(booking != null && booking.getDriverId() != null ){
-                        if (activeBooking == null && booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
-                            Log.e("VendorDashboard", "Active Booking Found");
-                            activeBooking = booking;
-                            sheetBehavior.setHideable(false);
-                            sheetBehavior.setSkipCollapsed(false);
-                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                            loadCustomerDetails();
-                            break;
-                        }
-                        else if (activeBooking != null && activeBooking.getId().equals(booking.getId()) && booking.getStatus().equals("Cancelled")){
-                            Log.e("VendorDashboard", "Booking has been Cancelled");
-//                            activeBooking = null;
-//                            activeCustomer = null;
-                            sheetBehavior.setHideable(true);
-                            sheetBehavior.setSkipCollapsed(true);
-                            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            showCancelledNotification();
-                            break;
-                        }
-                        else if(activeBooking == null && booking.getType().equals(user.getType()) && booking.getDriverId().length() < 1  && booking.getStatus().equals("New")) {
-                            Log.e("VendorDashboard" , "Found");
-                            showBookingDialog(booking);
-                            break;
-                        }
+                        Log.e("VendorDashboard", "DataSnapshot: " + data.toString());
+//                        if (activeBooking == null && booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
+//                            Log.e("VendorDashboard", "Active Booking Found");
+//                            activeBooking = booking;
+//                            sheetBehavior.setHideable(false);
+//                            sheetBehavior.setSkipCollapsed(false);
+//                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                            loadCustomerDetails();
+//                            break;
+//                        }
+//                        else if(booking.getType().equals(user.getType()) && booking.getDriverId().length() < 1  && booking.getStatus().equals("New")) {
+//                            Log.e("VendorDashboard" , "Found");
+//                            if(activeBooking == null) {
+//                                showBookingDialog(booking);
+//                            }
+//                            else if(!activeBooking.getStatus().equals("In Progress")){
+//                                showBookingDialog(booking);
+//                            }
+//                            break;
+//                        }
+//                        else if (activeBooking != null && activeBooking.getId().equals(booking.getId()) && booking.getStatus().equals("Cancelled")){
+//                            Log.e("VendorDashboard", "Booking has been Cancelled");
+//                            activeBooking = booking;
+//                            sheetBehavior.setHideable(true);
+//                            sheetBehavior.setSkipCollapsed(true);
+//                            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//                            showCancelledNotification();
+//                            break;
+//                        }
                     }
                 }
             }
@@ -416,7 +384,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 Log.e("VendorDashboard" , "in onCancelled "+databaseError.toString());
             }
         };
-        bookingReference.addValueEventListener(bookingValueEventListener);
+        bookingReference.addValueEventListener(bookingsValueEventListener);
     }
 
 
@@ -431,7 +399,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                     Log.e("VendorDashboard", "User Value Received, on Data Changed: " + dataSnapshot.toString());
                     activeCustomer = dataSnapshot.getValue(User.class);
                     if (activeCustomer != null) {
-                        Log.e("VendorDashboard", "Active Customer is not null");
                         if (activeCustomer.getImage() != null && activeCustomer.getImage().length() > 1) {
                             Log.e("VendorDashboard", "Active Customer Image Found");
                             Glide.with(getApplicationContext()).load(activeCustomer.getImage()).into(customerImage);
@@ -474,7 +441,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 String[] fareArray = fare.split(" ");
                 int totalFare = Integer.parseInt(fareArray[0]);
                 totalFare = totalFare + 17;
-                bookingReference.child(activeBooking.getId()).child("fare").setValue(totalFare);
+                FirebaseDatabase.getInstance().getReference().child("Bookings").child(activeBooking.getId()).child("fare").setValue(totalFare);
                 bookingFare.setText(totalFare + " RS.");
                 if(activeBooking.getStatus().equals("In Progress"))
                     incrementInFare();
@@ -501,6 +468,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         }
 
         helpers.showError(VendorDashboard.this, "Booking Cancelled", "Your booking with " + activeCustomer.getName() +" has been cancelled.");
+        sheetBehavior.setHideable(true);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private void showBookingDialog(final Booking booking){
@@ -576,7 +545,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
         activeBooking.setStatus("Cancelled");
-        bookingReference.child(activeBooking.getId()).setValue(activeBooking).addOnSuccessListener(new OnSuccessListener<Void>() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        reference.child(activeBooking.getId()).setValue(activeBooking).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Notification notification = new Notification();
@@ -606,8 +576,32 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 helpers.showError(VendorDashboard.this, "ERROR", "Something went wrong.");
             }
         });
+    }
 
+    private void showBottomSheet(){
 
+    }
+
+    private void hideBottomSheet(){
+
+    }
+
+    @Override
+    protected void onPause () {
+        super.onPause();
+        map.onPause();
+    }
+
+    @Override
+    protected void onResume () {
+        super.onResume();
+        map.onResume();
+    }
+
+    @Override
+    public void onLowMemory () {
+        super.onLowMemory();
+        map.onLowMemory();
     }
 }
 
