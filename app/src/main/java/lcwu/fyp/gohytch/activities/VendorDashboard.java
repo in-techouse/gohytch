@@ -572,7 +572,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         notification.setDriverId(user.getPhoneNumber());
         notification.setRead(false);
         Date d = new Date();
-        String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+        String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
         notification.setDate(date);
         notification.setDriverText("You completed the booking of " + activeCustomer.getName());
         notification.setUserText("Your booking has been completed by " + user.getName());
@@ -610,7 +610,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         notification.setDriverId(user.getPhoneNumber());
         notification.setRead(false);
         Date d = new Date();
-        String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+        String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
         notification.setDate(date);
         notification.setDriverText("You cancelled the booking of " + activeCustomer.getName());
         notification.setUserText("Your booking has been cancelled by " + user.getName());

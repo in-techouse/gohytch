@@ -247,7 +247,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 activeBooking.setId(key);
                 activeBooking.setUserId(user.getPhoneNumber());
                 Date d = new Date();
-                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+                String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
                 activeBooking.setBookingTime(date);
                 activeBooking.setLat(marker.getPosition().latitude);
                 activeBooking.setLng(marker.getPosition().longitude);
@@ -310,7 +310,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 notification.setDriverId(activeDriver.getPhoneNumber());
                 notification.setRead(false);
                 Date d = new Date();
-                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+                String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
                 notification.setDate(date);
                 notification.setDriverText("Your booking has been cancelled by " + user.getName());
                 notification.setUserText("You cancelled your booking with " + activeDriver.getName());
