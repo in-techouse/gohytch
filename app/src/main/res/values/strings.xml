@@ -24,7 +24,7 @@
     <string name="title_activity_vendor_dashboard">Gohytch</string>
     <string name="confirm">CONFIRM</string>
     <string name="location">Location</string>
-    <string name="loading_notification">loading_notification</string>
+    <string name="loading_notification">Loading Notifications</string>
     <string name="enter_license_number">Enter License Number</string>
     <string name="Enter_Car_model">Enter Car Model</string>
     <string name="Enter_Registrationnumber">Enter Registration Number</string>

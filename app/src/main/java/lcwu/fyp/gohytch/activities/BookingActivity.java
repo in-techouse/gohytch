@@ -2,12 +2,10 @@ package lcwu.fyp.gohytch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import lcwu.fyp.gohytch.R;
 
 public class BookingActivity extends AppCompatActivity {

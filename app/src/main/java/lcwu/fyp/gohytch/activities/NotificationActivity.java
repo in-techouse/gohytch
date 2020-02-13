@@ -3,23 +3,18 @@ package lcwu.fyp.gohytch.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
@@ -65,9 +60,7 @@ public class NotificationActivity extends AppCompatActivity {
                     Notification notification=d.getValue(Notification.class);
                     if (notification!=null){
                       data.add(notification);
-
                     }
-
                 }
                 if(data.size()>0){
                     notification.setVisibility(View.VISIBLE);
