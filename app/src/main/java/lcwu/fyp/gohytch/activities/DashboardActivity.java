@@ -530,12 +530,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     Log.e("Dashboard", "Active Booking Fare: " + booking.getFare());
                     switch (booking.getStatus()){
                         case "Cancelled": {
-//                            if(activeBooking != null)
                                 onBookingCancelled();
                             break;
                         }
                         case "Completed": {
-//                            if(activeBooking != null)
                                 onBookingCompleted();
                             break;
                         }

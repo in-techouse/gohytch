@@ -363,34 +363,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                         else if (booking.getDriverId().length() < 1 && booking.getStatus().equals("New") && booking.getType().equals(user.getType())) {
                             showBookingDialog(booking);
                         }
-//////                        if (activeBooking == null && booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
-//////                            Log.e("VendorDashboard", "Active Booking Found");
-//////                            activeBooking = booking;
-//////                            sheetBehavior.setHideable(false);
-//////                            sheetBehavior.setSkipCollapsed(false);
-//////                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//////                            loadCustomerDetails();
-//////                            break;
-//////                        }
-//////                        else if(booking.getType().equals(user.getType()) && booking.getDriverId().length() < 1  && booking.getStatus().equals("New")) {
-//////                            Log.e("VendorDashboard" , "Found");
-//////                            if(activeBooking == null) {
-//////                                showBookingDialog(booking);
-//////                            }
-//////                            else if(!activeBooking.getStatus().equals("In Progress")){
-//////                                showBookingDialog(booking);
-//////                            }
-//////                            break;
-//////                        }
-//////                        else if (activeBooking != null && activeBooking.getId().equals(booking.getId()) && booking.getStatus().equals("Cancelled")){
-//////                            Log.e("VendorDashboard", "Booking has been Cancelled");
-//////                            activeBooking = booking;
-//////                            sheetBehavior.setHideable(true);
-//////                            sheetBehavior.setSkipCollapsed(true);
-//////                            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//////                            showCancelledNotification();
-//////                            break;
-//////                        }
                     }
                 }
             }
@@ -660,14 +632,6 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 helpers.showError(VendorDashboard.this, "ERROR", "Something went wrong.");
             }
         });
-    }
-
-    private void showBottomSheet(){
-
-    }
-
-    private void hideBottomSheet(){
-
     }
 
     @Override
