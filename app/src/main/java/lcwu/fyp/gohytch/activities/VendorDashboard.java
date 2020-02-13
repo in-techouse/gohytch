@@ -360,7 +360,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                             loadCustomerDetails();
                         }
-                        else if (booking.getDriverId().length() < 1 && booking.getStatus().equals("New")){
+                        else if (booking.getDriverId().length() < 1 && booking.getStatus().equals("New") && booking.getType().equals(user.getType())) {
                             showBookingDialog(booking);
                         }
 //////                        if (activeBooking == null && booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
@@ -429,11 +429,11 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                         bookingDate.setText(activeBooking.getBookingTime());
                         bookingAddress.setText(activeBooking.getAddress());
                         bookingFare.setText(activeBooking.getFare() + " RS.");
-                        incrementInFare();
                     }
-                    sheetProgress.setVisibility(View.GONE);
-                    mainSheet.setVisibility(View.VISIBLE);
                 }
+                sheetProgress.setVisibility(View.GONE);
+                mainSheet.setVisibility(View.VISIBLE);
+                incrementInFare();
             }
 
             @Override
@@ -501,8 +501,8 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     }
 
     private void showCompletedNotification(){
-        helpers.sendNotification(VendorDashboard.this, "Booking Cancelled", "Your booking has been cancelled.");
-        helpers.showError(VendorDashboard.this, "Booking Cancelled", "Your booking with " + activeCustomer.getName() +" has been cancelled.");
+        helpers.sendNotification(VendorDashboard.this, "Booking Completed", "Your booking has been Completed.");
+        helpers.showError(VendorDashboard.this, "Booking Completed", "Your booking with " + activeCustomer.getName() +" has been Completed.");
         sheetBehavior.setHideable(true);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         activeBooking = null;
@@ -591,29 +591,28 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
         activeBooking.setStatus("Completed");
+        final Notification notification = new Notification();
+        final DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        String id = notificationReference.push().getKey();
+        notification.setId(id);
+        notification.setBookingId(activeBooking.getId());
+        notification.setUserId(activeCustomer.getPhoneNumber());
+        notification.setDriverId(user.getPhoneNumber());
+        notification.setRead(false);
+        Date d = new Date();
+        String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+        notification.setDate(date);
+        notification.setDriverText("You completed the booking of " + activeCustomer.getName());
+        notification.setUserText("Your booking has been completed by " + user.getName());
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Bookings");
         reference.child(activeBooking.getId()).setValue(activeBooking).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Notification notification = new Notification();
-                DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
-                String id = notificationReference.push().getKey();
-                notification.setId(id);
-                notification.setBookingId(activeBooking.getId());
-                notification.setUserId(activeCustomer.getPhoneNumber());
-                notification.setDriverId(user.getPhoneNumber());
-                notification.setRead(false);
-                Date d = new Date();
-                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
-                notification.setDate(date);
-                notification.setDriverText("You have completed the of " + activeCustomer.getName());
-                notification.setUserText("Your booking has been completed by " + user.getName());
                 notificationReference.child(notification.getId()).setValue(notification);
                 sheetBehavior.setHideable(true);
                 sheetProgress.setVisibility(View.GONE);
                 mainSheet.setVisibility(View.VISIBLE);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -630,29 +629,28 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
         activeBooking.setStatus("Cancelled");
+        final Notification notification = new Notification();
+        final DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        String id = notificationReference.push().getKey();
+        notification.setId(id);
+        notification.setBookingId(activeBooking.getId());
+        notification.setUserId(activeCustomer.getPhoneNumber());
+        notification.setDriverId(user.getPhoneNumber());
+        notification.setRead(false);
+        Date d = new Date();
+        String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+        notification.setDate(date);
+        notification.setDriverText("You cancelled the booking of " + activeCustomer.getName());
+        notification.setUserText("Your booking has been cancelled by " + user.getName());
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Bookings");
         reference.child(activeBooking.getId()).setValue(activeBooking).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Notification notification = new Notification();
-                DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
-                String id = notificationReference.push().getKey();
-                notification.setId(id);
-                notification.setBookingId(activeBooking.getId());
-                notification.setUserId(activeCustomer.getPhoneNumber());
-                notification.setDriverId(user.getPhoneNumber());
-                notification.setRead(false);
-                Date d = new Date();
-                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
-                notification.setDate(date);
-                notification.setDriverText("You cancelled the booking of " + activeCustomer.getName());
-                notification.setUserText("Your booking has been cancelled by " + user.getName());
                 notificationReference.child(notification.getId()).setValue(notification);
                 sheetBehavior.setHideable(true);
                 sheetProgress.setVisibility(View.GONE);
                 mainSheet.setVisibility(View.VISIBLE);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

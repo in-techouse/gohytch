@@ -511,6 +511,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (timer != null)
             timer.cancel();
 
+        showBottomSheet();
+
+        searching.setVisibility(View.GONE);
+        confirm.setVisibility(View.VISIBLE);
+        selecttype.setVisibility(View.VISIBLE);
+        mainSheet.setVisibility(View.GONE);
+        sheetProgress.setVisibility(View.VISIBLE);
+
         bookingListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -540,22 +548,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         };
         bookingReference.child(activeBooking.getId()).addValueEventListener(bookingListener);
 
-
-        searching.setVisibility(View.GONE);
-        confirm.setVisibility(View.VISIBLE);
-        selecttype.setVisibility(View.VISIBLE);
-        // Show Bottom Sheet
-        mainSheet.setVisibility(View.VISIBLE);
-        showBottomSheet();
-        sheetProgress.setVisibility(View.VISIBLE);
-        mainSheet.setVisibility(View.GONE);
         driverListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Dashboard", "Driver Listener Captured");
                 if(activeDriver == null){
-                    sheetProgress.setVisibility(View.GONE);
-                    mainSheet.setVisibility(View.VISIBLE);
                     driverReference.removeEventListener(driverListener);
                     activeDriver = dataSnapshot.getValue(User.class);
                     if(activeDriver != null) {
@@ -572,6 +569,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         }
                     }
                 }
+                sheetProgress.setVisibility(View.GONE);
+                mainSheet.setVisibility(View.VISIBLE);
             }
 
             @Override
