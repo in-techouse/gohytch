@@ -77,7 +77,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     };
     private DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
     private DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("Users");
-    private ValueEventListener bookingsValueEventListener, bookingValueEventListener, userValueEventListener;
+    private ValueEventListener bookingsValueEventListener, userValueEventListener;
     private MapView map;
     private Helpers helpers;
     private User user;
@@ -94,6 +94,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private User activeCustomer;
     private CircleImageView customerImage;
     private TextView customerName, customerContact, customerEmail, bookingDate, bookingAddress, bookingFare;
+    private Button cancelBooking , completeBooking;
 
 
     @Override
@@ -112,6 +113,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         sheetProgress = findViewById(R.id.vendor_sheetProgress);
         mainSheet = findViewById(R.id.vendor_mainSheet);
+
 
         customerImage = findViewById(R.id.vendor_Image);
         customerName = findViewById(R.id.vendorName);
@@ -347,6 +349,20 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                     final Booking booking = data.getValue(Booking.class);
                     if(booking != null && booking.getDriverId() != null ){
                         Log.e("VendorDashboard", "DataSnapshot: " + data.toString());
+                        if(booking.getStatus().equals("In Progress")){
+                            Log.e("booking" , "Booking status in Progress found");
+                            activeBooking = booking;
+                            loadCustomerDetails();
+                            sheetBehavior.setHideable(false);
+                            bookingReference.removeEventListener(bookingsValueEventListener);
+                            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                            mainSheet.setVisibility(View.VISIBLE);
+                            sheetProgress.setVisibility(View.GONE);
+                        }
+                        else if (booking.getStatus().equals("New")){
+                            showBookingDialog(booking);
+
+                        }
 //                        if (activeBooking == null && booking.getDriverId().equals(user.getPhoneNumber()) && booking.getStatus().equals("In Progress")){
 //                            Log.e("VendorDashboard", "Active Booking Found");
 //                            activeBooking = booking;
@@ -530,8 +546,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         int id = v.getId();
         switch (id){
             case R.id.completeBooking:{
-                sheetProgress.setVisibility(View.VISIBLE);
-                mainSheet.setVisibility(View.GONE);
+                onBookingCompleted();
                 break;
             }
             case R.id.cancelBooking:{
@@ -540,6 +555,45 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             }
         }
     }
+
+    private void onBookingCompleted(){
+        sheetProgress.setVisibility(View.VISIBLE);
+        mainSheet.setVisibility(View.GONE);
+        activeBooking.setStatus("Completed");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Bookings");
+        reference.child(activeBooking.getId()).setValue(activeBooking).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Notification notification = new Notification();
+                DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
+                String id = notificationReference.push().getKey();
+                notification.setId(id);
+                notification.setBookingId(activeBooking.getId());
+                notification.setUserId(activeCustomer.getPhoneNumber());
+                notification.setDriverId(user.getPhoneNumber());
+                notification.setRead(false);
+                Date d = new Date();
+                String date = new SimpleDateFormat("EEE DD, MMM, yyyy HH:mm").format(d);
+                notification.setDate(date);
+                notification.setDriverText("You have completed the of " + activeCustomer.getName());
+                notification.setUserText("Your booking has been completed by " + user.getName());
+                notificationReference.child(notification.getId()).setValue(notification);
+                sheetBehavior.setHideable(true);
+                sheetProgress.setVisibility(View.GONE);
+                mainSheet.setVisibility(View.VISIBLE);
+                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                sheetProgress.setVisibility(View.GONE);
+                mainSheet.setVisibility(View.VISIBLE);
+                helpers.showError(VendorDashboard.this, "ERROR", "Something went wrong.");
+            }
+        });
+    }
+
 
     private void onBookingCancelled(){
         sheetProgress.setVisibility(View.VISIBLE);
@@ -563,6 +617,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 notification.setDriverText("You cancelled the booking of " + activeCustomer.getName());
                 notification.setUserText("Your booking has been cancelled by " + user.getName());
                 notificationReference.child(notification.getId()).setValue(notification);
+                sheetBehavior.setHideable(true);
                 sheetProgress.setVisibility(View.GONE);
                 mainSheet.setVisibility(View.VISIBLE);
                 sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
