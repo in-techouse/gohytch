@@ -483,7 +483,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 for (DataSnapshot d: dataSnapshot.getChildren()){
                     Log.e("Dashboard", "DataSnapShot Each Child: " + d.toString());
                     Booking booking = d.getValue(Booking.class);
-                    if(booking != null && activeBooking == null){
+                    if(booking != null){
                         Log.e("Dashboard", "Booking Status: " + booking.getStatus());
                         if (booking.getStatus().equals("In Progress")) {
                             Log.e("Dashboard", "Booking Status In Progress Found");
@@ -522,12 +522,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     Log.e("Dashboard", "Active Booking Fare: " + booking.getFare());
                     switch (booking.getStatus()){
                         case "Cancelled": {
-                            if(activeBooking != null)
+//                            if(activeBooking != null)
                                 onBookingCancelled();
                             break;
                         }
                         case "Completed": {
-                            if(activeBooking != null)
+//                            if(activeBooking != null)
                                 onBookingCompleted();
                             break;
                         }
@@ -553,21 +553,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Dashboard", "Driver Listener Captured");
-                sheetProgress.setVisibility(View.GONE);
-                mainSheet.setVisibility(View.VISIBLE);
-                driverReference.removeEventListener(driverListener);
-                activeDriver = dataSnapshot.getValue(User.class);
-                if(activeDriver != null) {
-                    //Fil bottomsshhet here
-                    driverName.setText(activeDriver.getName());
-                    driverBookingDate.setText(activeBooking.getBookingTime());
-                    driverBookingAddress.setText(activeBooking.getAddress());
-                    bookingCategory.setText(activeBooking.getType());
-                    if (activeDriver.getImage() != null && activeDriver.getImage().length() > 1) {
-                        Glide.with(getApplicationContext()).load(activeDriver.getImage()).into(driverImage);
-                    }
-                    else {
-                        driverImage.setImageResource(R.drawable.userprofile);
+                if(activeDriver == null){
+                    sheetProgress.setVisibility(View.GONE);
+                    mainSheet.setVisibility(View.VISIBLE);
+                    driverReference.removeEventListener(driverListener);
+                    activeDriver = dataSnapshot.getValue(User.class);
+                    if(activeDriver != null) {
+                        //Fil bottomsshhet here
+                        driverName.setText(activeDriver.getName());
+                        driverBookingDate.setText(activeBooking.getBookingTime());
+                        driverBookingAddress.setText(activeBooking.getAddress());
+                        bookingCategory.setText(activeBooking.getType());
+                        if (activeDriver.getImage() != null && activeDriver.getImage().length() > 1) {
+                            Glide.with(getApplicationContext()).load(activeDriver.getImage()).into(driverImage);
+                        }
+                        else {
+                            driverImage.setImageResource(R.drawable.userprofile);
+                        }
                     }
                 }
             }
