@@ -1,20 +1,26 @@
 package lcwu.fyp.gohytch.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Driver implements Serializable {
     private String licenseNumber, pastExperience;
     private List<String> expertise;
     private double rating;
+    private List<Integer> ratings;
 
-    public Driver() { }
+    public Driver() {
+        expertise = new ArrayList<>();
+        ratings = new ArrayList<>();
+    }
 
-    public Driver(String licenseNumber, String pastExperience, List<String> expertise, double rating) {
+    public Driver(String licenseNumber, String pastExperience, List<String> expertise, double rating, List<Integer> ratings) {
         this.licenseNumber = licenseNumber;
         this.pastExperience = pastExperience;
         this.expertise = expertise;
         this.rating = rating;
+        this.ratings = ratings;
     }
 
     public String getLicenseNumber() {
@@ -47,5 +53,13 @@ public class Driver implements Serializable {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public List<Integer> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Integer> ratings) {
+        this.ratings = ratings;
     }
 }

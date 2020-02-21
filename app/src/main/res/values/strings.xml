@@ -22,7 +22,7 @@
     <string name="Enter_email">Enter Email</string>
     <string name="title_activity_edit_user_profile">Edit Profile</string>
     <string name="title_activity_vendor_dashboard">Gohytch</string>
-    <string name="confirm">CONFIRM</string>
+    <string name="confirm">CONFIRM PICKUP</string>
     <string name="location">Location</string>
     <string name="loading_notification">Loading Notifications</string>
     <string name="enter_license_number">Enter License Number</string>
@@ -32,6 +32,7 @@
     <string name="Enter_CompanyName">Enter CompanyName</string>
     <string name="myLocation">My Location</string>
     <string name="connecting_you_to_near_by_drivers">Connecting you to near by drivers.</string>
+    <string name="perHourRent">Enter Car per Hour Rent</string>
     <string-array name="expertise">
         <item>Taxicab driver</item>
         <item>Chauffeur</item>

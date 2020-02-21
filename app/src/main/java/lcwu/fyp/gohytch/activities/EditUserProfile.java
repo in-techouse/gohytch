@@ -8,13 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.asksira.bsimagepicker.BSImagePicker;
-import com.asksira.bsimagepicker.Utils;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -42,7 +40,7 @@ import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
-public class EditUserProfile extends AppCompatActivity implements View.OnClickListener , BSImagePicker.OnSingleImageSelectedListener , BSImagePicker.ImageLoaderDelegate {
+public class EditUserProfile extends AppCompatActivity implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -50,17 +48,18 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
-    private EditText profileName , profileEmail , profilePhoneNumber;
+    private EditText profileName, profileEmail, profilePhoneNumber;
     private Button updateBtn;
-    String strPhonenumber,strName,strEmail;
-    ProgressBar SaveProgress;
-    Helpers helpers;
-    ImageView image;
-    boolean isImage = false;
-    Uri imageUri;
-    User user;
-    Session session;
-    DatabaseReference updateReference = FirebaseDatabase.getInstance().getReference().child("Users");
+    private String strPhonenumber, strName, strEmail;
+    private ProgressBar SaveProgress;
+    private Helpers helpers;
+    private ImageView image;
+    private boolean isImage = false;
+    private Uri imageUri;
+    private User user;
+    private Session session;
+    private DatabaseReference updateReference = FirebaseDatabase.getInstance().getReference().child("Users");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,13 +74,17 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         updateBtn = findViewById(R.id.btnUpdate);
         session = new Session(EditUserProfile.this);
         helpers = new Helpers();
-        user =  session.getSession();
+        user = session.getSession();
         fab.setOnClickListener(this);
         updateBtn.setOnClickListener(this);
-        SaveProgress=findViewById(R.id.profileSaveProgress);
+        SaveProgress = findViewById(R.id.profileSaveProgress);
 
         image = findViewById(R.id.profileImage);
-        image.setImageDrawable(getResources().getDrawable(R.drawable.profile));
+        if (user.getImage() != null && user.getImage().length() > 0) {
+            Glide.with(EditUserProfile.this).load(user.getImage()).into(image);
+        } else {
+            image.setImageDrawable(getResources().getDrawable(R.drawable.profile));
+        }
         AppBarLayout app_bar = findViewById(R.id.app_bar);
         app_bar.setExpanded(true, true);
 
@@ -110,8 +113,8 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        int id=view.getId();
-        switch (id){
+        int id = view.getId();
+        switch (id) {
             case R.id.btnUpdate: {
                 Log.e("User", "Button Clicked");
                 boolean isConn = helpers.isConnected(EditUserProfile.this);
@@ -119,8 +122,8 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                     helpers.showError(EditUserProfile.this, "ERROR!", "No Internet Connection. Please check your Internet Connection.");
                     return;
                 }
-                boolean flag=isValid();
-                if(flag){
+                boolean flag = isValid();
+                if (flag) {
                     SaveProgress.setVisibility(View.VISIBLE);
                     updateBtn.setVisibility(View.GONE);
                     user.setEmail(strEmail);
@@ -129,10 +132,9 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                     Log.e("Login", "Email: " + user.getEmail());
                     Log.e("Login", "Name: " + user.getName());
                     Log.e("Login", "Phone Number: " + user.getPhoneNumber());
-                    if(isImage){
+                    if (isImage) {
                         uploadImage();
-                    }
-                    else{
+                    } else {
                         user.setImage("");
                         saveUser();
                     }
@@ -140,12 +142,11 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
             }
-            case R.id.profile_nav_gallery:{
+            case R.id.profile_nav_gallery: {
                 boolean flag = hasPermissions(EditUserProfile.this, PERMISSIONS);
-                if(!flag){
+                if (!flag) {
                     ActivityCompat.requestPermissions(EditUserProfile.this, PERMISSIONS, 1);
-                }
-                else{
+                } else {
                     openGallery();
                 }
                 break;
@@ -154,11 +155,10 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Users").child(user.getId());
-//        Uri selectedMediaUri = Uri.parse(imagePath.toString());
         Calendar calendar = Calendar.getInstance();
-        storageReference.child(calendar.getTimeInMillis()+"").putFile(imageUri)
+        storageReference.child(calendar.getTimeInMillis() + "").putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -192,7 +192,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                 });
     }
 
-    private void saveUser(){
+    private void saveUser() {
         Log.e("Login", "Id: " + user.getId());
         Log.e("Login", "Email: " + user.getEmail());
         Log.e("Login", "Name: " + user.getName());
@@ -206,10 +206,15 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                 SaveProgress.setVisibility(View.GONE);
                 updateBtn.setVisibility(View.VISIBLE);
                 session.setSession(user);
-                Intent it=new Intent(EditUserProfile.this,DashboardActivity.class);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(it);
-                finish();
+                if (user.getType().equals("User") || user.getType().equals("None")) {
+                    Intent it = new Intent(EditUserProfile.this, DashboardActivity.class);
+                    startActivity(it);
+                    finish();
+                } else {
+                    Intent it = new Intent(EditUserProfile.this, VendorDashboard.class);
+                    startActivity(it);
+                    finish();
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -221,38 +226,29 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private boolean hasPermissions(Context c, String... permission){
-        for(String p : permission){
-            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+    private boolean hasPermissions(Context c, String... permission) {
+        for (String p : permission) {
+            if (ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
         return true;
     }
 
-    public void openGallery(){
-        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider")
-                .setMaximumDisplayingImages(24) //Default: Integer.MAX_VALUE. Don't worry about performance :)
-                .setSpanCount(3) //Default: 3. This is the number of columns
-                .setGridSpacing(Utils.dp2px(2)) //Default: 2dp. Remember to pass in a value in pixel.
-                .setPeekHeight(Utils.dp2px(360)) //Default: 360dp. This is the initial height of the dialog.
-                .hideCameraTile() //Default: show. Set this if you don't want user to take photo.
-                .hideGalleryTile() //Default: show. Set this if you don't want to further let user select from a gallery app. In such case, I suggest you to set maximum displaying images to Integer.MAX_VALUE.
-                .setTag("A request ID") //Default: null. Set this if you need to identify which picker is calling back your fragment / activity.
-                .build();
+    public void openGallery() {
+        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider").build();
         singleSelectionPicker.show(getSupportFragmentManager(), "picker");
     }
 
 
-
     private boolean isValid() {
         boolean flag = true;
-        strName=profileName.getText().toString();
+        strName = profileName.getText().toString();
         strEmail = profileEmail.getText().toString();
         Log.e("User", "Email: " + strEmail);
         if (strName.length() < 3) {
             profileName.setError("Enter a valid name");
-            flag=false;
+            flag = false;
         } else {
             profileName.setError(null);
         }
@@ -260,7 +256,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         if (strEmail.length() < 6 || !Patterns.EMAIL_ADDRESS.matcher(strEmail).matches()) {
             Log.e("User", "If Email: " + strEmail);
             profileEmail.setError("Enter a valid email");
-            flag=false;
+            flag = false;
         } else {
             Log.e("User", "Else Email: " + strEmail);
             profileEmail.setError(null);
@@ -273,11 +269,12 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         isImage = true;
         imageUri = uri;
         Glide.with(EditUserProfile.this).load(imageUri).into(image);
-
     }
 
     @Override
     public void loadImage(Uri imageUri, ImageView ivImage) {
-
+        isImage = true;
+        this.imageUri = imageUri;
+        Glide.with(EditUserProfile.this).load(imageUri).into(image);
     }
 }

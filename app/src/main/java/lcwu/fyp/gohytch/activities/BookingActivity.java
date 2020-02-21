@@ -48,18 +48,17 @@ public class BookingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
 
-         loading=findViewById(R.id.loadig);
-         noRecord=findViewById(R.id.noRecord);
-         notification=findViewById(R.id.notification);
+        loading = findViewById(R.id.loadig);
+        noRecord = findViewById(R.id.noRecord);
+        notification = findViewById(R.id.notification);
 
         Session session = new Session(BookingActivity.this);
         helpers = new Helpers();
         user = session.getSession();
         data = new ArrayList<>();
-        if(user.getType().equals("None") || user.getType().equals("User")){
+        if (user.getType().equals("None") || user.getType().equals("User")) {
             type = "userId";
-        }
-        else{
+        } else {
             type = "driverId";
         }
         notification.setLayoutManager(new LinearLayoutManager(BookingActivity.this));
@@ -68,9 +67,9 @@ public class BookingActivity extends AppCompatActivity {
         loadBookings();
     }
 
-    private void loadBookings(){
-        if (!helpers.isConnected(BookingActivity.this)){
-            helpers.showError(BookingActivity.this,"ERROR!","No Internet Connection.Please check your Internet Connection");
+    private void loadBookings() {
+        if (!helpers.isConnected(BookingActivity.this)) {
+            helpers.showError(BookingActivity.this, "ERROR!", "No Internet Connection.Please check your Internet Connection");
             return;
         }
         loading.setVisibility(View.VISIBLE);
@@ -79,20 +78,19 @@ public class BookingActivity extends AppCompatActivity {
         reference.orderByChild(type).equalTo(user.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot d : dataSnapshot.getChildren()){
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Booking booking = d.getValue(Booking.class);
-                    if (booking!=null){
+                    if (booking != null) {
                         data.add(booking);
                     }
                 }
-                if(data.size() > 0){
+                if (data.size() > 0) {
                     Collections.reverse(data);
                     //Resume from this
                     adapter.setData(data);
                     notification.setVisibility(View.VISIBLE);
                     noRecord.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     notification.setVisibility(View.GONE);
                     noRecord.setVisibility(View.VISIBLE);
                 }
@@ -113,7 +111,6 @@ public class BookingActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
     }
-
 
 
     @Override

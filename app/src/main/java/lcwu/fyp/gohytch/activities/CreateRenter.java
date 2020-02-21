@@ -3,6 +3,7 @@ package lcwu.fyp.gohytch.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+
 import com.asksira.bsimagepicker.BSImagePicker;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,36 +35,35 @@ import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.smarteist.autoimageslider.SliderViewAdapter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
-public class CreateRenter extends AppCompatActivity  implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate, BSImagePicker.OnMultiImageSelectedListener {
+public class CreateRenter extends AppCompatActivity implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate, BSImagePicker.OnMultiImageSelectedListener {
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
-    Button btnSave;
-//    EditText edtLicenseNumber, edtCar_Model, edtRegistrationNumber, edtsittingCapacity, edtCompany;
-//    String strLicenseNumber,strCar_Model,strRegistrationNumber,strsittingCapacity,strCompany;
-    ProgressBar saveProgress;
-//    TextView chooseImage, ChooseCarImage;
-    Helpers helpers;
+    private Button btnSave;
+    private ProgressBar saveProgress;
+    private Helpers helpers;
     private User user;
     private Session session;
     private SliderAdapter adapter;
     private List<Uri> carImages;
     private Renter renter;
-    private EditText licenseNumber, carModel, carRegistrationNumber, sittingCapacity;
+    private EditText licenseNumber, carModel, carRegistrationNumber, sittingCapacity, perHourRent;
     private Spinner carCompany;
-    private String strLicenseNumber, strCarCompany, strCarModel, strCarRegistrationNumber, strSittingCapacity = "";
+    private String strLicenseNumber, strCarCompany, strCarModel, strCarRegistrationNumber, strSittingCapacity, strPerHourRent = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         carRegistrationNumber = findViewById(R.id.carRegistrationNumber);
         sittingCapacity = findViewById(R.id.sittingCapacity);
         btnSave = findViewById(R.id.btnSave);
+        perHourRent = findViewById(R.id.perHourRent);
         saveProgress = findViewById(R.id.saveProgress);
 
         btnSave.setOnClickListener(this);
@@ -114,7 +116,7 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
                     return;
                 }
                 boolean flag = isValid();
-                if (flag){
+                if (flag) {
                     saveProgress.setVisibility(View.VISIBLE);
                     btnSave.setVisibility(View.GONE);
                     renter.setLicenseNumber(strLicenseNumber);
@@ -122,6 +124,7 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
                     renter.setCarModel(strCarModel);
                     renter.setCarRegistrationNumber(strCarRegistrationNumber);
                     renter.setSittingCapacity(strSittingCapacity);
+                    renter.setPerHourRate(Integer.parseInt(strPerHourRent));
                     uploadImage(0);
                 }
                 break;
@@ -129,10 +132,9 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
             }
             case R.id.nav_gallery: {
                 boolean flag = hasPermissions(CreateRenter.this, PERMISSIONS);
-                if(!flag){
+                if (!flag) {
                     ActivityCompat.requestPermissions(CreateRenter.this, PERMISSIONS, 1);
-                }
-                else{
+                } else {
                     openGallery();
                 }
                 break;
@@ -140,33 +142,32 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         }
     }
 
-    private void uploadImage(final int count){
-        final StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
-        Calendar calendar=Calendar.getInstance();
-        storageReference.child(calendar.getTimeInMillis()+"").putFile(carImages.get(count)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void uploadImage(final int count) {
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Renters").child(user.getPhoneNumber());
+        Calendar calendar = Calendar.getInstance();
+        storageReference.child(calendar.getTimeInMillis() + "").putFile(carImages.get(count)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.e("Renter","in OnSuccess: " + uri.toString());
+                        Log.e("Renter", "in OnSuccess: " + uri.toString());
                         renter.getImages().add(uri.toString());
-                        if(renter.getImages().size() == carImages.size()){
+                        if (renter.getImages().size() == carImages.size()) {
                             Log.e("Renter", "Car Image Size: " + carImages.size());
                             Log.e("Renter", "Renter Car Image Size: " + renter.getImages().size());
                             saveToDatabase();
-                        }
-                        else{
-                            uploadImage(count+1);
+                        } else {
+                            uploadImage(count + 1);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Renter","DownloadUrl: " + e.getMessage());
+                        Log.e("Renter", "DownloadUrl: " + e.getMessage());
                         btnSave.setVisibility(View.VISIBLE);
                         saveProgress.setVisibility(View.GONE);
-                        helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+                        helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
                     }
                 });
 
@@ -182,11 +183,12 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
             }
         });
     }
-    private void saveToDatabase(){
-        Log.e("Renter","Call received in save to database");
+
+    private void saveToDatabase() {
+        Log.e("Renter", "Call received in save to database");
         user.setType("Renter");
         user.setRenter(renter);
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Users").child(user.getPhoneNumber());
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getPhoneNumber());
         databaseReference.setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -201,10 +203,10 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("Renter","Save in database failed");
+                Log.e("Renter", "Save in database failed");
                 btnSave.setVisibility(View.VISIBLE);
                 saveProgress.setVisibility(View.GONE);
-                helpers.showError(CreateRenter.this,"ERROR!","Something went wrong.\nPlease check your connection");
+                helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
             }
 
         });
@@ -225,19 +227,19 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
                 .isMultiSelect() //Set this if you want to use multi selection mode.
                 .setMinimumMultiSelectCount(1) //Default: 1.
                 .setMaximumMultiSelectCount(2) //Default: Integer.MAX_VALUE (i.e. User can select as many images as he/she wants)
-                .setMultiSelectBarBgColor(android.R.color.white) //Default: #FFFFFF. You can also set it to a translucent color.
-                .setMultiSelectTextColor(R.color.primary_text) //Default: #212121(Dark grey). This is the message in the multi-select bottom bar.
-                .setMultiSelectDoneTextColor(R.color.colorAccent) //Default: #388e3c(Green). This is the color of the "Done" TextView.
-                .setOverSelectTextColor(R.color.error_text) //Default: #b71c1c. This is the color of the message shown when user tries to select more than maximum select count.
-                .disableOverSelectionMessage() //You can also decide not to show this over select message.
+//                .setMultiSelectBarBgColor(android.R.color.white) //Default: #FFFFFF. You can also set it to a translucent color.
+//                .setMultiSelectTextColor(R.color.primary_text) //Default: #212121(Dark grey). This is the message in the multi-select bottom bar.
+//                .setMultiSelectDoneTextColor(R.color.colorAccent) //Default: #388e3c(Green). This is the color of the "Done" TextView.
+//                .setOverSelectTextColor(R.color.error_text) //Default: #b71c1c. This is the color of the message shown when user tries to select more than maximum select count.
+//                .disableOverSelectionMessage() //You can also decide not to show this over select message.
                 .build();
         multiSelectionPicker.show(getSupportFragmentManager(), "picker");
     }
 
 
-    private boolean hasPermissions(Context c, String... permission){
-        for(String p : permission){
-            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+    private boolean hasPermissions(Context c, String... permission) {
+        for (String p : permission) {
+            if (ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
@@ -253,43 +255,53 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
         strCarModel = carModel.getText().toString();
         strCarRegistrationNumber = carRegistrationNumber.getText().toString();
         strSittingCapacity = sittingCapacity.getText().toString();
-        Log.e("Renter","LicnseNumber:" + strLicenseNumber);
+        strPerHourRent = perHourRent.getText().toString();
+
+        Log.e("Renter", "LicnseNumber:" + strLicenseNumber);
         String error = "";
-        if(count == 0){
-            error = error + "*Select at least one car image first.";
+        if (count == 0) {
+            error = error + "*Select at least one car image first.\n";
             flag = false;
         }
-        if (strLicenseNumber.length()<4){
+        if (strLicenseNumber.length() < 4) {
             licenseNumber.setError("Enter a valid License Number");
             flag = false;
-        }else{
+        } else {
             licenseNumber.setError(null);
         }
-        if(carCompany.getSelectedItemPosition() == 0){
+        if (carCompany.getSelectedItemPosition() == 0) {
             flag = false;
-            error = error + "*Select car company first.";
+            error = error + "*Select car company first.\n";
         }
-        
-        if (strCarModel.length()<4){
-            carModel.setError("Enter a valid Car Model");
-            flag=false;
-        }else{
+
+        if (strCarModel.length() < 4) {
+            carModel.setError("Enter valid Car Model");
+            flag = false;
+        } else {
             carModel.setError(null);
         }
-        
-        if (strCarRegistrationNumber.length() < 5){
-            carRegistrationNumber.setError("Enter a valid car Registration Number");
-            flag=false;
-        }else{
+
+        if (strCarRegistrationNumber.length() < 5) {
+            carRegistrationNumber.setError("Enter valid car Registration Number");
+            flag = false;
+        } else {
             carRegistrationNumber.setError(null);
         }
-        if (strSittingCapacity.length() < 1){
-            sittingCapacity.setError("Enter a valid sittingCapacity");
-            flag=false;
-        }else{
+        if (strSittingCapacity.length() < 1) {
+            sittingCapacity.setError("Enter valid sitting capacity");
+            flag = false;
+        } else {
             sittingCapacity.setError(null);
         }
-        if(error.length() > 0){
+
+        if (strPerHourRent.length() < 1) {
+            perHourRent.setError("Enter valid car per hour rent");
+            flag = false;
+        } else {
+            perHourRent.setError(null);
+        }
+
+        if (error.length() > 0) {
             helpers.showError(CreateRenter.this, "ERROR", error);
         }
         return flag;
@@ -309,7 +321,6 @@ public class CreateRenter extends AppCompatActivity  implements View.OnClickList
     public void onMultiImageSelected(List<Uri> uriList, String tag) {
         carImages = uriList;
         adapter.notifyDataSetChanged();
-
     }
 
     public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {

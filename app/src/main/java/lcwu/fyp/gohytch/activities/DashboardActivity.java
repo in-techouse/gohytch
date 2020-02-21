@@ -10,6 +10,28 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -17,27 +39,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import android.os.CountDownTimer;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,19 +57,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.dialog.UserDialog;
@@ -86,11 +92,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private DatabaseReference vendorReference = FirebaseDatabase.getInstance().getReference().child("Users");
     private DatabaseReference driverReference = FirebaseDatabase.getInstance().getReference().child("Users");
-    private List<User> users = new ArrayList<>();
+    private List<User> renters = new ArrayList<>();
     private DatabaseReference bookingReference = FirebaseDatabase.getInstance().getReference().child("Bookings");
     private Spinner selecttype;
     private ValueEventListener bookingListener, bookingsListener, vendorsListener, driverListener;
-    private Button confirm , cancelBooking;
+    private Button confirm, cancelBooking;
     private LinearLayout searching;
     private ProgressBar sheetProgress;
     private RelativeLayout mainSheet;
@@ -98,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private User activeDriver;
     private CountDownTimer timer;
     private BottomSheetBehavior sheetBehavior;
-    private TextView driverName  , driverBookingDate , driverBookingAddress , bookingCategory;
+    private TextView driverName, driverBookingDate, driverBookingAddress, bookingCategory;
     private CircleImageView driverImage;
 
     @Override
@@ -135,6 +141,25 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         CircleImageView profile_Image = header.findViewById(R.id.profile_image);
         locationAddress = findViewById(R.id.locationAddress);
         selecttype = findViewById(R.id.selecttype);
+
+        selecttype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 2){
+                    Intent it = new Intent(DashboardActivity.this, SelectRenter.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("users", (Serializable) renters);
+                    it.putExtras(bundle);
+                    startActivity(it);
+                    selecttype.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         confirm = findViewById(R.id.confirm);
         confirm.setOnClickListener(this);
         searching = findViewById(R.id.searching);
@@ -148,11 +173,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         cancelBooking.setOnClickListener(this);
 
 
-
         profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
-        if(user.getImage() != null && user.getImage().length() > 5){
+        if (user.getImage() != null && user.getImage().length() > 5) {
             Glide.with(DashboardActivity.this).load(user.getImage()).into(profile_Image);
         }
         map = findViewById(R.id.map);
@@ -164,6 +188,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 @Override
                 public void onMapReady(GoogleMap gM) {
                     Log.e("Maps", "Call back received");
+                    View locationButton = ((View) map.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                    RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+                    // position on right bottom
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    rlp.setMargins(0, 350, 50, 0);
+
                     googleMap = gM;
                     LatLng defaultPosition = new LatLng(31.5204, 74.3487);
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(defaultPosition).zoom(12).build();
@@ -183,9 +214,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
-    private boolean hasPermissions(Context c, String... permission){
-        for(String p : permission){
-            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+    private boolean hasPermissions(Context c, String... permission) {
+        for (String p : permission) {
+            if (ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
@@ -194,10 +225,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void enableLocation() {
         boolean flag = hasPermissions(DashboardActivity.this, PERMISSIONS);
-        if(!flag){
+        if (!flag) {
             ActivityCompat.requestPermissions(DashboardActivity.this, PERMISSIONS, 1);
-        }
-        else{
+        } else {
             googleMap.setMyLocationEnabled(true);
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -221,7 +251,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1){
+        if (requestCode == 1) {
             enableLocation();
         }
     }
@@ -232,11 +262,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         switch (id) {
             case R.id.confirm: {
                 if (!helpers.isConnected(DashboardActivity.this)) {
-                    helpers.showError(DashboardActivity.this , "Connection Error" , "Check your Internet Connection");
+                    helpers.showError(DashboardActivity.this, "Connection Error", "Check your Internet Connection");
                     return;
                 }
                 if (selecttype.getSelectedItemPosition() == 0) {
-                    helpers.showError(DashboardActivity.this, "Service Type" , "Choose a Type First");
+                    helpers.showError(DashboardActivity.this, "Service Type", "Choose a Type First");
+                    return;
+                }
+                if(selecttype.getSelectedItemPosition() == 2){
+                    Intent it = new Intent(DashboardActivity.this, SelectRenter.class);
+                    startActivity(it);
                     return;
                 }
                 searching.setVisibility(View.VISIBLE);
@@ -264,17 +299,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                             public void onTick(long millisUntilFinished) {
                                 Log.e("Dashboard", "OnTick");
                             }
+
                             @Override
                             public void onFinish() {
                                 Log.e("Dashboard", "onFinish");
-                                if(activeBooking.getStatus().equals("New")){
+                                if (activeBooking.getStatus().equals("New")) {
                                     activeBooking.setStatus("Rejected");
                                     bookingReference.child(activeBooking.getId()).setValue(activeBooking);
                                     searching.setVisibility(View.GONE);
                                     confirm.setVisibility(View.VISIBLE);
                                     selecttype.setVisibility(View.VISIBLE);
-                                    helpers.showError(DashboardActivity.this,"Booking Error", "No Driver/Renter Available Please Try Again Later!");
-                                }else if (activeBooking.getStatus().equals("In Progress")){
+                                    helpers.showError(DashboardActivity.this, "Booking Error", "No Driver/Renter Available Please Try Again Later!");
+                                } else if (activeBooking.getStatus().equals("In Progress")) {
                                     searching.setVisibility(View.GONE);
                                     confirm.setVisibility(View.VISIBLE);
                                     selecttype.setVisibility(View.VISIBLE);
@@ -292,14 +328,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         searching.setVisibility(View.GONE);
                         confirm.setVisibility(View.VISIBLE);
                         selecttype.setVisibility(View.VISIBLE);
-                        helpers.showError(DashboardActivity.this, "Booking Error" , "Something Went Wrong");
+                        helpers.showError(DashboardActivity.this, "Booking Error", "Something Went Wrong");
                     }
                 });
 
                 break;
             }
-            case R.id.cancelDriverBooking : {
-                Log.e("booking" , "Click Captured");
+            case R.id.cancelDriverBooking: {
+                Log.e("booking", "Click Captured");
                 activeBooking.setStatus("Cancelled");
                 final Notification notification = new Notification();
                 final DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
@@ -322,7 +358,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Booking" , "Booking cancellation failed");
+                        Log.e("Booking", "Booking cancellation failed");
                     }
                 });
                 break;
@@ -386,7 +422,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
-                                    updateUserLocation(me.latitude ,  me.longitude);
+                                    updateUserLocation(me.latitude, me.longitude);
                                     //call fun here
                                 }
                             } catch (Exception e) {
@@ -401,36 +437,35 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     helpers.showError(DashboardActivity.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             helpers.showError(DashboardActivity.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected (@NonNull MenuItem menuItem)
-    {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(DashboardActivity.this, BookingActivity.class);
+                Intent it = new Intent(DashboardActivity.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it = new Intent(DashboardActivity.this , NotificationActivity.class);
+                Intent it = new Intent(DashboardActivity.this, NotificationActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_profile): {
-                Intent it = new Intent(DashboardActivity.this , EditUserProfile.class);
+                Intent it = new Intent(DashboardActivity.this, EditUserProfile.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Logout): {
                 auth.signOut();
                 session.destroySession();
-                Intent it=new Intent(DashboardActivity.this,LoginActivity.class);
+                Intent it = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(it);
                 finish();
                 break;
@@ -442,12 +477,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     }
 
-    private void loadVendors(){
+    private void loadVendors() {
         vendorsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Dashboard", "Vendors Listener Captured");
-                for (DataSnapshot d:dataSnapshot.getChildren()){
+                renters.clear();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
                     User u = d.getValue(User.class);
                     if (u != null && (u.getType().equals("Renter") || u.getType().equals("Driver"))) {
                         LatLng user_location = new LatLng(u.getLat(), u.getLng());
@@ -463,33 +499,36 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         Marker marker = googleMap.addMarker(markerOptions);
                         marker.showInfoWindow();
                         marker.setTag(u);
-                        users.add(u);
+                        if(u.getType().equals("Renter")){
+                            renters.add(u);
+                        }
                     }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
 
         vendorReference.addValueEventListener(vendorsListener);
     }
 
-    private void listenToBookingChanges(){
+    private void listenToBookingChanges() {
         bookingsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Dashboard", "Bookings Listener");
-                for (DataSnapshot d: dataSnapshot.getChildren()){
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Log.e("Dashboard", "DataSnapShot Each Child: " + d.toString());
                     Booking booking = d.getValue(Booking.class);
-                    if(booking != null){
+                    if (booking != null) {
                         Log.e("Dashboard", "Booking Status: " + booking.getStatus());
                         if (booking.getStatus().equals("In Progress")) {
                             Log.e("Dashboard", "Booking Status In Progress Found");
                             activeBooking = booking;
                             bookingReference.removeEventListener(bookingsListener);
-                            if(vendorsListener != null){
+                            if (vendorsListener != null) {
                                 vendorReference.removeEventListener(vendorsListener);
                             }
                             Log.e("Dashboard", "Bookings Listener Removed");
@@ -502,12 +541,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
         bookingReference.orderByChild("userId").equalTo(user.getPhoneNumber()).addValueEventListener(bookingsListener);
     }
 
-    private void onInProgress(){
+    private void onInProgress() {
         if (timer != null)
             timer.cancel();
 
@@ -525,16 +565,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Log.e("Dashboard", "Booking Listener");
                 Booking booking = dataSnapshot.getValue(Booking.class);
                 Log.e("Dashboard", "Active Booking Updated");
-                if(booking != null && activeBooking != null){
+                if (booking != null && activeBooking != null) {
                     Log.e("Dashboard", "Active Booking Status: " + booking.getStatus());
                     Log.e("Dashboard", "Active Booking Fare: " + booking.getFare());
-                    switch (booking.getStatus()){
+                    switch (booking.getStatus()) {
                         case "Cancelled": {
-                                onBookingCancelled();
+                            onBookingCancelled();
                             break;
                         }
                         case "Completed": {
-                                onBookingCompleted();
+                            onBookingCompleted();
                             break;
                         }
                     }
@@ -542,7 +582,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
         bookingReference.child(activeBooking.getId()).addValueEventListener(bookingListener);
 
@@ -550,10 +591,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("Dashboard", "Driver Listener Captured");
-                if(activeDriver == null){
+                if (activeDriver == null) {
                     driverReference.removeEventListener(driverListener);
                     activeDriver = dataSnapshot.getValue(User.class);
-                    if(activeDriver != null) {
+                    if (activeDriver != null) {
                         //Fil bottomsshhet here
                         driverName.setText(activeDriver.getName());
                         driverBookingDate.setText(activeBooking.getBookingTime());
@@ -561,8 +602,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         bookingCategory.setText(activeBooking.getType());
                         if (activeDriver.getImage() != null && activeDriver.getImage().length() > 1) {
                             Glide.with(getApplicationContext()).load(activeDriver.getImage()).into(driverImage);
-                        }
-                        else {
+                        } else {
                             driverImage.setImageResource(R.drawable.userprofile);
                         }
                     }
@@ -572,26 +612,27 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
 
         driverReference.child(activeBooking.getDriverId()).addValueEventListener(driverListener);
     }
 
-    private void showBottomSheet(){
+    private void showBottomSheet() {
         sheetBehavior.setHideable(false);
         sheetBehavior.setSkipCollapsed(false);
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    private void onBookingCancelled(){
+    private void onBookingCancelled() {
         bookingReference.child(activeBooking.getId()).removeEventListener(bookingListener);
         removeListeners();
         helpers.showError(DashboardActivity.this, "ERROR", "Your booking has been cancelled.");
         helpers.sendNotification(DashboardActivity.this, "BOOKING", "Your booking has been cancelled.");
     }
 
-    private void onBookingCompleted(){
+    private void onBookingCompleted() {
         bookingReference.child(activeBooking.getId()).removeEventListener(bookingListener);
         removeListeners();
         helpers.showError(DashboardActivity.this, "Your Booking has been marked as completed.", "");
@@ -599,7 +640,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void updateUserLocation(double lat, double lng) {
-        Log.e("location" , "Update location called");
+        Log.e("location", "Update location called");
         user.setLat(lat);
         user.setLng(lng);
         session.setSession(user);
@@ -607,45 +648,46 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     @Override
-    protected void onPause () {
+    protected void onPause() {
         super.onPause();
         map.onPause();
     }
 
     @Override
-    protected void onResume () {
+    protected void onResume() {
         super.onResume();
         map.onResume();
     }
 
     @Override
-    public void onLowMemory () {
+    public void onLowMemory() {
         super.onLowMemory();
         map.onLowMemory();
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
         map.onDestroy();
         removeAllDatabaseListeners();
     }
-    private void removeAllDatabaseListeners(){
-        if(bookingListener != null){
+
+    private void removeAllDatabaseListeners() {
+        if (bookingListener != null) {
             bookingReference.removeEventListener(bookingListener);
         }
-        if(bookingsListener != null){
+        if (bookingsListener != null) {
             bookingReference.removeEventListener(bookingsListener);
         }
-        if(vendorsListener != null){
+        if (vendorsListener != null) {
             vendorReference.removeEventListener(vendorsListener);
         }
-        if(driverListener != null){
+        if (driverListener != null) {
             driverReference.removeEventListener(driverListener);
         }
     }
 
-    private void removeListeners(){
+    private void removeListeners() {
         removeAllDatabaseListeners();
         sheetBehavior.setHideable(true);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);

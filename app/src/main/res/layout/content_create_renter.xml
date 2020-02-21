@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,100 +9,102 @@
     tools:showIn="@layout/activity_create_renter">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingTop="20dp"
-        android:paddingBottom="20dp">
+        android:paddingBottom="260dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_margin="12dp">
+            android:layout_margin="7dp"
+            android:padding="5dp">
+
             <EditText
                 android:id="@+id/licenseNumber"
-                android:inputType="number"
-                android:hint="@string/enter_license_number"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_license_number"
+                android:inputType="number"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
-            android:entries="@array/carCompany"
-            android:padding="12dp"
-            android:layout_margin="12dp"
             android:id="@+id/carCompany"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:entries="@array/carCompany"
+            android:paddingStart="5dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="12dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_margin="12dp">
+            android:layout_margin="7dp"
+            android:padding="5dp">
+
             <EditText
                 android:id="@+id/carModel"
-                android:inputType="text"
-                android:hint="@string/Enter_Car_model"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="@string/Enter_Car_model"
+                android:inputType="text"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_margin="12dp">
+            android:layout_margin="7dp"
+            android:padding="5dp">
+
             <EditText
                 android:id="@+id/carRegistrationNumber"
-                android:inputType="text"
-                android:hint="@string/Enter_Registrationnumber"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="@string/Enter_Registrationnumber"
+                android:inputType="text"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:layout_margin="12dp">
+            android:layout_margin="7dp"
+            android:padding="5dp">
+
             <EditText
                 android:id="@+id/sittingCapacity"
-                android:inputType="number"
-                android:hint="@string/Enter_sittingCapacity"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="@string/Enter_sittingCapacity"
+                android:inputType="number"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
-
-        <Button
-            android:id="@+id/btnSave"
-            android:text="Save"
-            android:layout_marginTop="15dp"
-            android:textSize="22sp"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/saveProgress"
-            android:layout_marginTop="@dimen/marginLayout"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:padding="5dp">
 
+            <EditText
+                android:id="@+id/perHourRent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/perHourRent"
+                android:inputType="number"
+                android:textAlignment="center" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

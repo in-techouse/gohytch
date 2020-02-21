@@ -1,17 +1,21 @@
 package lcwu.fyp.gohytch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.rbddevs.splashy.Splashy;
+
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Session;
 
 
-public class SplashActivity extends AppCompatActivity{
+public class SplashActivity extends AppCompatActivity {
 
     Splashy splashy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,22 +25,20 @@ public class SplashActivity extends AppCompatActivity{
         new Splashy.OnComplete() {
             @Override
             public void onComplete() {
-                Session session=new Session(SplashActivity.this);
+                Session session = new Session(SplashActivity.this);
                 Log.e("Splashy", "OnComplete 1");
-                if(session.getSession()==null){
-                    Intent it=new Intent(SplashActivity.this,LoginActivity.class);
+                if (session.getSession() == null) {
+                    Intent it = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(it);
                     finish();
-                }
-                else{
+                } else {
                     Log.e("Splashy", "User Type: " + session.getSession().getType());
-                    if(session.getSession().getType().equals("User") || session.getSession().getType().equals("None")){
-                        Intent it=new Intent(SplashActivity.this,DashboardActivity.class);
+                    if (session.getSession().getType().equals("User") || session.getSession().getType().equals("None")) {
+                        Intent it = new Intent(SplashActivity.this, DashboardActivity.class);
                         startActivity(it);
                         finish();
-                    }
-                    else{
-                        Intent it=new Intent(SplashActivity.this,VendorDashboard.class);
+                    } else {
+                        Intent it = new Intent(SplashActivity.this, VendorDashboard.class);
                         startActivity(it);
                         finish();
                     }
@@ -47,8 +49,8 @@ public class SplashActivity extends AppCompatActivity{
         setSplashy();
     }
 
-   void setSplashy() {
-       new Splashy(this)         // For JAVA : new Splashy(this)
+    void setSplashy() {
+        new Splashy(this)         // For JAVA : new Splashy(this)
                 .setLogo(R.drawable.logo)
                 .setTitle("GOHYTCH")
                 .setTitleColor("#0000FF")
@@ -56,8 +58,8 @@ public class SplashActivity extends AppCompatActivity{
                 .setProgressColor(R.color.white)
                 .setFullScreen(true)
                 .setTime(2000)
-               .showProgress(true)
-               .setAnimation(Splashy.Animation.SLIDE_IN_TOP_BOTTOM, 1000)
-               .show();
+                .showProgress(true)
+                .setAnimation(Splashy.Animation.SLIDE_IN_TOP_BOTTOM, 1000)
+                .show();
     }
 }

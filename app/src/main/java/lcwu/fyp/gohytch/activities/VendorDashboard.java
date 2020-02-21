@@ -13,6 +13,27 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -29,17 +50,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import android.os.CountDownTimer;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.view.GravityCompat;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,17 +59,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jeevandeshmukh.fancybottomsheetdialoglib.FancyBottomSheetDialog;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.director.Helpers;
@@ -94,7 +98,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private User activeCustomer;
     private CircleImageView customerImage;
     private TextView customerName, customerContact, customerEmail, bookingDate, bookingAddress, bookingFare;
-    private Button cancelBooking , completeBooking;
+    private Button cancelBooking, completeBooking;
 
 
     @Override
@@ -148,7 +152,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         profile_Phone.setText(user.getPhoneNumber());
         type.setText(user.getType());
 
-        if(user.getImage() != null && user.getImage().length() > 5){
+        if (user.getImage() != null && user.getImage().length() > 5) {
             Glide.with(getApplicationContext()).load(user.getImage()).into(profile_Image);
         }
         map = findViewById(R.id.map);
@@ -161,6 +165,12 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 @Override
                 public void onMapReady(GoogleMap gM) {
                     Log.e("Maps", "Call back received");
+                    View locationButton = ((View) map.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                    RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+                    // position on right bottom
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                    rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    rlp.setMargins(0, 350, 50, 0);
                     googleMap = gM;
                     LatLng defaultPosition = new LatLng(31.5204, 74.3487);
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(defaultPosition).zoom(12).build();
@@ -174,9 +184,9 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         }
     }
 
-    private boolean hasPermissions(Context c, String... permission){
-        for(String p : permission){
-            if(ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED){
+    private boolean hasPermissions(Context c, String... permission) {
+        for (String p : permission) {
+            if (ActivityCompat.checkSelfPermission(c, p) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
@@ -185,10 +195,9 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
     public void enableLocation() {
         boolean flag = hasPermissions(VendorDashboard.this, PERMISSIONS);
-        if(!flag){
+        if (!flag) {
             ActivityCompat.requestPermissions(VendorDashboard.this, PERMISSIONS, 1);
-        }
-        else{
+        } else {
             googleMap.setMyLocationEnabled(true);
             googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
@@ -212,7 +221,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1){
+        if (requestCode == 1) {
             enableLocation();
         }
     }
@@ -272,6 +281,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                                         strAddress = strAddress + "" + address.getAddressLine(i);
                                     }
                                     locationAddress.setText(strAddress);
+                                    updateUserLocation(me.latitude, me.longitude);
                                 }
                             } catch (Exception e) {
                                 helpers.showError(VendorDashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -286,11 +296,18 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                     helpers.showError(VendorDashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             helpers.showError(VendorDashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
         }
     }
 
+    private void updateUserLocation(double lat, double lng) {
+        Log.e("location", "Update location called");
+        user.setLat(lat);
+        user.setLng(lng);
+        session.setSession(user);
+        userReference.child(user.getPhoneNumber()).setValue(user);
+    }
 
 
     @Override
@@ -299,24 +316,24 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
         switch (id) {
             case (R.id.nav_Booking): {
-                Intent it=new Intent(VendorDashboard.this, BookingActivity.class);
+                Intent it = new Intent(VendorDashboard.this, BookingActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Notification): {
-                Intent it=new Intent(VendorDashboard.this, NotificationActivity.class);
+                Intent it = new Intent(VendorDashboard.this, NotificationActivity.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_profile): {
-                Intent it = new Intent(VendorDashboard.this , EditUserProfile.class);
+                Intent it = new Intent(VendorDashboard.this, EditUserProfile.class);
                 startActivity(it);
                 break;
             }
             case (R.id.nav_Logout): {
                 auth.signOut();
                 session.destroySession();
-                Intent it=new Intent(VendorDashboard.this,LoginActivity.class);
+                Intent it = new Intent(VendorDashboard.this, LoginActivity.class);
                 startActivity(it);
                 finish();
 
@@ -328,39 +345,38 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
         map.onDestroy();
-        if(bookingsValueEventListener != null){
+        if (bookingsValueEventListener != null) {
             bookingReference.removeEventListener(bookingsValueEventListener);
         }
-        if(bookingValueEventListener != null){
+        if (bookingValueEventListener != null) {
             bookingReference.removeEventListener(bookingValueEventListener);
         }
-        if(userValueEventListener != null){
+        if (userValueEventListener != null) {
             userReference.removeEventListener(userValueEventListener);
         }
     }
 
     private void listenToBookings() {
-        Log.e("VendorDashboard" , "in func");
+        Log.e("VendorDashboard", "in func");
         bookingsValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data:dataSnapshot.getChildren()){
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Log.e("VendorDashboard", "Bookings Listener DataSnapshot: " + data.toString());
                     final Booking booking = data.getValue(Booking.class);
-                    if(booking != null && booking.getDriverId() != null ){
+                    if (booking != null && booking.getDriverId() != null) {
                         Log.e("VendorDashboard", "Booking Status: " + booking.getStatus());
-                        if(booking.getStatus().equals("In Progress")){
+                        if (booking.getStatus().equals("In Progress")) {
                             bookingReference.removeEventListener(bookingsValueEventListener);
-                            Log.e("VendorDashboard" , "Booking status in Progress found");
+                            Log.e("VendorDashboard", "Booking status in Progress found");
                             activeBooking = booking;
                             sheetBehavior.setHideable(false);
                             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                             loadCustomerDetails();
-                        }
-                        else if (booking.getDriverId().length() < 1 && booking.getStatus().equals("New") && booking.getType().equals(user.getType())) {
+                        } else if (booking.getDriverId().length() < 1 && booking.getStatus().equals("New") && booking.getType().equals(user.getType())) {
                             showBookingDialog(booking);
                         }
                     }
@@ -369,14 +385,14 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("VendorDashboard" , "in onCancelled "+databaseError.toString());
+                Log.e("VendorDashboard", "in onCancelled " + databaseError.toString());
             }
         };
         bookingReference.addValueEventListener(bookingsValueEventListener);
     }
 
 
-    private void loadCustomerDetails(){
+    private void loadCustomerDetails() {
         Log.e("VendorDashboard", "Call Received to Load Customer");
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
@@ -384,7 +400,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userReference.removeEventListener(userValueEventListener);
-                if(activeCustomer == null) {
+                if (activeCustomer == null) {
                     Log.e("VendorDashboard", "User Value Received, on Data Changed: " + dataSnapshot.toString());
                     activeCustomer = dataSnapshot.getValue(User.class);
                     if (activeCustomer != null) {
@@ -420,16 +436,16 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         listenToActiveBookingChange();
     }
 
-    private void listenToActiveBookingChange(){
+    private void listenToActiveBookingChange() {
         bookingValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("VendorDashboard", "Booking Listener: " + dataSnapshot.toString());
                 Booking booking = dataSnapshot.getValue(Booking.class);
-                if(booking != null && activeBooking != null){
+                if (booking != null && activeBooking != null) {
                     Log.e("VendorDashboard", "Booking Listener, Fare: " + booking.getFare() + " Status: " + booking.getStatus());
-                    switch (booking.getStatus()){
-                        case "Cancelled":{
+                    switch (booking.getStatus()) {
+                        case "Cancelled": {
                             Log.e("VendorDashboard", "Booking Cancelled");
                             activeBooking = booking;
                             showCancelledNotification();
@@ -446,20 +462,23 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
 
         bookingReference.child(activeBooking.getId()).addValueEventListener(bookingValueEventListener);
     }
 
-    private void incrementInFare(){
+    private void incrementInFare() {
         Log.e("VendorDashboard", "Increment in Fare called");
         new CountDownTimer(12000, 12000) {
             @Override
-            public void onTick(long millisUntilFinished) { }
+            public void onTick(long millisUntilFinished) {
+            }
+
             @Override
             public void onFinish() {
-                if(activeBooking != null && activeBooking.getStatus().equals("In Progress")){
+                if (activeBooking != null && activeBooking.getStatus().equals("In Progress")) {
                     String fare = bookingFare.getText().toString();
                     String[] fareArray = fare.split(" ");
                     int totalFare = Integer.parseInt(fareArray[0]);
@@ -472,26 +491,26 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         }.start();
     }
 
-    private void showCompletedNotification(){
+    private void showCompletedNotification() {
         helpers.sendNotification(VendorDashboard.this, "Booking Completed", "Your booking has been Completed.");
-        helpers.showError(VendorDashboard.this, "Booking Completed", "Your booking with " + activeCustomer.getName() +" has been Completed.");
+        helpers.showError(VendorDashboard.this, "Booking Completed", "Your booking with " + activeCustomer.getName() + " has been Completed.");
         sheetBehavior.setHideable(true);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         activeBooking = null;
     }
 
 
-    private void showCancelledNotification(){
+    private void showCancelledNotification() {
         bookingReference.removeEventListener(bookingValueEventListener);
         helpers.sendNotification(VendorDashboard.this, "Booking Cancelled", "Your booking has been cancelled.");
-        helpers.showError(VendorDashboard.this, "Booking Cancelled", "Your booking with " + activeCustomer.getName() +" has been cancelled.");
+        helpers.showError(VendorDashboard.this, "Booking Cancelled", "Your booking with " + activeCustomer.getName() + " has been cancelled.");
         sheetBehavior.setHideable(true);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         activeBooking = null;
         listenToBookings();
     }
 
-    private void showBookingDialog(final Booking booking){
+    private void showBookingDialog(final Booking booking) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(VendorDashboard.this, "1");
         builder.setTicker("New Booking");
         builder.setAutoCancel(true);
@@ -500,25 +519,25 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         builder.setContentTitle("New Booking Found.");
         builder.setContentText("We have a new booking for you. It's time to get some revenue.");
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+        builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
         builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
         builder.build();
         Intent notificationIntent = new Intent(VendorDashboard.this, BookingDetails.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("Booking", booking);
         notificationIntent.putExtras(bundle);
-        PendingIntent conPendingIntent = PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent conPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(conPendingIntent);
-        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager != null) {
-            manager.notify(10,builder.build());
+            manager.notify(10, builder.build());
         }
 
         new FancyBottomSheetDialog.Builder(VendorDashboard.this)
                 .setTitle("New Booking Found")
                 .setMessage("We have a new booking for you. It's time to get some revenue.")
                 .setBackgroundColor(Color.parseColor("#F43636")) //don't use R.color.somecolor
-                .setIcon(R.drawable.ic_action_error,true)
+                .setIcon(R.drawable.ic_action_error, true)
                 .isCancellable(false)
                 .OnNegativeClicked(new FancyBottomSheetDialog.FancyBottomSheetDialogListener() {
                     @Override
@@ -547,19 +566,19 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch (id){
-            case R.id.completeBooking:{
+        switch (id) {
+            case R.id.completeBooking: {
                 onBookingCompleted();
                 break;
             }
-            case R.id.cancelBooking:{
+            case R.id.cancelBooking: {
                 onBookingCancelled();
                 break;
             }
         }
     }
 
-    private void onBookingCompleted(){
+    private void onBookingCompleted() {
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
         activeBooking.setStatus("Completed");
@@ -597,7 +616,7 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     }
 
 
-    private void onBookingCancelled(){
+    private void onBookingCancelled() {
         sheetProgress.setVisibility(View.VISIBLE);
         mainSheet.setVisibility(View.GONE);
         activeBooking.setStatus("Cancelled");
@@ -635,19 +654,19 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     }
 
     @Override
-    protected void onPause () {
+    protected void onPause() {
         super.onPause();
         map.onPause();
     }
 
     @Override
-    protected void onResume () {
+    protected void onResume() {
         super.onResume();
         map.onResume();
     }
 
     @Override
-    public void onLowMemory () {
+    public void onLowMemory() {
         super.onLowMemory();
         map.onLowMemory();
     }

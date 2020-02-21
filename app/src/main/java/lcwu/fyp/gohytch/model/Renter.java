@@ -7,18 +7,25 @@ import java.util.List;
 public class Renter implements Serializable {
     private List<String> images;
     private String licenseNumber, carCompany, carModel, carRegistrationNumber, sittingCapacity;
+    private double rating;
+    private List<Integer> ratings;
+    private int perHourRate;
 
     public Renter() {
         images = new ArrayList<>();
+        ratings = new ArrayList<>();
     }
 
-    public Renter(List<String> images, String licenseNumber, String carCompany, String carModel, String carRegistrationNumber, String sittingCapacity) {
+    public Renter(List<String> images, String licenseNumber, String carCompany, String carModel, String carRegistrationNumber, String sittingCapacity, double rating, List<Integer> ratings, int perHourRate) {
         this.images = images;
         this.licenseNumber = licenseNumber;
         this.carCompany = carCompany;
         this.carModel = carModel;
         this.carRegistrationNumber = carRegistrationNumber;
         this.sittingCapacity = sittingCapacity;
+        this.rating = rating;
+        this.ratings = ratings;
+        this.perHourRate = perHourRate;
     }
 
     public List<String> getImages() {
@@ -67,5 +74,29 @@ public class Renter implements Serializable {
 
     public void setSittingCapacity(String sittingCapacity) {
         this.sittingCapacity = sittingCapacity;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public List<Integer> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Integer> ratings) {
+        this.ratings = ratings;
+    }
+
+    public int getPerHourRate() {
+        return perHourRate;
+    }
+
+    public void setPerHourRate(int perHourRate) {
+        this.perHourRate = perHourRate;
     }
 }
