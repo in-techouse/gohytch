@@ -1,91 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="11dp"
-    android:layout_margin="7dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    android:background="@color/white"
     app:cardCornerRadius="11dp"
-    android:background="@color/white">
+    app:cardElevation="11dp">
+
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="11dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:padding="11dp">
+
         <TextView
-            android:layout_marginTop="5dp"
-            android:textSize="17sp"
-            android:textStyle="bold"
             android:id="@+id/booking"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
 
         <RelativeLayout
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
             <TextView
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="Date"
                 android:id="@+id/dateText"
-                android:layout_alignParentStart="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Date"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/bookingDate"
-                android:textSize="16sp"
-                android:text="Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:text="Date"
+                android:textSize="16sp" />
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/dateText"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:id="@+id/statusText"
-                android:text="Status"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dateText"
+                android:layout_marginTop="10dp"
+                android:text="Status"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
 
             <TextView
-                android:layout_marginTop="10dp"
+                android:id="@+id/bookingStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/bookingDate"
                 android:layout_alignParentRight="true"
-                android:id="@+id/bookingStatus"
-                android:textSize="16sp"
+                android:layout_marginTop="10dp"
                 android:text="Status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp" />
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/statusText"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="fare"
                 android:id="@+id/fareText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/statusText"
+                android:layout_marginTop="10dp"
+                android:text="fare"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
 
             <TextView
-                android:layout_below="@id/bookingStatus"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true"
                 android:id="@+id/bookingFare"
-                android:textSize="16sp"
-                android:text="fare"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bookingStatus"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:text="fare"
+                android:textSize="16sp" />
 
 
         </RelativeLayout>

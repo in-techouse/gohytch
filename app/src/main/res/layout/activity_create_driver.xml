@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,22 +7,22 @@
     tools:context=".activities.CreateDriver">
 
     <Button
-        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
+        android:text="Save"
         android:textColor="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSave"
-        android:textSize="@dimen/textsizeheading"
-        android:text="Save"/>
+        android:textSize="@dimen/textsizeheading" />
 
     <LinearLayout
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/btnSave"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -31,22 +30,23 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:padding="12dp">
+
             <EditText
-                android:textAlignment="center"
                 android:id="@+id/licenseNumber"
-                android:inputType="number"
-                android:hint="@string/enter_license_number"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_license_number"
+                android:inputType="number"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
             android:id="@+id/experience"
-            android:layout_margin="12dp"
-            android:padding="12dp"
-            android:entries="@array/experience"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:entries="@array/experience"
+            android:padding="12dp" />
 
         <com.androidbuts.multispinnerfilter.MultiSpinner
             android:id="@+id/expertise"
@@ -57,12 +57,12 @@
             app:hintText="Select Your Expertise" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/saveProgress"
-            android:layout_marginTop="@dimen/marginLayout"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/marginLayout"
+            android:visibility="gone" />
 
     </LinearLayout>
 

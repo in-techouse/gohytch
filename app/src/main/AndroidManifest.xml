@@ -23,8 +23,8 @@
         android:windowSoftInputMode="stateHidden"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:label="Select Car"
             android:name=".activities.SelectRenter"
+            android:label="Select Car"
             android:parentActivityName=".activities.DashboardActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.BookingDetails" />
@@ -40,16 +40,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/Gohytch" />
 
-        <activity
-            android:name=".activities.CarDetailActivity"
-            android:label="@string/title_activity_car_detail"
-            android:parentActivityName=".activities.DashboardActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.RenterProfileActivity"
-            android:label="@string/title_activity_rental_profile"
-            android:parentActivityName=".activities.DashboardActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"

@@ -10,13 +10,14 @@ public class Renter implements Serializable {
     private double rating;
     private List<Integer> ratings;
     private int perHourRate;
+    private boolean booked;
 
     public Renter() {
         images = new ArrayList<>();
         ratings = new ArrayList<>();
     }
 
-    public Renter(List<String> images, String licenseNumber, String carCompany, String carModel, String carRegistrationNumber, String sittingCapacity, double rating, List<Integer> ratings, int perHourRate) {
+    public Renter(List<String> images, String licenseNumber, String carCompany, String carModel, String carRegistrationNumber, String sittingCapacity, double rating, List<Integer> ratings, int perHourRate, boolean booked) {
         this.images = images;
         this.licenseNumber = licenseNumber;
         this.carCompany = carCompany;
@@ -26,6 +27,15 @@ public class Renter implements Serializable {
         this.rating = rating;
         this.ratings = ratings;
         this.perHourRate = perHourRate;
+        this.booked = booked;
+    }
+
+    public boolean isBooked() {
+        return booked;
+    }
+
+    public void setBooked(boolean booked) {
+        this.booked = booked;
     }
 
     public List<String> getImages() {

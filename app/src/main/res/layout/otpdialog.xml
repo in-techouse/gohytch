@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="12dp"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enter your OTP code here"
         android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <com.mukesh.OtpView
         android:id="@+id/otp_view"
@@ -28,41 +27,39 @@
         app:viewType="line" />
 
     <TextView
+        android:id="@+id/error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/error"
         android:layout_marginTop="15dp"
         android:textAlignment="center"
-        android:textColor="@color/colorDanger"/>
+        android:textColor="@color/colorDanger" />
 
     <TextView
         android:id="@+id/timer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/paddding"
         android:layout_margin="@dimen/paddding"
+        android:padding="@dimen/paddding"
         android:text="2:00"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorPrimaryDark" />
 
     <TextView
         android:id="@+id/ResendOtp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/paddding"
         android:layout_margin="@dimen/paddding"
+        android:padding="@dimen/paddding"
         android:text="Resend code"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorPrimaryDark" />
 
     <ProgressBar
         android:id="@+id/OtpProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center"/>
-
-
+        android:visibility="gone" />
 
 </LinearLayout>

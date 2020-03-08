@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -135,6 +136,14 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem item = menu.findItem(R.id.nav_edit);
+        if(user.getType().equals("Driver")){
+            item.setTitle("Edit Driver");
+        }
+        else {
+            item.setTitle("Edit Renter");
+        }
         View header = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -330,13 +339,21 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                 startActivity(it);
                 break;
             }
+            case (R.id.nav_edit): {
+                if(user.getType().equals("Driver")){
+
+                }
+                else{
+
+                }
+                break;
+            }
             case (R.id.nav_Logout): {
                 auth.signOut();
                 session.destroySession();
                 Intent it = new Intent(VendorDashboard.this, LoginActivity.class);
                 startActivity(it);
                 finish();
-
                 break;
             }
         }

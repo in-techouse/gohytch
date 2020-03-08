@@ -21,6 +21,10 @@
             android:icon="@drawable/userprofile"
             android:title="Profile" />
         <item
+            android:id="@+id/nav_edit"
+            android:icon="@drawable/edit"
+            android:title="Edit Renter" />
+        <item
             android:id="@+id/nav_Logout"
             android:icon="@drawable/logout"
             android:title="Logout" />

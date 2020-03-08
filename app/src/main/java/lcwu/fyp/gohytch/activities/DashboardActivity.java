@@ -499,7 +499,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         Marker marker = googleMap.addMarker(markerOptions);
                         marker.showInfoWindow();
                         marker.setTag(u);
-                        if(u.getType().equals("Renter")){
+                        if(u.getType().equals("Renter") && u.getRenter() != null && !u.getRenter().isBooked()){
                             renters.add(u);
                         }
                     }

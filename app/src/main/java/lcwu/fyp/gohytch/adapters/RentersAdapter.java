@@ -19,6 +19,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.activities.SelectRenter;
 import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
@@ -26,10 +27,12 @@ public class RentersAdapter extends RecyclerView.Adapter<RentersAdapter.RenterHo
 
     private List<User> renters;
     private Context context;
+    private SelectRenter selectRenter;
 
-    public RentersAdapter(List<User> renters, Context c) {
+    public RentersAdapter(List<User> renters, Context c, SelectRenter sr) {
         this.renters = renters;
         context = c;
+        selectRenter = sr;
     }
 
     @NonNull
@@ -59,6 +62,12 @@ public class RentersAdapter extends RecyclerView.Adapter<RentersAdapter.RenterHo
             holder.carModel.setText(renter.getCarModel());
             holder.sittingCapacity.setText("Sitting Capacity: " + renter.getSittingCapacity());
             holder.perHourRent.setText(renter.getPerHourRate() + " RS. per hour");
+            holder.main.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectRenter.showBottomSheet(user);
+                }
+            });
         }
     }
 

@@ -6,6 +6,7 @@
     <color name="colorDanger">#F43636</color>
     <color name="white">#FCFCFC</color>
     <color name="gray">#C9C9C9</color>
+    <color name="lightGray">#E0E0E0</color>
     <color name="colorTextWhite">#FFFFFF</color>
     <color name="colorReject">#DA2B2B</color>
     <color name="colorAccept">#377A08</color>
