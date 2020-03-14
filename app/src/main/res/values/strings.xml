@@ -68,4 +68,48 @@
         <item>KIA</item>
         <item>FAW</item>
     </string-array>
+
+    <string-array name="carCompanySearch">
+        <item>Any</item>
+        <item>Honda</item>
+        <item>Suzuki</item>
+        <item>Hyundai</item>
+        <item>Toyota</item>
+        <item>KIA</item>
+        <item>FAW</item>
+    </string-array>
+
+    <string-array name="carCapacitySearch">
+        <item>Any</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>6+</item>
+    </string-array>
+
+    <string-array name="carRatingSearch">
+        <item>Any</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>4+</item>
+    </string-array>
+
+    <string-array name="carRentSearch">
+        <item>Any</item>
+        <item>100+</item>
+        <item>200+</item>
+        <item>300+</item>
+        <item>400+</item>
+        <item>500+</item>
+        <item>600+</item>
+        <item>700+</item>
+        <item>800+</item>
+        <item>900+</item>
+        <item>1000+</item>
+    </string-array>
 </resources>

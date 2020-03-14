@@ -6,15 +6,118 @@
     android:background="@color/gray"
     tools:context=".activities.SelectRenter">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:background="@color/gray" />
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Car Company" />
+
+            <Spinner
+                android:id="@+id/carCompany"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:entries="@array/carCompanySearch"
+                android:minWidth="170dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Sitting Capacity" />
+
+            <Spinner
+                android:id="@+id/carCapacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:entries="@array/carCapacitySearch"
+                android:minWidth="170dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Rating" />
+
+            <Spinner
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:entries="@array/carRatingSearch"
+                android:minWidth="170dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Car Rent" />
+
+            <Spinner
+                android:id="@+id/carRent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:entries="@array/carRentSearch"
+                android:minWidth="170dp" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray" />
+    </LinearLayout>
+
 
     <include layout="@layout/renter_detail_bottom_sheet" />
 

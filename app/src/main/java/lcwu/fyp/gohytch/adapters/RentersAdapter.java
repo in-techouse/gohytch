@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +16,6 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.activities.SelectRenter;
 import lcwu.fyp.gohytch.model.Renter;
@@ -33,6 +31,11 @@ public class RentersAdapter extends RecyclerView.Adapter<RentersAdapter.RenterHo
         this.renters = renters;
         context = c;
         selectRenter = sr;
+    }
+
+    public void setRenters(List<User> renters) {
+        this.renters = renters;
+        notifyDataSetChanged();
     }
 
     @NonNull

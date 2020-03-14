@@ -4,15 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +39,7 @@ import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
 public class SelectRenter extends AppCompatActivity implements View.OnClickListener {
-    private List<User> renters;
+    private List<User> renters, tempList;
     private RecyclerView list;
     private RentersAdapter adapter;
     private BottomSheetBehavior sheetBehavior;
@@ -46,7 +49,10 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
     private SliderView renterSlider;
     private SliderAdapter sliderAdapter;
     private LinearLayout buttonLayout;
-    private ProgressBar progress;
+    //    private ProgressBar progress;
+    private Spinner carCompany, carCapacity, rating, carRent;
+    private String strCarCompany, strCarCapacity, strRating, strCarRent;
+    private boolean isFirst = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +74,14 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
             finish();
             return;
         }
-
-        Log.e("SelectCar", "Renters List size: " + renters.size());
+        tempList = new ArrayList<>();
+        tempList.addAll(renters);
+        Log.e("SelectCar", "Renters List size: " + renters.size() + " Temp List Size: " + tempList.size());
         list = findViewById(R.id.list);
+        carCompany = findViewById(R.id.carCompany);
+        carCapacity = findViewById(R.id.carCapacity);
+        rating = findViewById(R.id.rating);
+        carRent = findViewById(R.id.carRent);
 
         list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -78,7 +89,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
 
         list.setAdapter(adapter);
 
-        LinearLayout layoutBottomSheet = findViewById(R.id.bottom_sheet);
+        RelativeLayout layoutBottomSheet = findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         sheetBehavior.setHideable(true);
         sheetBehavior.setPeekHeight(0);
@@ -100,13 +111,177 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
         perHourRent = findViewById(R.id.perHourRent);
 
         buttonLayout = findViewById(R.id.buttonLayout);
-        progress = findViewById(R.id.progress);
+//        progress = findViewById(R.id.progress);
+
+
+        carCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirst) {
+                    strCarCompany = carCompany.getSelectedItem().toString();
+                    Log.e("SelectRenter", "Car Company: " + strCarCompany);
+                    filterResults();
+                } else {
+                    Log.e("SelectRenter", "No");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        carCapacity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirst) {
+                    strCarCapacity = carCapacity.getSelectedItem().toString();
+                    Log.e("SelectRenter", "Car Capacity: " + strCarCapacity);
+                    filterResults();
+                } else {
+                    Log.e("SelectRenter", "No");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        rating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirst) {
+                    strRating = rating.getSelectedItem().toString();
+                    Log.e("SelectRenter", "Car Rating: " + strRating);
+                    filterResults();
+                } else {
+                    Log.e("SelectRenter", "No");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        carRent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirst) {
+                    strCarRent = carRent.getSelectedItem().toString();
+                    Log.e("SelectRenter", "Car Rent: " + strCarRent);
+                    filterResults();
+                } else {
+                    Log.e("SelectRenter", "No");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        strCarCompany = strCarCapacity = strRating = strCarRent = "Any";
+        new CountDownTimer(1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                isFirst = true;
+            }
+        }.start();
+    }
+
+    private void filterResults() {
+        renters.clear();
+        if (strCarCompany.equals("Any")) {
+            renters.addAll(tempList);
+        } else {
+            for (User u : tempList) {
+                Log.e("SelectRenter", "Car Company: " + strCarCompany + " Current Car Company: " + u.getRenter().getCarCompany());
+                if (u.getRenter().getCarCompany().equalsIgnoreCase(strCarCompany))
+                    renters.add(u);
+            }
+        }
+        List<User> searchList = new ArrayList<>(renters);
+        renters.clear();
+        Log.e("SelectRenter", "Car Company Filter Completed, Size is: " + searchList.size());
+
+        if (strCarCapacity.equals("Any")) {
+            renters.addAll(searchList);
+        } else if (strCarCapacity.equals("6+")) {
+            for (User u : searchList) {
+                int capacity = Integer.parseInt(u.getRenter().getSittingCapacity());
+                if (capacity > 6) {
+                    renters.add(u);
+                }
+            }
+        } else {
+            for (User u : searchList) {
+                Log.e("SelectRenter", "Car Capacity: " + strCarCapacity + " Current Car Capacity: " + u.getRenter().getSittingCapacity());
+                if (u.getRenter().getSittingCapacity().equalsIgnoreCase(strCarCapacity))
+                    renters.add(u);
+            }
+        }
+
+        Log.e("SelectRenter", "Car Sitting Capacity Filter Completed, Size is: " + renters.size());
+
+        searchList.clear();
+
+        if (strRating.equals("Any")) {
+            searchList.addAll(renters);
+        } else if (strRating.equals("4+")) {
+            for (User u : renters) {
+                double rating = u.getRenter().getRating();
+                double currentSelected = 4;
+                if (rating > currentSelected) {
+                    searchList.add(u);
+                }
+            }
+        } else {
+            for (User u : renters) {
+                double rating = u.getRenter().getRating();
+                double currentSelected = Integer.parseInt(strRating);
+                if (rating == currentSelected) {
+                    searchList.add(u);
+                }
+            }
+        }
+
+        Log.e("SelectRenter", "Car Rating Filter Completed, Size is: " + searchList.size());
+
+        renters.clear();
+
+        if (strCarRent.equals("Any")) {
+            renters.addAll(searchList);
+        } else {
+
+            String arr = strCarRent.substring(0, strCarRent.indexOf('+'));
+            Log.e("SelectRenter", "Rent Plus Index: " + strCarRent.indexOf('+') + ", Sub String is: " + arr);
+            int rent = Integer.parseInt(arr);
+            for (User u : searchList) {
+                if (u.getRenter().getPerHourRate() > rent)
+                    renters.add(u);
+            }
+        }
+        Log.e("SelectRenter", "Car Rent Filter Completed, Size is: " + renters.size());
+
+
+        adapter.setRenters(renters);
+
     }
 
     public void showBottomSheet(User user) {
         if (user != null) {
             sheetBehavior.setHideable(false);
-            sheetBehavior.setPeekHeight(1000);
+            sheetBehavior.setPeekHeight(1400);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             if (user.getRenter() != null) {
                 renterSlider.setSliderAdapter(null);
@@ -146,8 +321,6 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case R.id.book: {
-                buttonLayout.setVisibility(View.GONE);
-                progress.setVisibility(View.VISIBLE);
                 break;
             }
         }
@@ -175,6 +348,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
+
 
     public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
         private List<String> images;
