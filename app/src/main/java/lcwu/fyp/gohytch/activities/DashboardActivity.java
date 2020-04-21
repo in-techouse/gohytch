@@ -694,6 +694,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         loadVendors();
         listenToBookingChanges();
         activeBooking = null;
+
     }
 }
 
