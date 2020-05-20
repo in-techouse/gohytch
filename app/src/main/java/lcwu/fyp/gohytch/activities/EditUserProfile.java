@@ -91,8 +91,6 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         profileName.setText(user.getName());
         profilePhoneNumber.setText(user.getPhoneNumber());
         profileEmail.setText(user.getEmail());
-
-
     }
 
     @Override

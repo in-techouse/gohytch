@@ -6,11 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,6 +31,7 @@ import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
 public class MakeBooking extends AppCompatActivity implements View.OnClickListener {
+    private TextView company, model, sittingCapacity, perHourRent;
     private Session session;
     private User user, renter;
     private Helpers helpers;
@@ -62,12 +65,21 @@ public class MakeBooking extends AppCompatActivity implements View.OnClickListen
         user = session.getSession();
         helpers = new Helpers();
 
-
         renterSlider = findViewById(R.id.renterSlider);
         confirm = findViewById(R.id.confirm);
         progress = findViewById(R.id.progress);
         progress.setVisibility(View.GONE);
         confirm.setOnClickListener(this);
+
+        company = findViewById(R.id.company);
+        model = findViewById(R.id.model);
+        sittingCapacity = findViewById(R.id.sittingCapacity);
+        perHourRent = findViewById(R.id.perHourRent);
+        
+        company.setText(renter.getRenter().getCarCompany());
+        model.setText(renter.getRenter().getCarModel());
+        sittingCapacity.setText(renter.getRenter().getSittingCapacity());
+        perHourRent.setText(renter.getRenter().getPerHourRate() + " RS.");
 
         SliderAdapter sliderAdapter = new SliderAdapter(getApplicationContext());
         renterSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
@@ -89,6 +101,22 @@ public class MakeBooking extends AppCompatActivity implements View.OnClickListen
                 break;
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 
 
