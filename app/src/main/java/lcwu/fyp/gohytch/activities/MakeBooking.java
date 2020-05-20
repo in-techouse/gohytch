@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,13 +32,14 @@ import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
 public class MakeBooking extends AppCompatActivity implements View.OnClickListener {
-    private TextView company, model, sittingCapacity, perHourRent;
+    private TextView company, model, sittingCapacity, perHourRent, location, date, time;
     private Session session;
     private User user, renter;
     private Helpers helpers;
     private SliderView renterSlider;
     private Button confirm;
     private ProgressBar progress;
+    private RelativeLayout selectLocation, selectDate, selectTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +69,29 @@ public class MakeBooking extends AppCompatActivity implements View.OnClickListen
 
         renterSlider = findViewById(R.id.renterSlider);
         confirm = findViewById(R.id.confirm);
+        selectLocation = findViewById(R.id.selectLocation);
+        selectDate = findViewById(R.id.selectDate);
+        selectTime = findViewById(R.id.selectTime);
+
         progress = findViewById(R.id.progress);
         progress.setVisibility(View.GONE);
+
         confirm.setOnClickListener(this);
+        selectLocation.setOnClickListener(this);
+        selectDate.setOnClickListener(this);
+        selectTime.setOnClickListener(this);
 
         company = findViewById(R.id.company);
         model = findViewById(R.id.model);
         sittingCapacity = findViewById(R.id.sittingCapacity);
         perHourRent = findViewById(R.id.perHourRent);
-        
+        location = findViewById(R.id.location);
+        date = findViewById(R.id.date);
+        time = findViewById(R.id.time);
+
         company.setText(renter.getRenter().getCarCompany());
         model.setText(renter.getRenter().getCarModel());
-        sittingCapacity.setText(renter.getRenter().getSittingCapacity());
+        sittingCapacity.setText(renter.getRenter().getSittingCapacity() + " Persons");
         perHourRent.setText(renter.getRenter().getPerHourRate() + " RS.");
 
         SliderAdapter sliderAdapter = new SliderAdapter(getApplicationContext());

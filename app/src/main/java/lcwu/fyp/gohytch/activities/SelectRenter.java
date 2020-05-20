@@ -286,7 +286,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
                 sliderAdapter.setImages(renter.getImages());
                 company.setText(renter.getCarCompany());
                 model.setText(renter.getCarModel());
-                sittingCapacity.setText(renter.getSittingCapacity());
+                sittingCapacity.setText(renter.getSittingCapacity() + " Persons");
                 perHourRent.setText(renter.getPerHourRate() + " RS.");
             }
             if (user.getImage() != null && user.getImage().length() > 0) {

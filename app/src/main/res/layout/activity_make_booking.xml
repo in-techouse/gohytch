@@ -69,6 +69,7 @@
                     android:layout_height="wrap_content"
                     android:text="ABOUT THE RENTER"
                     android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16dp"
                     android:textStyle="bold" />
 
@@ -172,6 +173,7 @@
                     android:layout_height="wrap_content"
                     android:text="PROVIDE BOOKING DETAILS"
                     android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="16dp"
                     android:textStyle="bold" />
 
@@ -182,7 +184,99 @@
                     android:layout_marginBottom="@dimen/mp3"
                     android:background="@color/colorPrimaryDark" />
 
+                <RelativeLayout
+                    android:id="@+id/selectLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/locationIcon"
+                        android:text="Select Pickup Location" />
+
+                    <ImageView
+                        android:id="@+id/locationIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/location" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+                <RelativeLayout
+                    android:id="@+id/selectDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/dateIcon"
+                        android:text="Select Pickup Date" />
+
+                    <ImageView
+                        android:id="@+id/dateIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/calendar" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+
+                <RelativeLayout
+                    android:id="@+id/selectTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/timeIcon"
+                        android:text="Select Pickup Time" />
+
+                    <ImageView
+                        android:id="@+id/timeIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/time" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
 
             </LinearLayout>
         </ScrollView>

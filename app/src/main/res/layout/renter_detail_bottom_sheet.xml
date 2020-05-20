@@ -87,6 +87,7 @@
                     android:layout_marginEnd="@dimen/mp10"
                     android:text="ABOUT THE RENTER"
                     android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="19dp"
                     android:textStyle="bold" />
 
@@ -171,6 +172,7 @@
                     android:layout_marginEnd="@dimen/mp10"
                     android:text="CAR DETAIL"
                     android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="19dp"
                     android:textStyle="bold" />
 
