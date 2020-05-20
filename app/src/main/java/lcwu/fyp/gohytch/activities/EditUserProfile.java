@@ -207,7 +207,7 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                 updateBtn.setVisibility(View.VISIBLE);
                 session.setSession(user);
                 if (user.getType().equals("User") || user.getType().equals("None")) {
-                    Intent it = new Intent(EditUserProfile.this, DashboardActivity.class);
+                    Intent it = new Intent(EditUserProfile.this, Dashboard.class);
                     startActivity(it);
                     finish();
                 } else {

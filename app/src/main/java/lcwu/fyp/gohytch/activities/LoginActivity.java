@@ -1,8 +1,5 @@
 package lcwu.fyp.gohytch.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         session.setSession(u);
                         //start dashboard activity
                         if (u.getType().equals("User") || u.getType().equals("None")) {
-                            Intent it = new Intent(LoginActivity.this, DashboardActivity.class);
+                            Intent it = new Intent(LoginActivity.this, Dashboard.class);
                             it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(it);
                         } else {

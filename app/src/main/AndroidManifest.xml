@@ -23,11 +23,17 @@
         android:windowSoftInputMode="stateHidden"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".activities.MakeBooking"
+            android:label="Make Booking"
+            android:parentActivityName=".activities.SelectRenter" />
+        <activity
             android:name=".activities.SelectRenter"
             android:label="Select Car"
-            android:parentActivityName=".activities.DashboardActivity"
+            android:parentActivityName=".activities.Dashboard"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.BookingDetails" />
+        <activity
+            android:name=".activities.BookingDetails"
+            android:parentActivityName=".activities.BookingActivity" />
         <activity
             android:name=".activities.CreateDriver"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -47,12 +53,12 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.NotificationActivity"
-            android:parentActivityName=".activities.DashboardActivity" />
+            android:parentActivityName=".activities.Dashboard" />
         <activity
             android:name=".activities.BookingActivity"
-            android:parentActivityName=".activities.DashboardActivity" />
+            android:parentActivityName=".activities.Dashboard" />
         <activity
-            android:name=".activities.DashboardActivity"
+            android:name=".activities.Dashboard"
             android:label="@string/title_activity_dashboard"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -60,7 +66,7 @@
             android:name=".activities.EditUserProfile"
             android:label="@string/title_activity_edit_user_profile"
             android:launchMode="singleInstance"
-            android:parentActivityName=".activities.DashboardActivity"
+            android:parentActivityName=".activities.Dashboard"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity

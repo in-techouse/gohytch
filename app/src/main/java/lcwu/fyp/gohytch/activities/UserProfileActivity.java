@@ -194,7 +194,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 SaveProgress.setVisibility(View.GONE);
                 btnSave.setVisibility(View.VISIBLE);
                 session.setSession(user);
-                Intent it = new Intent(UserProfileActivity.this, DashboardActivity.class);
+                Intent it = new Intent(UserProfileActivity.this, Dashboard.class);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(it);
                 finish();

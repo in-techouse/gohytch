@@ -1,10 +1,10 @@
 package lcwu.fyp.gohytch.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.rbddevs.splashy.Splashy;
 
@@ -21,7 +21,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
         new Splashy.OnComplete() {
             @Override
             public void onComplete() {
@@ -34,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                 } else {
                     Log.e("Splashy", "User Type: " + session.getSession().getType());
                     if (session.getSession().getType().equals("User") || session.getSession().getType().equals("None")) {
-                        Intent it = new Intent(SplashActivity.this, DashboardActivity.class);
+                        Intent it = new Intent(SplashActivity.this, Dashboard.class);
                         startActivity(it);
                         finish();
                     } else {
