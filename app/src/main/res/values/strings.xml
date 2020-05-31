@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gohytch</string>
+    <string name="app_name">GOHYTCH</string>
     <string name="enter_phone_number">Enter Phone number</string>
     <string name="title_activity_dashboard">Gohytch</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -33,6 +33,7 @@
     <string name="myLocation">My Location</string>
     <string name="connecting_you_to_near_by_drivers">Connecting you to near by drivers.</string>
     <string name="perHourRent">Enter Car per Hour Rent</string>
+    <string name="apply">APPLY</string>
     <string-array name="expertise">
         <item>Taxicab driver</item>
         <item>Chauffeur</item>
@@ -112,4 +113,6 @@
         <item>900+</item>
         <item>1000+</item>
     </string-array>
+    <string name="title_activity_edit_renter">Edit Renter</string>
+
 </resources>

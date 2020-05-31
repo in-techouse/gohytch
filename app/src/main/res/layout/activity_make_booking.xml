@@ -25,27 +25,35 @@
         app:sliderScrollTimeInSec="1"
         app:sliderStartAutoCycle="true" />
 
-    <Button
-        android:id="@+id/confirm"
+    <LinearLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:text="CONFIRM BOOKING"
-        android:textColor="@color/white" />
+        android:orientation="vertical">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="11dp" />
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="CONFIRM BOOKING"
+            android:textColor="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="11dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/confirm"
+        android:layout_above="@id/bottomLayout"
         android:layout_below="@id/renterSlider"
         android:background="@color/white"
         app:cardElevation="17dp">
@@ -160,6 +168,43 @@
                         android:text="perHourRent" />
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ESTIMATED FARE"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/estimatedFare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="0 RS."
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -246,6 +291,37 @@
                     android:layout_marginBottom="@dimen/mp3"
                     android:background="@color/colorPrimaryDark" />
 
+                <RelativeLayout
+                    android:id="@+id/selectEndDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/endDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/endDateIcon"
+                        android:text="Select End Date" />
+
+                    <ImageView
+                        android:id="@+id/endDateIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/calendar" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
 
                 <RelativeLayout
                     android:id="@+id/selectTime"
@@ -270,6 +346,51 @@
                         android:src="@drawable/time" />
 
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+                <RelativeLayout
+                    android:id="@+id/selectEndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/endTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/endTimeIcon"
+                        android:text="Select End Time" />
+
+                    <ImageView
+                        android:id="@+id/endTimeIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/time" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/mp1"
+                    android:layout_marginTop="@dimen/mp5"
+                    android:layout_marginBottom="@dimen/mp3"
+                    android:background="@color/colorPrimaryDark" />
+
+                <CheckBox
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/withDriver"
+                    android:text="I want car with a driver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
                 <View
                     android:layout_width="match_parent"

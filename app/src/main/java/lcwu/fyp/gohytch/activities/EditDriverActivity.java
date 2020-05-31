@@ -3,6 +3,7 @@ package lcwu.fyp.gohytch.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +32,7 @@ import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Driver;
 import lcwu.fyp.gohytch.model.User;
 
-public class CreateDriver extends AppCompatActivity implements View.OnClickListener {
+public class EditDriverActivity extends AppCompatActivity implements View.OnClickListener {
     private List<String> list;
     private LinkedHashMap<String, Boolean> listArray = new LinkedHashMap<>();
     private EditText licenseNumber;
@@ -48,8 +49,7 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_driver);
-
+        setContentView(R.layout.activity_edit_driver);
 
         btnSave = findViewById(R.id.btnSave);
         licenseNumber = findViewById(R.id.licenseNumber);
@@ -60,24 +60,53 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
         btnSave.setOnClickListener(this);
 
         helpers = new Helpers();
-        driver = new Driver();
 
-        session = new Session(CreateDriver.this);
+        session = new Session(EditDriverActivity.this);
         user = session.getSession();
+        driver = user.getDriver();
+
+        licenseNumber.setText(driver.getLicenseNumber());
+
 
         list = Arrays.asList(getResources().getStringArray(R.array.expertise));
+        List<String> listExperience = Arrays.asList(getResources().getStringArray(R.array.experience));
+        int index = 0;
+        for (int i = 0; i < listExperience.size(); i++) {
+            if (listExperience.get(i).equals(driver.getPastExperience())) {
+                index = i;
+                break;
+            }
+        }
+
+        experience.setSelection(index);
+        List<String> userExpertise = driver.getExpertise();
 
         for (int i = 0; i < list.size(); i++) {
+            boolean found = false;
+            for (int j = 0; j < userExpertise.size(); j++) {
+                Log.e("EditDriver", "Index i: " + i + ", Index J: " + j);
+                Log.e("EditDriver", "List Value: " + list.get(i) + ", User Experties : " + userExpertise.get(j));
+                if (list.get(i).equals(userExpertise.get(j))) {
+                    found = true;
+                    break;
+                }
+            }
             KeyPairBoolData h = new KeyPairBoolData();
             h.setId(i + 1);
             h.setName(list.get(i));
-            h.setSelected(false);
-            listArray.put(list.get(i), false);
+            if (found) {
+                h.setSelected(true);
+                listArray.put(list.get(i), true);
+            } else {
+                h.setSelected(false);
+                listArray.put(list.get(i), false);
+            }
         }
         expertise.setItems(listArray, new MultiSpinnerListener() {
             @Override
             public void onItemsSelected(boolean[] selected) {
                 Log.e("CreateDriver", "Selected List: " + selected.length);
+                listExpertise.clear();
                 for (int i = 0; i < selected.length; i++) {
                     Log.e("CreateDriver", "Index: " + i + " Selected: " + selected[i]);
                     if (selected[i]) {
@@ -87,16 +116,8 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent it = new Intent(CreateDriver.this, Dashboard.class);
-        startActivity(it);
-        finish();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -104,9 +125,9 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.btnSave: {
                 Log.e("Driver", "Button Clicked");
-                boolean isConn = helpers.isConnected(CreateDriver.this);
+                boolean isConn = helpers.isConnected(EditDriverActivity.this);
                 if (!isConn) {
-                    helpers.showError(CreateDriver.this, "Error", "No Internet Connection.Please Check Your Connection and try again later");
+                    helpers.showError(EditDriverActivity.this, "Error", "No Internet Connection.Please Check Your Connection and try again later");
                     return;
                 }
                 boolean flag = isValid();
@@ -129,7 +150,7 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
                                     saveProgress.setVisibility(View.GONE);
                                     session.setSession(user);
                                     Log.e("CreateDriver", "Driver Saved Successfully");
-                                    Intent intent = new Intent(CreateDriver.this, VendorDashboard.class);
+                                    Intent intent = new Intent(EditDriverActivity.this, VendorDashboard.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
@@ -141,7 +162,7 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
                                 public void onFailure(@NonNull Exception e) {
                                     btnSave.setVisibility(View.VISIBLE);
                                     saveProgress.setVisibility(View.GONE);
-                                    helpers.showError(CreateDriver.this, "Error!", "Something went wrong.Please check your connection");
+                                    helpers.showError(EditDriverActivity.this, "Error!", "Something went wrong.Please check your connection");
                                 }
                             });
                 }
@@ -171,8 +192,24 @@ public class CreateDriver extends AppCompatActivity implements View.OnClickListe
             flag = false;
         }
         if (error.length() > 0) {
-            helpers.showError(CreateDriver.this, "ERROR", error);
+            helpers.showError(EditDriverActivity.this, "ERROR", error);
         }
         return flag;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 }

@@ -6,9 +6,22 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
-import com.asksira.bsimagepicker.BSImagePicker;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.bumptech.glide.Glide;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
@@ -19,19 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-
-import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-
+import java.io.File;
 import java.util.Calendar;
 
 import lcwu.fyp.gohytch.R;
@@ -39,7 +40,7 @@ import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
-public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate {
+public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -220,8 +221,23 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void openGallery() {
-        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider").build();
-        singleSelectionPicker.show(getSupportFragmentManager(), "picker");
+        ImagePicker.create(UserProfileActivity.this)
+                .toolbarImageTitle("Tap to select")
+                .single()
+                .start();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            Image img = ImagePicker.getFirstImageOrNull(data);
+            Log.e("User", "Image: " + img.getName());
+            Log.e("User", "Image: " + img.getPath());
+            isImage = true;
+            imageUri = Uri.fromFile(new File(img.getPath()));
+            Glide.with(UserProfileActivity.this).load(imageUri).into(image);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private boolean isValid() {
@@ -243,7 +259,6 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         } else {
             Log.e("User", "Else Email: " + strEmail);
             edtEmail.setError(null);
-
         }
         return flag;
     }
@@ -254,19 +269,5 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         if (requestCode == 1) {
             openGallery();
         }
-    }
-
-    @Override
-    public void onSingleImageSelected(Uri uri, String tag) {
-        isImage = true;
-        imageUri = uri;
-        Glide.with(UserProfileActivity.this).load(imageUri).into(image);
-    }
-
-    @Override
-    public void loadImage(Uri uri, ImageView ivImage) {
-        isImage = true;
-        imageUri = uri;
-        Glide.with(UserProfileActivity.this).load(imageUri).into(image);
     }
 }

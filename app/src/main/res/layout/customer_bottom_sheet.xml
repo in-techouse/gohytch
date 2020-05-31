@@ -51,10 +51,21 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/booking_category"
+                android:id="@+id/driverContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/driver_name"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/driverImage"
+                android:text="Order Details"
+                android:textColor="#444"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/driverEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driverContact"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@+id/driverImage"
                 android:text="Order Details"

@@ -70,7 +70,6 @@ import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Booking;
-import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
 public class Dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -104,8 +103,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     private User activeDriver;
     private CountDownTimer timer;
     private BottomSheetBehavior sheetBehavior;
-    private TextView driverName, driverBookingDate, driverBookingAddress, bookingCategory;
+    private TextView driverName, driverBookingDate, driverBookingAddress, driverContact, driverEmail;
     private CircleImageView driverImage;
+    private Button cancelBooking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,8 +168,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
         driverImage = findViewById(R.id.driverImage);
         driverBookingDate = findViewById(R.id.driver_bookingDate);
         driverBookingAddress = findViewById(R.id.driver_bookingAddress);
-        bookingCategory = findViewById(R.id.booking_category);
-        Button cancelBooking = findViewById(R.id.cancelDriverBooking);
+        driverContact = findViewById(R.id.driverContact);
+        driverEmail = findViewById(R.id.driverEmail);
+        cancelBooking = findViewById(R.id.cancelDriverBooking);
         cancelBooking.setOnClickListener(this);
 
 
@@ -207,7 +208,7 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
             helpers.showError(Dashboard.this, "Error", "Something went wrong.Try again");
         }
         if (user.getType() == null || user.getType().equals("None")) {
-            UserDialog userDialog = new UserDialog(Dashboard.this);
+            UserDialog userDialog = new UserDialog(Dashboard.this, Dashboard.this);
             userDialog.setCanceledOnTouchOutside(false);
             userDialog.setCancelable(false);
             userDialog.show();
@@ -283,15 +284,19 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                 activeBooking.setId(key);
                 activeBooking.setUserId(user.getPhoneNumber());
                 Date d = new Date();
-                String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
+                String date = new SimpleDateFormat("EEE dd, MMM, yyyy hh:mm aa").format(d);
                 activeBooking.setBookingTime(date);
+                activeBooking.setStartTime("");
+                activeBooking.setEndTime("");
                 activeBooking.setLat(marker.getPosition().latitude);
                 activeBooking.setLng(marker.getPosition().longitude);
                 activeBooking.setStatus("New");
                 activeBooking.setDriverId("");
                 activeBooking.setAddress(locationAddress.getText().toString());
                 activeBooking.setType(selectType.getSelectedItem().toString());
-                activeBooking.setFare(100);
+                activeBooking.setFare(0);
+                activeBooking.setWithDriver(false);
+                cancelBooking.setVisibility(View.VISIBLE);
                 bookingReference.child(activeBooking.getId()).setValue(activeBooking)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -340,32 +345,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
             case R.id.cancelDriverBooking: {
                 Log.e("booking", "Click Captured");
                 activeBooking.setStatus("Cancelled");
-                final Notification notification = new Notification();
-                final DatabaseReference notificationReference = FirebaseDatabase.getInstance().getReference().child("Notifications");
-                String nId = notificationReference.push().getKey();
-                notification.setId(nId);
-                notification.setBookingId(activeBooking.getId());
-                notification.setUserId(user.getPhoneNumber());
-                notification.setDriverId(activeDriver.getPhoneNumber());
-                notification.setRead(false);
-                Date d = new Date();
-                String date = new SimpleDateFormat("EEE dd, MMM, yyyy HH:mm").format(d);
-                notification.setDate(date);
-                notification.setDriverText("Your booking has been cancelled by " + user.getName());
-                notification.setUserText("You cancelled your booking with " + activeDriver.getName());
-                bookingReference.child(activeBooking.getId()).setValue(activeBooking)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                notificationReference.child(notification.getId()).setValue(notification);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("Booking", "Booking cancellation failed");
-                            }
-                        });
+                bookingReference.child(activeBooking.getId()).setValue(activeBooking);
+                Booking temp = activeBooking;
+                helpers.sendNotification(temp, user, activeDriver, "You cancelled your booking with " + activeDriver.getName(), "Your booking has been cancelled by " + user.getName());
                 break;
             }
         }
@@ -426,11 +408,13 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                                             Address address = addresses.get(0);
                                             String strAddress = "";
                                             for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                                                strAddress = strAddress + "" + address.getAddressLine(i);
+                                                strAddress = strAddress + address.getAddressLine(i) + " ";
                                             }
                                             locationAddress.setText(strAddress);
-                                            updateUserLocation(me.latitude, me.longitude);
-                                            //call fun here
+                                            user.setLat(me.latitude);
+                                            user.setLng(me.longitude);
+                                            session.setSession(user);
+                                            helpers.updateUserLocation(user);
                                         }
                                     } catch (Exception e) {
                                         helpers.showError(Dashboard.this, "ERROR!", "Something went wrong.\nPlease try again later. " + e.getMessage());
@@ -532,12 +516,18 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                     Booking booking = d.getValue(Booking.class);
                     if (booking != null) {
                         Log.e("Dashboard", "Booking Status: " + booking.getStatus());
-                        if (booking.getStatus().equals("In Progress")) {
+                        if (booking.getStatus().equals("In Progress") || booking.getStatus().equals("Started")) {
                             Log.e("Dashboard", "Booking Status In Progress Found");
                             activeBooking = booking;
-                            bookingReference.removeEventListener(bookingsListener);
+                            if (bookingsListener != null)
+                                bookingReference.orderByChild("userId").equalTo(user.getPhoneNumber()).removeEventListener(bookingsListener);
+                            if (bookingsListener != null)
+                                bookingReference.removeEventListener(bookingsListener);
                             if (vendorsListener != null) {
                                 vendorReference.removeEventListener(vendorsListener);
+                            }
+                            if (booking.getStatus().equals("Started")) {
+                                cancelBooking.setVisibility(View.GONE);
                             }
                             Log.e("Dashboard", "Bookings Listener Removed");
                             googleMap.clear();
@@ -585,6 +575,10 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                             onBookingCompleted();
                             break;
                         }
+                        case "Started": {
+                            cancelBooking.setVisibility(View.GONE);
+                            break;
+                        }
                     }
                 }
             }
@@ -607,7 +601,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
                         driverName.setText(activeDriver.getName());
                         driverBookingDate.setText(activeBooking.getBookingTime());
                         driverBookingAddress.setText(activeBooking.getAddress());
-                        bookingCategory.setText(activeBooking.getType());
+                        driverContact.setText(activeDriver.getPhoneNumber());
+                        driverEmail.setText(activeDriver.getEmail());
+                        Log.e("Dashboard", "Driver Image: " + activeDriver.getImage());
                         if (activeDriver.getImage() != null && activeDriver.getImage().length() > 1) {
                             Glide.with(getApplicationContext()).load(activeDriver.getImage()).into(driverImage);
                         } else {
@@ -643,16 +639,8 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     private void onBookingCompleted() {
         bookingReference.child(activeBooking.getId()).removeEventListener(bookingListener);
         removeListeners();
-        helpers.showError(Dashboard.this, "Your Booking has been marked as completed.", "");
+        helpers.showSuccessNoClose(Dashboard.this, "Your Booking has been marked as completed.", "");
         helpers.sendNotification(Dashboard.this, "BOOKING", "Your Booking has been marked as completed.");
-    }
-
-    private void updateUserLocation(double lat, double lng) {
-        Log.e("location", "Update location called");
-        user.setLat(lat);
-        user.setLng(lng);
-        session.setSession(user);
-        vendorReference.child(user.getPhoneNumber()).setValue(user);
     }
 
     @Override

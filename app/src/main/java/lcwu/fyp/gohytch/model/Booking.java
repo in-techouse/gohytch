@@ -3,25 +3,28 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Booking implements Serializable {
-    private String id, bookingTime, userId, driverId, carId, startTime, type, status, address;
+    private String id, bookingTime, userId, driverId, startTime, endTime, type, status, address;
     private int fare;
     private double lat, lng;
+    private boolean withDriver;
 
-    public Booking() { }
+    public Booking() {
+    }
 
-    public Booking(String id, String bookingTime, String userId, String driverId, String carId, String startTime, String type, String status, String address, int fare, double lat, double lng) {
+    public Booking(String id, String bookingTime, String userId, String driverId, String startTime, String endTime, String type, String status, String address, int fare, double lat, double lng, boolean withDriver) {
         this.id = id;
         this.bookingTime = bookingTime;
         this.userId = userId;
         this.driverId = driverId;
-        this.carId = carId;
         this.startTime = startTime;
+        this.endTime = endTime;
         this.type = type;
         this.status = status;
         this.address = address;
         this.fare = fare;
         this.lat = lat;
         this.lng = lng;
+        this.withDriver = withDriver;
     }
 
     public String getId() {
@@ -56,20 +59,20 @@ public class Booking implements Serializable {
         this.driverId = driverId;
     }
 
-    public String getCarId() {
-        return carId;
-    }
-
-    public void setCarId(String carId) {
-        this.carId = carId;
-    }
-
     public String getStartTime() {
         return startTime;
     }
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getType() {
@@ -118,6 +121,14 @@ public class Booking implements Serializable {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public boolean isWithDriver() {
+        return withDriver;
+    }
+
+    public void setWithDriver(boolean withDriver) {
+        this.withDriver = withDriver;
     }
 }
 

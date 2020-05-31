@@ -16,12 +16,31 @@
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateHidden"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/Gohytch" />
+
+        <activity
+            android:name=".activities.EditDriverActivity"
+            android:label="Edit Driver Profile"
+            android:parentActivityName=".activities.VendorDashboard"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.EditRenterActivity"
+            android:label="@string/title_activity_edit_renter"
+            android:parentActivityName=".activities.VendorDashboard"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.SelectLocation"
+            android:parentActivityName=".activities.MakeBooking"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.MakeBooking"
             android:label="Make Booking"
@@ -36,16 +55,14 @@
             android:parentActivityName=".activities.BookingActivity" />
         <activity
             android:name=".activities.CreateDriver"
+            android:parentActivityName=".activities.Dashboard"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.CreateRenter"
+            android:label="Create Renter Profile"
+            android:parentActivityName=".activities.Dashboard"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/Gohytch" />
-
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
@@ -83,15 +100,6 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="lcwu.fyp.gohytch.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 
 </manifest>

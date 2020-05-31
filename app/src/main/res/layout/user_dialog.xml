@@ -45,4 +45,5 @@
         android:text="Renter"
         android:textColor="@color/white"
         android:textSize="22dp" />
+
 </LinearLayout>

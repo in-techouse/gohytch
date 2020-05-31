@@ -16,7 +16,6 @@
         android:orientation="vertical"
         android:padding="18dp">
 
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -33,7 +32,6 @@
                 android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -49,7 +47,6 @@
                 android:padding="@dimen/headingpadding"
                 android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <Button
             android:id="@+id/btnSave"
@@ -68,6 +65,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/marginLayout"
             android:visibility="gone" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

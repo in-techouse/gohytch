@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "lcwu.fyp.gohytch"
         minSdkVersion 17
@@ -33,27 +37,27 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21+"
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:support-v4:29.0.0'
+    implementation 'com.android.support:support-v13:29.0.0'
 
     // Google Play Services
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
-    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-database:19.2.1'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
-
     // Third party libraries
+    implementation 'com.github.esafirm.android-image-picker:imagepicker:2.3.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.rbddevs.splashy:splashy:1.1.0'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
-    implementation 'com.asksira.android:bsimagepicker:1.3.2'
-    implementation("com.github.bumptech.glide:glide:4.7.1") {
-        exclude group: "com.android.support"
-    }
+    implementation "com.github.bumptech.glide:glide:4.11.0"
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.github.pratikbutani:MultiSelectSpinner:-SNAPSHOT'
     implementation 'com.github.smarteist:autoimageslider:1.3.2-appcompat'

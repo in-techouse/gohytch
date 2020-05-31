@@ -6,9 +6,23 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
-import com.asksira.bsimagepicker.BSImagePicker;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.bumptech.glide.Glide;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.AppBarLayout;
@@ -19,20 +33,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-
-import android.util.Log;
-import android.util.Patterns;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-
+import java.io.File;
 import java.util.Calendar;
 
 import lcwu.fyp.gohytch.R;
@@ -40,7 +41,7 @@ import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.User;
 
-public class EditUserProfile extends AppCompatActivity implements View.OnClickListener, BSImagePicker.OnSingleImageSelectedListener, BSImagePicker.ImageLoaderDelegate {
+public class EditUserProfile extends AppCompatActivity implements View.OnClickListener {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -48,9 +49,10 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
-    private EditText profileName, profileEmail, profilePhoneNumber;
+    private EditText profileName;
+    private EditText profileEmail;
     private Button updateBtn;
-    private String strPhonenumber, strName, strEmail;
+    private String strName, strEmail;
     private ProgressBar SaveProgress;
     private Helpers helpers;
     private ImageView image;
@@ -67,10 +69,13 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeButtonEnabled(true);
+
         FloatingActionButton fab = findViewById(R.id.profile_nav_gallery);
         profileName = findViewById(R.id.profileName);
         profileEmail = findViewById(R.id.profileEmail);
-        profilePhoneNumber = findViewById(R.id.profilePhoneNumber);
+        EditText profilePhoneNumber = findViewById(R.id.profilePhoneNumber);
         updateBtn = findViewById(R.id.btnUpdate);
         session = new Session(EditUserProfile.this);
         helpers = new Helpers();
@@ -91,22 +96,6 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
         profileName.setText(user.getName());
         profilePhoneNumber.setText(user.getPhoneNumber());
         profileEmail.setText(user.getEmail());
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-                finish();
-                break;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -206,10 +195,12 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
                 session.setSession(user);
                 if (user.getType().equals("User") || user.getType().equals("None")) {
                     Intent it = new Intent(EditUserProfile.this, Dashboard.class);
+                    it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(it);
                     finish();
                 } else {
                     Intent it = new Intent(EditUserProfile.this, VendorDashboard.class);
+                    it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(it);
                     finish();
                 }
@@ -234,10 +225,24 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
     }
 
     public void openGallery() {
-        BSImagePicker singleSelectionPicker = new BSImagePicker.Builder("lcwu.fyp.gohytch.fileprovider").build();
-        singleSelectionPicker.show(getSupportFragmentManager(), "picker");
+        ImagePicker.create(EditUserProfile.this)
+                .toolbarImageTitle("Tap to select")
+                .single()
+                .start();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            Image img = ImagePicker.getFirstImageOrNull(data);
+            Log.e("User", "Image: " + img.getName());
+            Log.e("User", "Image: " + img.getPath());
+            isImage = true;
+            imageUri = Uri.fromFile(new File(img.getPath()));
+            Glide.with(EditUserProfile.this).load(imageUri).into(image);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     private boolean isValid() {
         boolean flag = true;
@@ -263,16 +268,18 @@ public class EditUserProfile extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void onSingleImageSelected(Uri uri, String tag) {
-        isImage = true;
-        imageUri = uri;
-        Glide.with(EditUserProfile.this).load(imageUri).into(image);
+    public void onBackPressed() {
+        finish();
     }
 
     @Override
-    public void loadImage(Uri imageUri, ImageView ivImage) {
-        isImage = true;
-        this.imageUri = imageUri;
-        Glide.with(EditUserProfile.this).load(imageUri).into(image);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 }

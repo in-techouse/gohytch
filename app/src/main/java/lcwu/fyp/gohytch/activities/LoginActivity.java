@@ -183,23 +183,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (u.getType().equals("User") || u.getType().equals("None")) {
                             Intent it = new Intent(LoginActivity.this, Dashboard.class);
                             it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(it);
                         } else {
                             Intent it = new Intent(LoginActivity.this, VendorDashboard.class);
-                            it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(it);
                         }
                         finish();
                     } else {
                         Intent it = new Intent(LoginActivity.this, UserProfileActivity.class);
-                        it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         it.putExtra("Phone", strphonenumber);
                         startActivity(it);
                         finish();
                     }
                 } else {
                     Intent it = new Intent(LoginActivity.this, UserProfileActivity.class);
-                    it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     it.putExtra("Phone", strphonenumber);
                     startActivity(it);
                     finish();
@@ -228,7 +229,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ProgressBar OtpProgress;
         CountDownTimer countDownTimer;
 
-        public OTPDialog(@NonNull Context context) {
+        OTPDialog(@NonNull Context context) {
             super(context);
         }
 
@@ -258,18 +259,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 public void onSuccess(AuthResult authResult) {
                                     call_to_database();
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("Login", "On Failure 229");
-                            countDownTimer.cancel();
-                            timer.setText("--:--");
-                            resendOtp.setEnabled(true);
-                            OtpProgress.setVisibility(View.GONE);
-                            error.setText(e.getMessage());
-                            helpers.showError(LoginActivity.this, "ERROR", e.getMessage());
-                        }
-                    });
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("Login", "On Failure 229");
+                                    countDownTimer.cancel();
+                                    timer.setText("--:--");
+                                    resendOtp.setEnabled(true);
+                                    OtpProgress.setVisibility(View.GONE);
+                                    error.setText(e.getMessage());
+                                    helpers.showError(LoginActivity.this, "ERROR", e.getMessage());
+                                }
+                            });
                 }
             });
 
@@ -312,7 +314,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }.start();
         }
-
     }
 }
 

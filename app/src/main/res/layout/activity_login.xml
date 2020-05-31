@@ -22,7 +22,6 @@
             android:text="+923"
             android:textAlignment="center" />
 
-
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -37,11 +36,11 @@
         android:textSize="@dimen/textsizeheading" />
 
     <ProgressBar
-
         android:id="@+id/LoginProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/marginLayout"
         android:visibility="gone" />
+
 </LinearLayout>

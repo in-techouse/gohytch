@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -49,7 +50,7 @@ import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Renter;
 import lcwu.fyp.gohytch.model.User;
 
-public class CreateRenter extends AppCompatActivity implements View.OnClickListener {
+public class EditRenterActivity extends AppCompatActivity implements View.OnClickListener {
     private final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -63,17 +64,18 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
     private Session session;
     private SliderAdapter adapter;
     private List<Uri> carImages;
+    private List<String> carImagesSaves;
     private Renter renter;
     private EditText licenseNumber, carModel, carRegistrationNumber, sittingCapacity, perHourRent;
     private Spinner carCompany;
     private String strLicenseNumber, strCarCompany, strCarModel, strCarRegistrationNumber, strSittingCapacity, strPerHourRent = "";
+    private boolean isImage = false;
     private SliderView sliderView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_renter);
-
+        setContentView(R.layout.activity_edit_renter);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -97,7 +99,13 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
 
         btnSave.setOnClickListener(this);
 
-        adapter = new SliderAdapter(CreateRenter.this);
+        session = new Session(EditRenterActivity.this);
+        user = session.getSession();
+        renter = user.getRenter();
+        helpers = new Helpers();
+        carImagesSaves = renter.getImages();
+
+        adapter = new SliderAdapter(EditRenterActivity.this);
 
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.WORM);
@@ -107,18 +115,22 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
         sliderView.setIndicatorUnselectedColor(Color.GRAY);
         sliderView.setScrollTimeInSec(4);
         sliderView.startAutoCycle();
-        session = new Session(CreateRenter.this);
-        user = session.getSession();
-        renter = new Renter();
-        helpers = new Helpers();
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent it = new Intent(CreateRenter.this, Dashboard.class);
-        startActivity(it);
-        finish();
+
+        licenseNumber.setText(renter.getLicenseNumber());
+        String[] cars = getResources().getStringArray(R.array.carCompany);
+        int index = 0;
+        for (String str : cars) {
+            if (str.equals(renter.getCarCompany())) {
+                break;
+            }
+            index++;
+        }
+        carCompany.setSelection(index);
+        carModel.setText(renter.getCarModel());
+        sittingCapacity.setText(renter.getSittingCapacity());
+        perHourRent.setText(renter.getPerHourRate() + "");
+        carRegistrationNumber.setText(renter.getCarRegistrationNumber());
     }
 
     @Override
@@ -127,9 +139,9 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.btnSave: {
                 Log.e("Renter", "Button Clicked");
-                boolean isConn = helpers.isConnected(CreateRenter.this);
+                boolean isConn = helpers.isConnected(EditRenterActivity.this);
                 if (!isConn) {
-                    helpers.showError(CreateRenter.this, "ERROR", "No Internet Connection.Please check your Internet Connection");
+                    helpers.showError(EditRenterActivity.this, "ERROR", "No Internet Connection.Please check your Internet Connection");
                     return;
                 }
                 boolean flag = isValid();
@@ -142,15 +154,18 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
                     renter.setCarRegistrationNumber(strCarRegistrationNumber);
                     renter.setSittingCapacity(strSittingCapacity);
                     renter.setPerHourRate(Integer.parseInt(strPerHourRent));
-                    uploadImage(0);
+                    if (isImage)
+                        uploadImage(0);
+                    else
+                        saveToDatabase();
                 }
                 break;
 
             }
             case R.id.nav_gallery: {
-                boolean flag = hasPermissions(CreateRenter.this, PERMISSIONS);
+                boolean flag = hasPermissions(EditRenterActivity.this, PERMISSIONS);
                 if (!flag) {
-                    ActivityCompat.requestPermissions(CreateRenter.this, PERMISSIONS, 1);
+                    ActivityCompat.requestPermissions(EditRenterActivity.this, PERMISSIONS, 1);
                 } else {
                     openGallery();
                 }
@@ -185,7 +200,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
                                 Log.e("Renter", "DownloadUrl: " + e.getMessage());
                                 btnSave.setVisibility(View.VISIBLE);
                                 saveProgress.setVisibility(View.GONE);
-                                helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
+                                helpers.showError(EditRenterActivity.this, "ERROR!", "Something went wrong.\nPlease check your connection");
                             }
                         });
 
@@ -197,7 +212,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
                         Log.e("Renter", "Upload Image Url:" + e.getMessage());
                         btnSave.setVisibility(View.VISIBLE);
                         saveProgress.setVisibility(View.GONE);
-                        helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
+                        helpers.showError(EditRenterActivity.this, "ERROR!", "Something went wrong.\nPlease check your connection");
 
                     }
                 });
@@ -215,12 +230,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
                         btnSave.setVisibility(View.VISIBLE);
                         saveProgress.setVisibility(View.GONE);
                         session.setSession(user);
-                        Intent intent = new Intent(CreateRenter.this, VendorDashboard.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        ActivityCompat.finishAffinity(CreateRenter.this);
-                        finish();
+                        helpers.showSuccess(EditRenterActivity.this, "PROFILE UPDATED", "Your renter profile has been updated successfully.");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -229,7 +239,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
                         Log.e("Renter", "Save in database failed");
                         btnSave.setVisibility(View.VISIBLE);
                         saveProgress.setVisibility(View.GONE);
-                        helpers.showError(CreateRenter.this, "ERROR!", "Something went wrong.\nPlease check your connection");
+                        helpers.showError(EditRenterActivity.this, "ERROR!", "Something went wrong.\nPlease check your connection");
                     }
 
                 });
@@ -246,7 +256,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
     }
 
     private void openGallery() {
-        ImagePicker.create(CreateRenter.this)
+        ImagePicker.create(EditRenterActivity.this)
                 .toolbarImageTitle("Tap to select")
                 .multi()
                 .limit(2)
@@ -257,7 +267,10 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            isImage = true;
+            carImagesSaves.clear();
             carImages.clear();
+            adapter.notifyDataSetChanged();
             sliderView.setSliderAdapter(null);
             List<Image> images = ImagePicker.getImages(data);
             List<Uri> uriList = new ArrayList<>();
@@ -274,6 +287,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
             sliderView.setIndicatorUnselectedColor(Color.GRAY);
             sliderView.setScrollTimeInSec(4);
             sliderView.startAutoCycle();
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -291,7 +305,6 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
 
     private boolean isValid() {
         boolean flag = true;
-        int count = carImages.size();
         strLicenseNumber = licenseNumber.getText().toString();
         strCarCompany = carCompany.getSelectedItem().toString();
         strCarModel = carModel.getText().toString();
@@ -299,12 +312,7 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
         strSittingCapacity = sittingCapacity.getText().toString();
         strPerHourRent = perHourRent.getText().toString();
 
-        Log.e("Renter", "LicnseNumber:" + strLicenseNumber);
         String error = "";
-        if (count == 0) {
-            error = error + "*Select at least one car image first.\n";
-            flag = false;
-        }
         if (strLicenseNumber.length() < 4) {
             licenseNumber.setError("Enter a valid License Number");
             flag = false;
@@ -344,9 +352,25 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
         }
 
         if (error.length() > 0) {
-            helpers.showError(CreateRenter.this, "ERROR", error);
+            helpers.showError(EditRenterActivity.this, "ERROR", error);
         }
         return flag;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 
     class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
@@ -362,14 +386,23 @@ public class CreateRenter extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onBindViewHolder(SliderAdapterVH viewHolder, int position) {
-            Glide.with(viewHolder.itemView)
-                    .load(carImages.get(position))
-                    .into(viewHolder.imageViewBackground);
+            if (isImage) {
+                Glide.with(viewHolder.itemView)
+                        .load(carImages.get(position))
+                        .into(viewHolder.imageViewBackground);
+            } else {
+                Glide.with(viewHolder.itemView)
+                        .load(carImagesSaves.get(position))
+                        .into(viewHolder.imageViewBackground);
+            }
         }
 
         @Override
         public int getCount() {
-            return carImages.size();
+            if (isImage)
+                return carImages.size();
+            else
+                return carImagesSaves.size();
         }
 
         class SliderAdapterVH extends SliderViewAdapter.ViewHolder {

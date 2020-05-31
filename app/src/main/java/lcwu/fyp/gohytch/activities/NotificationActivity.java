@@ -1,22 +1,26 @@
 package lcwu.fyp.gohytch.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.adapters.NotificationAdapter;
 import lcwu.fyp.gohytch.director.Helpers;
@@ -26,7 +30,7 @@ import lcwu.fyp.gohytch.model.User;
 
 public class NotificationActivity extends AppCompatActivity {
     private LinearLayout loading;
-    private TextView  noRecord;
+    private TextView noRecord;
     private RecyclerView notification;
     private User user;
     private Helpers helpers;
@@ -34,6 +38,7 @@ public class NotificationActivity extends AppCompatActivity {
     private DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Notifications");
     private String type;
     private NotificationAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +50,9 @@ public class NotificationActivity extends AppCompatActivity {
         helpers = new Helpers();
         user = session.getSession();
         data = new ArrayList<>();
-        if(user.getType().equals("None") || user.getType().equals("User")){
+        if (user.getType().equals("None") || user.getType().equals("User")) {
             type = "userId";
-        }
-        else{
+        } else {
             type = "driverId";
         }
         notification.setLayoutManager(new LinearLayoutManager(NotificationActivity.this));
@@ -57,9 +61,10 @@ public class NotificationActivity extends AppCompatActivity {
         loadNotifications();
 
     }
-     private void loadNotifications(){
-        if (!helpers.isConnected(NotificationActivity.this)){
-            helpers.showError(NotificationActivity.this,"ERROR!","No Internet Connection.Please check your Internet Connection");
+
+    private void loadNotifications() {
+        if (!helpers.isConnected(NotificationActivity.this)) {
+            helpers.showError(NotificationActivity.this, "ERROR!", "No Internet Connection.Please check your Internet Connection");
             return;
 
         }
@@ -69,19 +74,19 @@ public class NotificationActivity extends AppCompatActivity {
         reference.orderByChild(type).equalTo(user.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot d : dataSnapshot.getChildren()){
-                    Notification notification=d.getValue(Notification.class);
-                    if (notification!=null){
-                      data.add(notification);
+                data.clear();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Notification notification = d.getValue(Notification.class);
+                    if (notification != null) {
+                        data.add(notification);
                     }
                 }
-                if(data.size() > 0){
+                if (data.size() > 0) {
                     Collections.reverse(data);
                     adapter.setData(data);
                     notification.setVisibility(View.VISIBLE);
                     noRecord.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     notification.setVisibility(View.GONE);
                     noRecord.setVisibility(View.VISIBLE);
                 }
@@ -97,6 +102,7 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         finish();

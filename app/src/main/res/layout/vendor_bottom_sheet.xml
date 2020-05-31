@@ -157,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="13dp"
                     android:background="@color/colorAccept"
-                    android:text="MARK COMPLETE"
+                    android:text="START RIDE"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
             </LinearLayout>

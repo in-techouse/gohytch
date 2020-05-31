@@ -17,18 +17,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.activities.CreateDriver;
 import lcwu.fyp.gohytch.activities.CreateRenter;
+import lcwu.fyp.gohytch.activities.Dashboard;
 import lcwu.fyp.gohytch.director.Session;
-import lcwu.fyp.gohytch.model.Driver;
 import lcwu.fyp.gohytch.model.User;
 
-public class UserDialog extends Dialog implements View.OnClickListener{
-    Button btnUser,btnRenter,btnDriver;
+public class UserDialog extends Dialog implements View.OnClickListener {
     private Session session;
     private User user;
     private Context context;
-    public UserDialog(@NonNull Context c) {
+    private Dashboard dashboard;
+
+    public UserDialog(@NonNull Context c, Dashboard d) {
         super(c);
         context = c;
+        dashboard = d;
     }
 
     @Override
@@ -36,14 +38,14 @@ public class UserDialog extends Dialog implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.user_dialog);
-        btnUser=findViewById(R.id.btnUser);
-        btnDriver=findViewById(R.id.btnDriver);
-        btnRenter=findViewById(R.id.btnRenter);
+        Button btnUser = findViewById(R.id.btnUser);
+        Button btnDriver = findViewById(R.id.btnDriver);
+        Button btnRenter = findViewById(R.id.btnRenter);
 
         btnUser.setOnClickListener(this);
         btnDriver.setOnClickListener(this);
         btnRenter.setOnClickListener(this);
-        session= new Session(context);
+        session = new Session(context);
         user = session.getSession();
         Log.e("UserDialog", "Id: " + user.getId());
         Log.e("UserDialog", "Email: " + user.getEmail());
@@ -53,33 +55,33 @@ public class UserDialog extends Dialog implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        int id=view.getId();
-        switch (id){
-            case R.id.btnUser:{
+        int id = view.getId();
+        switch (id) {
+            case R.id.btnUser: {
                 user.setType("User");
                 updateToDatabase();
                 dismiss();
                 break;
             }
-            case R.id.btnDriver:{
+            case R.id.btnDriver: {
                 user.setType("Driver");
                 Intent it = new Intent(context, CreateDriver.class);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(it);
+                dashboard.finish();
                 break;
             }
-            case R.id.btnRenter:{
+            case R.id.btnRenter: {
                 user.setType("Renter");
                 Intent it = new Intent(context, CreateRenter.class);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(it);
+                dashboard.finish();
                 break;
             }
         }
     }
 
-    private void updateToDatabase(){
-        DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("Users");
+    private void updateToDatabase() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
         reference.child(user.getId()).setValue(user);
         session.setSession(user);
     }
