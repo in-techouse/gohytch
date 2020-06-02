@@ -145,8 +145,37 @@ public class BookingDetail extends AppCompatActivity {
         if (booking != null) {
             loadUserDetail();
         } else {
-
+            loadBooking();
         }
+    }
+
+    private void loadBooking() {
+        bookingListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (bookingListener != null)
+                    databaseReference.child("Bookings").child(notification.getBookingId()).addValueEventListener(bookingListener);
+                if (dataSnapshot.exists()) {
+                    booking = dataSnapshot.getValue(Booking.class);
+                    loadUserDetail();
+                } else {
+                    progress.setVisibility(View.GONE);
+                    main.setVisibility(View.VISIBLE);
+                    helpers.showError(BookingDetail.this, "ERROR!", "Something went wrong.\nPlease try again later.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (bookingListener != null)
+                    databaseReference.child("Bookings").child(notification.getBookingId()).addValueEventListener(bookingListener);
+                progress.setVisibility(View.GONE);
+                main.setVisibility(View.VISIBLE);
+                helpers.showError(BookingDetail.this, "ERROR!", "Something went wrong.\nPlease try again later.");
+            }
+        };
+
+        databaseReference.child("Bookings").child(notification.getBookingId()).addValueEventListener(bookingListener);
     }
 
     private void loadUserDetail() {
@@ -196,6 +225,7 @@ public class BookingDetail extends AppCompatActivity {
                     databaseReference.child("Users").child(userId).addValueEventListener(userListener);
                 progress.setVisibility(View.GONE);
                 main.setVisibility(View.VISIBLE);
+                helpers.showError(BookingDetail.this, "ERROR!", "Something went wrong.\nPlease try again later.");
             }
         };
 
