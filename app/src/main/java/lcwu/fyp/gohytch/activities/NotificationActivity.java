@@ -56,7 +56,7 @@ public class NotificationActivity extends AppCompatActivity {
             type = "driverId";
         }
         notification.setLayoutManager(new LinearLayoutManager(NotificationActivity.this));
-        adapter = new NotificationAdapter(user.getType());
+        adapter = new NotificationAdapter(user.getType(), getApplicationContext());
         notification.setAdapter(adapter);
         loadNotifications();
 

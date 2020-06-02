@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
@@ -16,11 +17,25 @@
         android:padding="11dp">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
             android:id="@+id/booking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/colorPrimaryDark" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:text="Date"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -44,13 +60,27 @@
                 android:text="Date"
                 android:textSize="16sp" />
 
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
             <TextView
-                android:id="@+id/statusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/dateText"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="10dp"
                 android:text="Status"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -58,19 +88,33 @@
                 android:id="@+id/bookingStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/bookingDate"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="10dp"
                 android:text="Status"
                 android:textSize="16sp" />
 
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
             <TextView
-                android:id="@+id/fareText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/statusText"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="10dp"
                 android:text="Fare"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -78,12 +122,19 @@
                 android:id="@+id/bookingFare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/bookingStatus"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="10dp"
                 android:text="fare"
                 android:textSize="16sp" />
-
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/colorPrimaryDark" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

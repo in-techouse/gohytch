@@ -59,7 +59,7 @@ public class BookingActivity extends AppCompatActivity {
             type = "driverId";
         }
         notification.setLayoutManager(new LinearLayoutManager(BookingActivity.this));
-        adapter = new BookingAdapter(user.getType());
+        adapter = new BookingAdapter(getApplicationContext());
         notification.setAdapter(adapter);
         loadBookings();
     }

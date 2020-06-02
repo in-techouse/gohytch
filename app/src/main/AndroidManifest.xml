@@ -25,7 +25,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/Gohytch" />
-
+        <activity
+            android:name=".activities.BookingDetail"
+            android:parentActivityName=".activities.BookingActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.EditDriverActivity"
             android:label="Edit Driver Profile"
@@ -99,7 +102,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

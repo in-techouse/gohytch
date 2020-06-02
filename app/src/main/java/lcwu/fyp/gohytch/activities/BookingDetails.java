@@ -317,7 +317,6 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                                         fare.setText(booking.getFare() + "+ Rs.");
                                     }
                                 }
-
                             } catch (Exception exception) {
                                 helpers.showError(BookingDetails.this, "Error", "Something Went Wrong");
                             }
@@ -343,22 +342,6 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                 enableLocation();
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-                finish();
-                break;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -422,27 +405,49 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
     }
 
     private void acceptRenterBooking() {
-        booking.setStatus("Accepted");
-        databaseReference.child("Bookings").child(booking.getId()).setValue(booking)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.e("booking", "inOnSuccess");
-                        helpers.sendNotification(booking, customer, user, "Your booking request has been accepted by " + user.getName(), "You accepted the booking request of " + customer.getName());
-                        main.setVisibility(View.VISIBLE);
-                        progress.setVisibility(View.GONE);
-                        helpers.showSuccess(BookingDetails.this, "REQUEST ACCEPTED", "You accepted the booking request of " + customer.getName());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("booking", "Failed");
-                        main.setVisibility(View.VISIBLE);
-                        progress.setVisibility(View.GONE);
-                        helpers.showError(BookingDetails.this, "ERROR", "Something went wrong. Please try again later");
-                    }
-                });
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("EEE, dd, MMM-yyyy hh:mm aa");
+            Date startDate = format.parse(booking.getStartTime());
+            Date endDate = format.parse(booking.getEndTime());
+            if (startDate == null || endDate == null) {
+                main.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.GONE);
+                helpers.showError(BookingDetails.this, "ERROR", "Something went wrong. Please try again later");
+                return;
+            }
+
+            double diff = endDate.getTime() - startDate.getTime();
+            double seconds = diff / 1000;
+            double minutes = seconds / 60;
+            double hours = minutes / 60;
+            double fare = user.getRenter().getPerHourRate() * hours;
+            booking.setFare((int) fare);
+            booking.setStatus("Accepted");
+            databaseReference.child("Bookings").child(booking.getId()).setValue(booking)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.e("booking", "inOnSuccess");
+                            helpers.sendNotification(booking, customer, user, "Your booking request has been accepted by " + user.getName(), "You accepted the booking request of " + customer.getName());
+                            main.setVisibility(View.VISIBLE);
+                            progress.setVisibility(View.GONE);
+                            helpers.showSuccess(BookingDetails.this, "REQUEST ACCEPTED", "You accepted the booking request of " + customer.getName());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("booking", "Failed");
+                            main.setVisibility(View.VISIBLE);
+                            progress.setVisibility(View.GONE);
+                            helpers.showError(BookingDetails.this, "ERROR", "Something went wrong. Please try again later");
+                        }
+                    });
+        } catch (Exception e) {
+            main.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.GONE);
+            helpers.showError(BookingDetails.this, "ERROR", "Something went wrong. Please try again later");
+        }
     }
 
     private void acceptBooking(final Booking tempBooking) {
@@ -501,5 +506,22 @@ public class BookingDetails extends AppCompatActivity implements View.OnClickLis
                 databaseReference.removeEventListener(userListener);
             }
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 }
