@@ -3,19 +3,28 @@ package lcwu.fyp.gohytch.model;
 import java.io.Serializable;
 
 public class Review implements Serializable {
-    private String id, review, userId, vendorId, bookingId;
+    private String id, review, userId, vendorId, bookingId, dateTime;
     private double rating;
 
     public Review() {
     }
 
-    public Review(String id, String review, String userId, String vendorId, String bookingId, double rating) {
+    public Review(String id, String review, String userId, String vendorId, String bookingId, String dateTime, double rating) {
         this.id = id;
         this.review = review;
         this.userId = userId;
         this.vendorId = vendorId;
         this.bookingId = bookingId;
+        this.dateTime = dateTime;
         this.rating = rating;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getId() {

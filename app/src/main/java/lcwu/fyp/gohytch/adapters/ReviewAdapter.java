@@ -43,6 +43,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
         final Review review = data.get(position);
         holder.ratingBar.setRating((float) review.getRating());
         holder.review.setText(review.getReview());
+        holder.dateTime.setText(review.getDateTime() == null ? "" : review.getDateTime());
     }
 
     @Override
@@ -52,12 +53,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
 
     class ReviewHolder extends RecyclerView.ViewHolder {
         MaterialRatingBar ratingBar;
-        TextView review;
+        TextView review, dateTime;
 
         ReviewHolder(@NonNull View itemView) {
             super(itemView);
             ratingBar = itemView.findViewById(R.id.ratingBar);
             review = itemView.findViewById(R.id.review);
+            dateTime = itemView.findViewById(R.id.dateTime);
         }
     }
 }

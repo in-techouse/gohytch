@@ -638,6 +638,9 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     }
 
     private void onBookingCompleted() {
+        Log.e("Dashboard", "Active Driver: " + activeDriver.toString());
+        Log.e("Dashboard", "Active Driver Id: " + activeDriver.getId());
+        Log.e("Dashboard", "Active Driver Name: " + activeDriver.getName());
         String vendorId = activeDriver.getId();
         String bookingId = activeBooking.getId();
         bookingReference.child(activeBooking.getId()).removeEventListener(bookingListener);

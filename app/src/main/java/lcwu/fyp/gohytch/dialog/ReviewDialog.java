@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import lcwu.fyp.gohytch.R;
 import lcwu.fyp.gohytch.model.Review;
@@ -88,6 +90,8 @@ public class ReviewDialog extends Dialog implements View.OnClickListener {
                 postReview.setVisibility(View.GONE);
                 close.setVisibility(View.GONE);
                 Review review = new Review();
+                String dateTime = new SimpleDateFormat("EEE, dd, MMM yyyy hh:mm a").format(new Date());
+                review.setDateTime(dateTime);
                 review.setRating(finalRating);
                 review.setReview(strReview);
                 review.setUserId(userId);
