@@ -22,6 +22,8 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +38,7 @@ import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
 
-public class BookingDetail extends AppCompatActivity {
+public class BookingDetail extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "BookingDetail";
     private Booking booking;
     private Notification notification;
@@ -87,6 +89,8 @@ public class BookingDetail extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         main = findViewById(R.id.main);
         startRide = findViewById(R.id.startRide);
+        startRide.setOnClickListener(this);
+        startRide.setVisibility(View.GONE);
 
         map = findViewById(R.id.map);
 
@@ -105,14 +109,6 @@ public class BookingDetail extends AppCompatActivity {
         Session session = new Session(BookingDetail.this);
         user = session.getSession();
         helpers = new Helpers();
-
-//        if (!user.getType().equals("Renter")) {
-//            startRide.setVisibility(View.GONE);
-//        }
-
-//        main.setVisibility(View.GONE);
-//        startRide.setVisibility(View.GONE);
-//        progress.setVisibility(View.VISIBLE);
 
 
         map.onCreate(savedInstanceState);
@@ -213,6 +209,9 @@ public class BookingDetail extends AppCompatActivity {
                         } else {
                             withDriverUpper.setVisibility(View.GONE);
                         }
+                        if (user.getType().equals("Renter") && booking.getType().equals("Renter") && booking.getStatus().equals("Accepted")) {
+                            startRide.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
                 progress.setVisibility(View.GONE);
@@ -230,6 +229,39 @@ public class BookingDetail extends AppCompatActivity {
         };
 
         databaseReference.child("Users").child(userId).addValueEventListener(userListener);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.startRide: {
+                startRide.setVisibility(View.GONE);
+                main.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                booking.setStatus("Started");
+                databaseReference.child("Bookings").child(booking.getId()).setValue(booking)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                startRide.setVisibility(View.VISIBLE);
+                                main.setVisibility(View.VISIBLE);
+                                progress.setVisibility(View.GONE);
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                startRide.setVisibility(View.VISIBLE);
+                                main.setVisibility(View.VISIBLE);
+                                progress.setVisibility(View.GONE);
+                                helpers.showError(BookingDetail.this, "ERROR!", "Soemthing went wrong.\nPlease try again later.");
+                            }
+                        });
+                break;
+            }
+        }
     }
 
 
@@ -257,14 +289,6 @@ public class BookingDetail extends AppCompatActivity {
         map.onDestroy();
         if (userListener != null)
             databaseReference.child("Users").child(userId).addValueEventListener(userListener);
-//        if (databaseReference != null) {
-//            if (bookingListener != null) {
-//                databaseReference.removeEventListener(bookingListener);
-//            }
-//            if (userListener != null) {
-//                databaseReference.removeEventListener(userListener);
-//            }
-//        }
     }
 
     @Override

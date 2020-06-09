@@ -118,7 +118,6 @@
             android:background="@color/gray" />
     </LinearLayout>
 
-
     <include layout="@layout/renter_detail_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

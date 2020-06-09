@@ -17,6 +17,10 @@
             android:icon="@drawable/notification"
             android:title="Notification" />
         <item
+            android:id="@+id/nav_reviews"
+            android:icon="@drawable/review"
+            android:title="Reviews" />
+        <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/userprofile"
             android:title="Profile" />

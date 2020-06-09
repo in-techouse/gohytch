@@ -2,13 +2,10 @@ package lcwu.fyp.gohytch.director;
 
 import android.app.Activity;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -26,8 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import lcwu.fyp.gohytch.R;
-import lcwu.fyp.gohytch.activities.BookingDetails;
-import lcwu.fyp.gohytch.activities.VendorDashboard;
 import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.Notification;
 import lcwu.fyp.gohytch.model.User;
@@ -246,6 +241,7 @@ public class Helpers {
     public void updateUserLocation(User user) {
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
         Log.e("location", "Update location called");
-        reference.child(user.getPhoneNumber()).setValue(user);
+        reference.child(user.getPhoneNumber()).child("lat").setValue(user.getLat());
+        reference.child(user.getPhoneNumber()).child("lng").setValue(user.getLng());
     }
 }

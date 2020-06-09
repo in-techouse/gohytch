@@ -42,7 +42,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
     private RentersAdapter adapter;
     private BottomSheetBehavior sheetBehavior;
     private CircleImageView image;
-    private TextView name, phone, email, company, model, sittingCapacity, perHourRent;
+    private TextView name, phone, email, company, model, sittingCapacity, perHourRent, ratingText;
     private SliderView renterSlider;
     private Spinner carCompany, carCapacity, rating, carRent;
     private String strCarCompany, strCarCapacity, strRating, strCarRent;
@@ -104,6 +104,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
         model = findViewById(R.id.model);
         sittingCapacity = findViewById(R.id.sittingCapacity);
         perHourRent = findViewById(R.id.perHourRent);
+        ratingText = findViewById(R.id.ratingText);
 
         carCompany.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -288,6 +289,7 @@ public class SelectRenter extends AppCompatActivity implements View.OnClickListe
                 model.setText(renter.getCarModel());
                 sittingCapacity.setText(renter.getSittingCapacity() + " Persons");
                 perHourRent.setText(renter.getPerHourRate() + " RS.");
+                ratingText.setText(String.format("%.2f", renter.getRating()));
             }
             if (user.getImage() != null && user.getImage().length() > 0) {
                 Glide.with(getApplicationContext()).load(user.getImage()).into(image);

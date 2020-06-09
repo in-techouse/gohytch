@@ -25,6 +25,11 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/Gohytch" />
+
+        <activity
+            android:name=".activities.ReviewsActivity"
+            android:parentActivityName=".activities.VendorDashboard" />
+
         <activity
             android:name=".activities.BookingDetail"
             android:parentActivityName=".activities.BookingActivity"
@@ -52,7 +57,7 @@
             android:name=".activities.SelectRenter"
             android:label="Select Car"
             android:parentActivityName=".activities.Dashboard"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.BookingDetails"
             android:parentActivityName=".activities.BookingActivity" />

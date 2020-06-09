@@ -67,6 +67,7 @@ import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
 import lcwu.fyp.gohytch.model.Booking;
 import lcwu.fyp.gohytch.model.User;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class VendorDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private final String[] PERMISSIONS = {
@@ -96,6 +97,9 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
     private TextView customerName, customerContact, customerEmail, bookingDate, bookingAddress, bookingFare;
     private Button cancelBooking, completeBooking;
     private boolean isInProgress = false;
+    private TextView profile_rating;
+    private MaterialRatingBar ratingBar;
+    private ValueEventListener vendorValueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,11 +152,21 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
         TextView profile_Email = header.findViewById(R.id.profile_Email);
         CircleImageView profile_Image = header.findViewById(R.id.profile_image);
         TextView type = header.findViewById(R.id.profile_type);
+        profile_rating = header.findViewById(R.id.profile_rating);
+        ratingBar = header.findViewById(R.id.ratingBar);
 
         profile_Name.setText(user.getName());
         profile_Email.setText(user.getEmail());
         profile_Phone.setText(user.getPhoneNumber());
         type.setText(user.getType());
+
+        if (user.getType().equals("Renter")) {
+            profile_rating.setText(String.format("%.2f", user.getRenter().getRating()));
+            ratingBar.setRating((float) user.getRenter().getRating());
+        } else if (user.getType().equals("Driver")) {
+            profile_rating.setText(String.format("%.2f", user.getDriver().getRating()));
+            ratingBar.setRating((float) user.getDriver().getRating());
+        }
 
         if (user.getImage() != null && user.getImage().length() > 5) {
             Glide.with(getApplicationContext()).load(user.getImage()).into(profile_Image);
@@ -178,12 +192,51 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(defaultPosition).zoom(12).build();
                     googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     enableLocation();
+                    loadVendorDetail();
                 }
             });
         } catch (Exception e) {
             Log.e("Maps", "Catch Block");
             helpers.showError(VendorDashboard.this, "Error", "Something went wrong.Try again");
         }
+    }
+
+    private void loadVendorDetail() {
+        Log.e("VendorDashboard", "Load Vendor Called");
+        vendorValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.e("VendorDashboard", "Load Vendor On Success");
+                if (vendorValueEventListener != null)
+                    userReference.child(user.getId()).removeEventListener(vendorValueEventListener);
+                if (dataSnapshot.exists()) {
+                    Log.e("VendorDashboard", "Load Vendor SnapShot Exists");
+                    user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        Log.e("VendorDashboard", "Load Vendor User is not null");
+                        session.setSession(user);
+                        if (user.getType().equals("Renter")) {
+                            Log.e("VendorDashboard", "Load Vendor Renter rating set");
+                            profile_rating.setText(String.format("%.2f", user.getRenter().getRating()));
+                            ratingBar.setRating((float) user.getRenter().getRating());
+                        } else if (user.getType().equals("Driver")) {
+                            Log.e("VendorDashboard", "Load Vendor Driver rating set");
+                            profile_rating.setText(String.format("%.2f", user.getDriver().getRating()));
+                            ratingBar.setRating((float) user.getDriver().getRating());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("VendorDashboard", "Load Vendor On Failed");
+                if (vendorValueEventListener != null)
+                    userReference.child(user.getId()).removeEventListener(vendorValueEventListener);
+            }
+        };
+
+        userReference.child(user.getId()).addValueEventListener(vendorValueEventListener);
     }
 
     public void enableLocation() {
@@ -626,6 +679,11 @@ public class VendorDashboard extends AppCompatActivity implements NavigationView
             }
             case (R.id.nav_Notification): {
                 Intent it = new Intent(VendorDashboard.this, NotificationActivity.class);
+                startActivity(it);
+                break;
+            }
+            case R.id.nav_reviews: {
+                Intent it = new Intent(VendorDashboard.this, ReviewsActivity.class);
                 startActivity(it);
                 break;
             }

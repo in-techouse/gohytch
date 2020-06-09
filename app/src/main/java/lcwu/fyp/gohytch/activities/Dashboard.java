@@ -66,6 +66,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import lcwu.fyp.gohytch.R;
+import lcwu.fyp.gohytch.dialog.ReviewDialog;
 import lcwu.fyp.gohytch.dialog.UserDialog;
 import lcwu.fyp.gohytch.director.Helpers;
 import lcwu.fyp.gohytch.director.Session;
@@ -637,10 +638,17 @@ public class Dashboard extends AppCompatActivity implements NavigationView.OnNav
     }
 
     private void onBookingCompleted() {
+        String vendorId = activeDriver.getId();
+        String bookingId = activeBooking.getId();
         bookingReference.child(activeBooking.getId()).removeEventListener(bookingListener);
         removeListeners();
         helpers.showSuccessNoClose(Dashboard.this, "Your Booking has been marked as completed.", "");
         helpers.sendNotification(Dashboard.this, "BOOKING", "Your Booking has been marked as completed.");
+
+        ReviewDialog reviewDialog = new ReviewDialog(Dashboard.this, user.getId(), vendorId, bookingId);
+        reviewDialog.setCancelable(false);
+        reviewDialog.setCanceledOnTouchOutside(false);
+        reviewDialog.show();
     }
 
     @Override
